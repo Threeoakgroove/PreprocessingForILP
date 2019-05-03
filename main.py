@@ -12,9 +12,7 @@ def main():
 
     for userPath in filteredUserPaths:
         listOfLabels = userService.getListOfLabels(userPath)
-        gpsPointFileNames = userService.getGpsPointFileNames(userPath)
-        gpsPointFiles = userService.getGpsPointFiles(
-            userPath, gpsPointFileNames)
+        gpsPointFiles = userService.getGpsPointFiles(userPath)
 
     print(filteredUserPaths)
     return (dataService.loadHelloWorld())

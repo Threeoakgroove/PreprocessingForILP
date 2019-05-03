@@ -16,8 +16,9 @@ class UserService:
         userTrajectoriesPath = join(userPath, 'Trajectory')
         return listdir(userTrajectoriesPath)
 
-    def getGpsPointFiles(self, userPath, gpsPointFileNames):
+    def getGpsPointFiles(self, userPath):
         gpsPointFiles = []
+        gpsPointFileNames = self.getGpsPointFileNames(userPath)
 
         for gpsPointFileName in gpsPointFileNames:
             pathToGpsPointFile = join(userPath, 'Trajectory', gpsPointFileName)
