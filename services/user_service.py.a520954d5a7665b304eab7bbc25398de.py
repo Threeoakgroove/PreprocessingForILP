@@ -45,6 +45,6 @@ class UserService:
             rowStrings[2] + ' ' + rowStrings[3])
         labelName = rowStrings[4]
 
-        labelObject = Label(startDateTime, endDateTime, labelName)
+        labelObject  = Label(startDateTime, endDateTime, labelName)
 
         return labelObject

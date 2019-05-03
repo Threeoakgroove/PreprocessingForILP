@@ -11,7 +11,7 @@ def main():
     filteredUserPaths = userService.getPathsOfUsersWithLabelFile(userNames)
 
     for user in filteredUserPaths:
-        userService.getListOfLabels(user)
+        listOfLabels = userService.getListOfLabels(user)
 
     print(filteredUserPaths)
     return (dataService.loadHelloWorld())
