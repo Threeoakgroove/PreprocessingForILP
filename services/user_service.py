@@ -1,6 +1,8 @@
 from os import listdir
 from os.path import isfile, join
 
+from services.date_service import DateService
+
 
 class UserService:
     'Class to keep all operations of one user together.'
@@ -22,7 +24,21 @@ class UserService:
 
         return filteredUserPaths
 
-    def getListOfLabels(user):
+    def getListOfLabels(self, user):
         listOfLabels = []
+        pathToUsersLabelFile = join(user, 'labels.txt')
+        lineOfFirstLabel = 1
+
+        for row in open(pathToUsersLabelFile).readlines()[lineOfFirstLabel:]:
+            dateService = DateService()
+
+            rowStrings = row.split()
+            startDateTime = dateService.getDateTimeObject(
+                rowStrings[0] + ' ' + rowStrings[1])
+            endDateTime = dateService.getDateTimeObject(
+                rowStrings[2] + ' ' + rowStrings[3])
+            label = rowStrings[4]
+
+            print(startDateTime, endDateTime, label)
 
         return listOfLabels
