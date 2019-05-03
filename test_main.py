@@ -1,19 +1,16 @@
 import unittest
+from unittest.mock import patch
+
+from services.data_service import DataService
 from main import main
 
 
 class TestMain(unittest.TestCase):
+    def test_main(self):
+        self.assertEqual(main(), 'Hello World!')
 
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
-
-    def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
-
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
+    def test_data_service_called(self):
+        with patch('services.data_service.DataService.loadHelloWorld') as mock_loadHelloWorld:
+            mock_loadHelloWorld.return_value = "Mocked World"
+            self.assertTrue(main(), )
+            self.assertEqual(main(), 'Mocked World')
