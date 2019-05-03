@@ -10,8 +10,11 @@ def main():
     userNames = userService.getUserFolderNames()
     filteredUserPaths = userService.getPathsOfUsersWithLabelFile(userNames)
 
-    for user in filteredUserPaths:
-        listOfLabels = userService.getListOfLabels(user)
+    for userPath in filteredUserPaths:
+        listOfLabels = userService.getListOfLabels(userPath)
+        gpsPointFileNames = userService.getGpsPointFileNames(userPath)
+        gpsPointFiles = userService.getGpsPointFiles(
+            userPath, gpsPointFileNames)
 
     print(filteredUserPaths)
     return (dataService.loadHelloWorld())
