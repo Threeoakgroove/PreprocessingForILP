@@ -49,7 +49,8 @@ class SegmentService:
                     segmentStrings = [
                         startDateTime.strftime(config.dashedDateFormat),
                         currentDateTime.strftime(config.dashedDateFormat),
-                        '\n']
+                        '\n'
+                    ]
                     segments.append((',').join(segmentStrings))
                     startDateTime = currentDateTime
                     # else store segment and start new one
@@ -63,11 +64,13 @@ class SegmentService:
         dateService = DateService()
 
         return dateService.getDateTimeObjectDash(
-            splittedLine[5] + ' ' + splittedLine[6])
+            splittedLine[5] + ' ' + splittedLine[6]
+        )
 
     def belongsToSegment(self, startTime, currentTime):
         dateService = DateService()
-        return dateService.getDifInSec(startTime, currentTime) < 90
+        return (dateService.getDifInSec(startTime, currentTime) <
+                config.segmentDuration)
 
     def printToFile(self, segments, fileName):
         dataService = DataService()
