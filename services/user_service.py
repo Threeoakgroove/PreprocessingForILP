@@ -13,9 +13,12 @@ from objects.gps_points_file import GpsPointFile
 class UserService:
     'Class to keep all operations of one user together.'
 
+    outputFolderPath = 'output'
+
     def __init__(self, pathToUserFolders):
-        shutil.rmtree('./output')
-        logging.info('Old output removed')
+        if os.path.exists(self.outputFolderPath):
+            shutil.rmtree(self.outputFolderPath)
+            logging.info('Old output folder removed')
         self.pathToUserFolders = pathToUserFolders
 
     def addLabelToPoint(self, labelName, pointLine):
@@ -67,7 +70,7 @@ class UserService:
         return outputFilePath
 
     def getOutputFolderPath(self, userName):
-        return join('output', userName)
+        return join(self.outputFolderPath, userName)
 
     def ensureOutputFolderExists(self, outputFolderPath):
         if not os.path.exists(outputFolderPath):

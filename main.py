@@ -25,16 +25,14 @@ class Main():
         labels = userService.getListOfLabels(currentPath)
         gpsPointFiles = userService.getGpsPointFiles(currentPath)
 
-        # for each label find files that correspond with it from time her
         for label in labels:
             for gpsPointFile in gpsPointFiles:
-                # if label overlaps with gpsPointFile open it and go through all points, add label where necessary
-                if(dateService.checkPointInTimeRange(label.startDateTime,
-                                                     label.endDateTime,
-                                                     gpsPointFile.startTime) or
-                   dateService.checkPointInTimeRange(label.startDateTime,
-                                                     label.endDateTime,
-                                                     gpsPointFile.endTime)):
+                if(dateService.checkPointInTimeRange(gpsPointFile.startTime,
+                                                     gpsPointFile.endTime,
+                                                     label.startDateTime) or
+                   dateService.checkPointInTimeRange(gpsPointFile.startTime,
+                                                     gpsPointFile.endTime,
+                                                     label.endDateTime)):
                     userService.appendLabelToGpsPoints(
                         label, userName, gpsPointFile)
 
