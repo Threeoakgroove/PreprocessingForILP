@@ -19,28 +19,37 @@ class UserService:
 
     def appendLabelToGpsPoints(self, label, userName, gpsPointFile):
         with open(gpsPointFile.path) as openFile:
-            log = openFile.readlines()[6:]
-            new_log = []
-            for line in log:
-                if True:
-                    new_log.append(line)
-
-            outputFolderPath = self.getOutputFolderPath(userName)
-            self.ensureOutputFolderExists(outputFolderPath)
+            indexOfFirstGpsLine = 6
+            gpsPointLines = openFile.readlines()[indexOfFirstGpsLine:]
             outputFilePath = self.getOutputFilePath(
-                outputFolderPath, gpsPointFile)
+                userName, gpsPointFile)
+            labeledGpsPointLines = self.getLabeledLines(gpsPointLines)
 
-            with open(outputFilePath, 'w') as f:
-                f.write(''.join(new_log))
+            self.printToFile(outputFilePath, labeledGpsPointLines)
 
-    def getOutputFolderPath(self, userName):
-        return join('output', userName)
+    def getLabeledLines(self, gpsPointLines):
+        labeledGpsPointLines = []
 
-    def getOutputFilePath(self, outputFolderPath, gpsPointFile):
+        for line in gpsPointLines:
+            if True:
+                labeledGpsPointLines.append(line)
+
+        return labeledGpsPointLines
+
+    def printToFile(self, outputFilePath, labeledGpsPointLines):
+        with open(outputFilePath, 'w') as f:
+            f.write(''.join(labeledGpsPointLines))
+
+    def getOutputFilePath(self, userName, gpsPointFile):
+        outputFolderPath = self.getOutputFolderPath(userName)
+        self.ensureOutputFolderExists(outputFolderPath)
         outputFilePath = join(outputFolderPath,
                               gpsPointFile.name)
 
         return outputFilePath
+
+    def getOutputFolderPath(self, userName):
+        return join('output', userName)
 
     def ensureOutputFolderExists(self, outputFolderPath):
         if not os.path.exists(outputFolderPath):
