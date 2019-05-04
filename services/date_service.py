@@ -1,17 +1,19 @@
 import datetime
 
+import config
+
 
 class DateService:
 
     def getDateTimeObjectDash(self, dateTimeString):
-        dateFormat = '%Y-%m-%d %H:%M:%S'
-        date = datetime.datetime.strptime(dateTimeString, dateFormat)
+        date = datetime.datetime.strptime(
+            dateTimeString, config.dashedDateFormat)
 
         return date
 
     def getDateTimeObjectSlash(self, dateTimeString):
-        dateFormat = '%Y/%m/%d %H:%M:%S'
-        date = datetime.datetime.strptime(dateTimeString, dateFormat)
+        date = datetime.datetime.strptime(
+            dateTimeString, config.slashedDateFormat)
 
         return date
 

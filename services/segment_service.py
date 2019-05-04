@@ -47,8 +47,8 @@ class SegmentService:
                     # 2. Step calculate length and stuff while doing so
                 else:
                     segmentStrings = [
-                        startDateTime.strftime("%Y-%m-%d %H:%M:%S"),
-                        currentDateTime.strftime("%Y-%m-%d %H:%M:%S"),
+                        startDateTime.strftime(config.dashedDateFormat),
+                        currentDateTime.strftime(config.dashedDateFormat),
                         '\n']
                     segments.append((',').join(segmentStrings))
                     startDateTime = currentDateTime
