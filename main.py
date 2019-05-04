@@ -3,24 +3,31 @@ import logging
 from services.label_service import LabelService
 
 
-class Main():
+class Main:
 
-    def __init__(self):
+    def __init__(self, makeOutput):
         self.setupLogging()
-        labelService = LabelService()
         logging.info("Programm started.")
 
-        labelService.generateLabeledGpsPoints()
+        if makeOutput:
+            labelService = LabelService()
+            labelService.generateLabeledGpsPoints()
+            logging.info("Generated labeled GPS points.")
+        else:
+            logging.info("Skip generation of labeled GPS points.")
 
         logging.info("Programm finished.")
 
     def setupLogging(self):
+        logfileName = 'logfile.log'
         loggingFormat = '%(asctime)s - %(filename)s - ' + \
             '%(levelname)s \n %(message)s'
-        logging.basicConfig(filename='logfile.log',
+
+        logging.basicConfig(filename=logfileName,
                             level=logging.INFO,
                             format=loggingFormat)
 
 
 if __name__ == '__main__':
-    Main()
+    makeOutput = False
+    Main(makeOutput)
