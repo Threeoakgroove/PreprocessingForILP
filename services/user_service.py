@@ -20,19 +20,32 @@ class UserService:
     def appendLabelToGpsPoints(self, label, userName, gpsPointFile):
         with open(gpsPointFile.path) as openFile:
             indexOfFirstGpsLine = 6
+
             gpsPointLines = openFile.readlines()[indexOfFirstGpsLine:]
             outputFilePath = self.getOutputFilePath(
                 userName, gpsPointFile)
-            labeledGpsPointLines = self.getLabeledLines(gpsPointLines)
+            labeledGpsPointLines = self.getLabeledLines(label, gpsPointLines)
 
             self.printToFile(outputFilePath, labeledGpsPointLines)
 
-    def getLabeledLines(self, gpsPointLines):
+    def getLabeledLines(self, label, gpsPointLines):
         labeledGpsPointLines = []
+        dateService = DateService()
 
         for line in gpsPointLines:
-            if True:
-                labeledGpsPointLines.append(line)
+            splittedLine = line.strip().split(',')
+            pointsDateTime = dateService.getDateTimeObjectDash(
+                splittedLine[5] + ' ' + splittedLine[6])
+
+            if(dateService.checkPointInTimeRange(label.startDateTime,
+                                                 label.endDateTime,
+                                                 pointsDateTime)):
+                separator = ','
+                splittedLine.append(label.name)
+                splittedLine.append('\n')
+
+                labeledGpsPointLines.append(
+                    separator.join(splittedLine))
 
         return labeledGpsPointLines
 

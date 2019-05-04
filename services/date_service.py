@@ -14,3 +14,6 @@ class DateService:
         date = datetime.datetime.strptime(dateTimeString, dateFormat)
 
         return date
+
+    def checkPointInTimeRange(self, startTime, endTime, point):
+        return startTime <= point <= endTime
