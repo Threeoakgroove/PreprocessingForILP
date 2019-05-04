@@ -1,7 +1,9 @@
+import logging
 import os
+import shutil
+
 from os import listdir
 from os.path import isfile, join, split
-import shutil
 
 from services.date_service import DateService
 from objects.label import Label
@@ -13,7 +15,7 @@ class UserService:
 
     def __init__(self, pathToUserFolders):
         shutil.rmtree('./output')
-        print('old output removed')
+        logging.info('Old output removed')
         self.pathToUserFolders = pathToUserFolders
 
     def addLabelToPoint(self, labelName, pointLine):

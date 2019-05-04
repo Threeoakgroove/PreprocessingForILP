@@ -1,3 +1,4 @@
+import logging
 from os.path import join
 
 from services.user_service import UserService
@@ -5,7 +6,13 @@ from services.data_service import DataService
 from services.date_service import DateService
 
 
-def main():
+class Main():
+    loggingFormat = '%(asctime)s - %(filename)s - %(levelname)s \n %(message)s'
+    logging.basicConfig(filename='logfile.log',
+                        level=logging.INFO,
+                        format=loggingFormat)
+    logging.info("Programm started.")
+
     pathToUserFolders = 'testdata'
     userService = UserService(pathToUserFolders)
     dateService = DateService()
@@ -31,8 +38,8 @@ def main():
                     userService.appendLabelToGpsPoints(
                         label, userName, gpsPointFile)
 
-    print(filteredUserNames)
+    logging.info("Programm finished.")
 
 
 if __name__ == '__main__':
-    main()
+    Main()
