@@ -5,7 +5,10 @@ import shutil
 from os import listdir
 from os.path import isfile, join, split
 
+import config
+
 from services.date_service import DateService
+from services.data_service import DataService
 from objects.label import Label
 from objects.gps_points_file import GpsPointFile
 
@@ -13,7 +16,7 @@ from objects.gps_points_file import GpsPointFile
 class UserService:
     'Class to keep all operations of one user together.'
 
-    outputFolderPath = 'output'
+    outputFolderPath = config.labelOutputPath
 
     def __init__(self, pathToUserFolders):
         if os.path.exists(self.outputFolderPath):
@@ -62,19 +65,16 @@ class UserService:
             f.write(''.join(labeledGpsPointLines))
 
     def getOutputFilePath(self, userName, gpsPointFile):
-        outputFolderPath = self.getOutputFolderPath(userName)
-        self.ensureOutputFolderExists(outputFolderPath)
-        outputFilePath = join(outputFolderPath,
+        userFolderPath = self.getOutputFolderPath(userName)
+        dataService = DataService()
+        dataService.ensureFolderExists(userFolderPath)
+        outputFilePath = join(userFolderPath,
                               gpsPointFile.name)
 
         return outputFilePath
 
     def getOutputFolderPath(self, userName):
         return join(self.outputFolderPath, userName)
-
-    def ensureOutputFolderExists(self, outputFolderPath):
-        if not os.path.exists(outputFolderPath):
-            os.makedirs(outputFolderPath)
 
     def getGpsPointFileNames(self, userPath):
         userTrajectoriesPath = join(userPath, 'Trajectory')
