@@ -18,7 +18,6 @@ class SegmentService:
             for labeledGpsPointFileName in labeledGpsPointFileNames:
                 filePath = join(userPath, labeledGpsPointFileName)
                 self.generateSegmentsForFile(filePath, labeledGpsPointFileName)
-            # 2) group points together every 90 seconds <-- threshold variable
             # 3) calculate features
             # 3.1) time = first point to last point may differ from threshold when there is no more point within 90 seconds
             # 3.2) length = total length of traveled in segment
@@ -36,6 +35,7 @@ class SegmentService:
             lines = openFile.readlines()
             splittedLine = self.getSplit(lines[0])
             startDateTime = self.getLineDateTime(splittedLine)
+            previousDateTime = startDateTime
             segments = []
 
             for line in lines[1:]:
@@ -43,17 +43,26 @@ class SegmentService:
                 currentDateTime = self.getLineDateTime(currentSplit)
 
                 if self.belongsToSegment(startDateTime, currentDateTime):
+                    previousDateTime = currentDateTime
                     print("hello")
                     # 2. Step calculate length and stuff while doing so
                 else:
+                    # Total time may differ from duration limit
+                    dateService = DateService()
+                    totalTime = dateService.getDifInSec(
+                        startDateTime, previousDateTime)
+
                     segmentStrings = [
                         startDateTime.strftime(config.dashedDateFormat),
-                        currentDateTime.strftime(config.dashedDateFormat),
+                        previousDateTime.strftime(config.dashedDateFormat),
+                        str(totalTime),
                         '\n'
                     ]
                     segments.append((',').join(segmentStrings))
+
+                    # Reset
                     startDateTime = currentDateTime
-                    # else store segment and start new one
+                    previousDateTime = currentDateTime
 
             self.printToFile(segments, fileName)
 
