@@ -1,3 +1,5 @@
+from os.path import join
+
 from services.user_service import UserService
 from services.data_service import DataService
 
@@ -8,16 +10,17 @@ def main():
     dataService = DataService()
 
     userNames = userService.getUserFolderNames()
-    filteredUserPaths = userService.getPathsOfUsersWithLabelFile(userNames)
+    filteredUserNames = userService.getPathsOfUsersWithLabelFile(userNames)
 
-    for userPath in filteredUserPaths:
-        listOfLabels = userService.getListOfLabels(userPath)
-        gpsPointFiles = userService.getGpsPointFiles(userPath)
+    for userName in filteredUserNames:
+        currentPath = join(pathToUserFolders, userName)
+        listOfLabels = userService.getListOfLabels(currentPath)
+        gpsPointFiles = userService.getGpsPointFiles(currentPath)
 
         for gpsPointFile in gpsPointFiles:
-            userService.appendLabelToGpsPoints('label', gpsPointFile)
+            userService.appendLabelToGpsPoints('label', userName, gpsPointFile)
 
-    print(filteredUserPaths)
+    print(filteredUserNames)
     return (dataService.loadHelloWorld())
 
 
