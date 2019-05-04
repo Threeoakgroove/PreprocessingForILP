@@ -15,5 +15,5 @@ class DateService:
 
         return date
 
-    def checkPointInTimeRange(self, startTime, endTime, point):
-        return startTime <= point <= endTime
+    def isInRange(self, startTime, endTime, pointTime):
+        return startTime <= pointTime <= endTime

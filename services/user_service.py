@@ -45,9 +45,9 @@ class UserService:
             pointsDateTime = dateService.getDateTimeObjectDash(
                 splittedLine[5] + ' ' + splittedLine[6])
 
-            if(dateService.checkPointInTimeRange(label.startDateTime,
-                                                 label.endDateTime,
-                                                 pointsDateTime)):
+            if(dateService.isInRange(label.startDateTime,
+                                     label.endDateTime,
+                                     pointsDateTime)):
                 separator = ','
                 splittedLine.append(label.name)
                 splittedLine.append('\n')

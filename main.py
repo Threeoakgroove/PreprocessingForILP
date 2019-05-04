@@ -1,42 +1,25 @@
 import logging
-from os.path import join
 
-from services.user_service import UserService
-from services.data_service import DataService
-from services.date_service import DateService
+from services.label_service import LabelService
 
 
 class Main():
-    loggingFormat = '%(asctime)s - %(filename)s - %(levelname)s \n %(message)s'
-    logging.basicConfig(filename='logfile.log',
-                        level=logging.INFO,
-                        format=loggingFormat)
-    logging.info("Programm started.")
 
-    pathToUserFolders = 'testdata'
-    userService = UserService(pathToUserFolders)
-    dateService = DateService()
+    def __init__(self):
+        self.setupLogging()
+        labelService = LabelService()
+        logging.info("Programm started.")
 
-    userNames = userService.getUserFolderNames()
-    filteredUserNames = userService.getPathsOfUsersWithLabelFile(userNames)
+        labelService.generateLabeledGpsPoints()
 
-    for userName in filteredUserNames:
-        currentPath = join(pathToUserFolders, userName)
-        labels = userService.getListOfLabels(currentPath)
-        gpsPointFiles = userService.getGpsPointFiles(currentPath)
+        logging.info("Programm finished.")
 
-        for label in labels:
-            for gpsPointFile in gpsPointFiles:
-                if(dateService.checkPointInTimeRange(gpsPointFile.startTime,
-                                                     gpsPointFile.endTime,
-                                                     label.startDateTime) or
-                   dateService.checkPointInTimeRange(gpsPointFile.startTime,
-                                                     gpsPointFile.endTime,
-                                                     label.endDateTime)):
-                    userService.appendLabelToGpsPoints(
-                        label, userName, gpsPointFile)
-
-    logging.info("Programm finished.")
+    def setupLogging(self):
+        loggingFormat = '%(asctime)s - %(filename)s - ' + \
+            '%(levelname)s \n %(message)s'
+        logging.basicConfig(filename='logfile.log',
+                            level=logging.INFO,
+                            format=loggingFormat)
 
 
 if __name__ == '__main__':
