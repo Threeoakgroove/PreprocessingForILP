@@ -1,6 +1,7 @@
 import os
 from os import listdir
 from os.path import isfile, join, split
+import shutil
 
 from services.date_service import DateService
 from objects.label import Label
@@ -11,6 +12,8 @@ class UserService:
     'Class to keep all operations of one user together.'
 
     def __init__(self, pathToUserFolders):
+        shutil.rmtree('./output')
+        print('old output removed')
         self.pathToUserFolders = pathToUserFolders
 
     def addLabelToPoint(self, labelName, pointLine):
