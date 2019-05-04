@@ -14,6 +14,9 @@ def main():
         listOfLabels = userService.getListOfLabels(userPath)
         gpsPointFiles = userService.getGpsPointFiles(userPath)
 
+        for gpsPointFile in gpsPointFiles:
+            userService.appendLabelToGpsPoints('label', gpsPointFile)
+
     print(filteredUserPaths)
     return (dataService.loadHelloWorld())
 

@@ -120,3 +120,4 @@ logfile.log
 
 /data/*
 /data_test
+/output/*

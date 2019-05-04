@@ -1,5 +1,6 @@
+import os
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, split
 
 from services.date_service import DateService
 from objects.label import Label
@@ -12,8 +13,32 @@ class UserService:
     def __init__(self, pathToUserFolders):
         self.pathToUserFolders = pathToUserFolders
 
+    def addLabelToPoint(self, labelName, pointLine):
+
+        return lineWithLabel
+
+    def appendLabelToGpsPoints(self, label, gpsPointFile):
+        with open(gpsPointFile.path) as openFile:
+            log = openFile.readlines()[6:]
+            new_log = []
+            for line in log:
+                if True:
+                    new_log.append(line)
+
+            outputNameSplit = split(gpsPointFile.path)
+            userName = split(split(outputNameSplit[0])[0])[1]
+            outputFolder = join('output', userName)
+
+            if not os.path.exists(outputFolder):
+                os.makedirs(outputFolder)
+            outputPath = join(outputFolder,
+                              outputNameSplit[len(outputNameSplit) - 1])
+            with open(outputPath, 'w') as f:
+                f.write(''.join(new_log))
+
     def getGpsPointFileNames(self, userPath):
         userTrajectoriesPath = join(userPath, 'Trajectory')
+
         return listdir(userTrajectoriesPath)
 
     def getGpsPointFiles(self, userPath):
@@ -62,9 +87,9 @@ class UserService:
         firstLineSplit = firstLine.strip().split(',')
         lastLineSplit = lastLine.strip().split(',')
 
-        startDateTime = dateService.getDateTimeObject(
+        startDateTime = dateService.getDateTimeObjectDash(
             firstLineSplit[5] + ' ' + firstLineSplit[6])
-        endDateTime = dateService.getDateTimeObject(
+        endDateTime = dateService.getDateTimeObjectDash(
             lastLineSplit[5] + ' ' + lastLineSplit[6])
 
         return GpsPointFile(pathToGpsPointFile, startDateTime, endDateTime)
