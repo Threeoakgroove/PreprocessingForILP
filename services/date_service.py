@@ -21,6 +21,6 @@ class DateService:
         return startTime <= pointTime <= endTime
 
     def getDifInSec(self, baseTime, currentTime):
-        difference = (currentTime-baseTime).total_seconds()
+        difference = abs((currentTime-baseTime).total_seconds())
 
         return difference
