@@ -3,8 +3,10 @@ from os.path import join
 
 import config
 
+from objects.point import Point
 from services.date_service import DateService
 from services.data_service import DataService
+from services.distance_service import DistanceService
 
 
 class SegmentService:
@@ -32,39 +34,50 @@ class SegmentService:
 
     def generateSegmentsForFile(self, filePath, fileName):
         with open(filePath) as openFile:
+            segments = []
             lines = openFile.readlines()
             splittedLine = self.getSplit(lines[0])
-            startDateTime = self.getLineDateTime(splittedLine)
-            previousDateTime = startDateTime
-            segments = []
+            startPoint = self.makePoint(splittedLine)
+            previousPoint = startPoint
+            totalDistance = 0
 
             for line in lines[1:]:
-                currentSplit = self.getSplit(line)
-                currentDateTime = self.getLineDateTime(currentSplit)
+                currentPoint = self.makePoint(self.getSplit(line))
 
-                if self.belongsToSegment(startDateTime, currentDateTime):
-                    previousDateTime = currentDateTime
+                if self.belongsToSegment(startPoint, currentPoint):
+                    distanceService = DistanceService()
+                    totalDistance += distanceService.distanceInMeter(
+                        previousPoint, currentPoint)
+                    previousPoint = currentPoint
                     print("hello")
                     # 2. Step calculate length and stuff while doing so
                 else:
                     # Total time may differ from duration limit
                     dateService = DateService()
                     totalTime = dateService.getDifInSec(
-                        startDateTime, previousDateTime)
+                        startPoint.dateTime, previousPoint.dateTime)
 
                     segmentStrings = [
-                        startDateTime.strftime(config.dashedDateFormat),
-                        previousDateTime.strftime(config.dashedDateFormat),
+                        startPoint.dateTime.strftime(config.dashedDateFormat),
+                        previousPoint.dateTime.strftime(
+                            config.dashedDateFormat),
                         str(totalTime),
+                        str(totalDistance),
                         '\n'
                     ]
                     segments.append((',').join(segmentStrings))
 
                     # Reset
-                    startDateTime = currentDateTime
-                    previousDateTime = currentDateTime
+                    totalDistance = 0
+                    startPoint = currentPoint
+                    previousPoint = currentPoint
 
             self.printToFile(segments, fileName)
+
+    def makePoint(self, line):
+        point = Point(line[0], line[1], self.getLineDateTime(line))
+
+        return point
 
     def getSplit(self, line):
         return line.strip().split(',')
@@ -76,9 +89,10 @@ class SegmentService:
             splittedLine[5] + ' ' + splittedLine[6]
         )
 
-    def belongsToSegment(self, startTime, currentTime):
+    def belongsToSegment(self, startPoint, currentPoint):
         dateService = DateService()
-        return (dateService.getDifInSec(startTime, currentTime) <
+        return (dateService.getDifInSec(startPoint.dateTime,
+                                        currentPoint.dateTime) <
                 config.segmentDuration)
 
     def printToFile(self, segments, fileName):
