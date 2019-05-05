@@ -1,8 +1,8 @@
 from math import atan2, pi, sin, cos, sqrt
 
 
-class DistanceService():
-    'Service that provides functions for distances.'
+class FeatureService():
+    'Service that provides functions to calculate features.'
 
     def distanceInMeter(self, point1, point2):
         lat1 = point1.lati * (pi/180)
@@ -22,3 +22,10 @@ class DistanceService():
         difference = earthRadius * c * 1000
 
         return difference
+
+    def getSpeed(self, totalTime, totalDistance):
+        speed = 0
+        if(totalTime > 0):
+            speed = totalDistance / totalTime
+
+        return speed

@@ -6,7 +6,7 @@ import config
 from objects.point import Point
 from services.date_service import DateService
 from services.data_service import DataService
-from services.distance_service import DistanceService
+from services.feature_service import FeatureService
 
 
 class SegmentService:
@@ -21,8 +21,6 @@ class SegmentService:
                 filePath = join(userPath, labeledGpsPointFileName)
                 self.generateSegmentsForFile(filePath, labeledGpsPointFileName)
             # 3) calculate features
-            # 3.1) time = first point to last point may differ from threshold when there is no more point within 90 seconds
-            # 3.2) length = total length of traveled in segment
             # 3.3) speed
             # 3.4) acceleration = in contrast to previous
 
@@ -35,6 +33,7 @@ class SegmentService:
     def generateSegmentsForFile(self, filePath, fileName):
         with open(filePath) as openFile:
             segments = []
+            featureService = FeatureService()
             lines = openFile.readlines()
             splittedLine = self.getSplit(lines[0])
             startPoint = self.makePoint(splittedLine)
@@ -45,14 +44,10 @@ class SegmentService:
                 currentPoint = self.makePoint(self.getSplit(line))
 
                 if self.belongsToSegment(startPoint, currentPoint):
-                    distanceService = DistanceService()
-                    totalDistance += distanceService.distanceInMeter(
+                    totalDistance += featureService.distanceInMeter(
                         previousPoint, currentPoint)
                     previousPoint = currentPoint
-                    print("hello")
-                    # 2. Step calculate length and stuff while doing so
                 else:
-                    # Total time may differ from duration limit
                     dateService = DateService()
                     totalTime = dateService.getDifInSec(
                         startPoint.dateTime, previousPoint.dateTime)
@@ -63,6 +58,7 @@ class SegmentService:
                             config.dashedDateFormat),
                         str(totalTime),
                         str(totalDistance),
+                        str(featureService.getSpeed(totalTime, totalDistance)),
                         '\n'
                     ]
                     segments.append((',').join(segmentStrings))
