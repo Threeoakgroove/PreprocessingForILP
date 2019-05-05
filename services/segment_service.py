@@ -35,34 +35,34 @@ class SegmentService:
         with open(filePath) as openFile:
             segments = []
             timeLabels = []
+            dateService = DateService()
             featureService = FeatureService()
-
             lines = openFile.readlines()
-            splittedLine = self.getSplit(lines[0])
-            startPoint = self.makePoint(splittedLine)
-            previousPoint = startPoint
             totalDistance = 0
+
+            startPoint = self.makePoint(self.getSplit(lines[0]))
             timeLabels.append(TimeLabel(0, startPoint.label))
+            previousPoint = startPoint
 
             for line in lines[1:]:
                 currentPoint = self.makePoint(self.getSplit(line))
 
                 if self.belongsToSegment(startPoint, currentPoint):
+                    currentTimeLabel = (next(
+                        (timeLabel for timeLabel in timeLabels
+                         if(timeLabel.label == currentPoint.label)),
+                        None))
+                    if currentTimeLabel is None:
+                        timeLabels.append(TimeLabel(0, currentPoint.label))
+                    else:
+                        currentTimeLabel.totalTime += dateService.getDifInSec(
+                            previousPoint.dateTime, currentPoint.dateTime)
+
                     totalDistance += featureService.distanceInMeter(
                         previousPoint, currentPoint)
                     previousPoint = currentPoint
 
-                    if(timeLabels[len(timeLabels) - 1].label ==
-                       currentPoint.label):
-                        dateService = DateService()
-                        timeLabels[(len(timeLabels) - 1)].totalTime = (timeLabels[(len(timeLabels) - 1)].totalTime +
-                                                                       dateService.getDifInSec(previousPoint.dateTime,
-                                                                                               currentPoint.dateTime))
-                    else:
-                        timeLabels.append(TimeLabel(0, currentPoint.label))
-
                 else:
-                    dateService = DateService()
                     totalTime = dateService.getDifInSec(
                         startPoint.dateTime, previousPoint.dateTime)
 
@@ -75,6 +75,7 @@ class SegmentService:
                         str(totalDistance),
                         str(featureService.getSpeed(
                             totalTime, totalDistance)),
+                        startPoint.label,
                         '\n'
                     ]
                     segments.append((',').join(segmentStrings))
@@ -105,7 +106,7 @@ class SegmentService:
     def belongsToSegment(self, startPoint, currentPoint):
         dateService = DateService()
         return (dateService.getDifInSec(startPoint.dateTime,
-                                        currentPoint.dateTime) <
+                                        currentPoint.dateTime) <=
                 config.segmentDuration)
 
     def printToFile(self, segments, fileName):
