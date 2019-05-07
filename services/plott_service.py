@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from os.path import join
 
@@ -31,7 +32,8 @@ class PlottService:
             data = data.append(pd.read_csv(
                 pathToFile, header=None), ignore_index=True)
 
-        print(data)
+        data.plot(kind='bar', x=3, y=4, color='red')
+        plt.show()
         print('hello')
 
         # 4) Go through all files
