@@ -30,4 +30,17 @@ class FeatureService():
         if(totalTime > 0):
             speed = totalDistance / totalTime
 
-        return speed
+        return self.roundOfRating(speed)
+
+    def roundOfRating(self, number):
+        """Round a number to the closest half integer.
+        >>> round_of_rating(1.3)
+        1.5
+        >>> round_of_rating(2.6)
+        2.5
+        >>> round_of_rating(3.0)
+        3.0
+        >>> round_of_rating(4.1)
+        4.0"""
+
+        return round(number * 2) / 2

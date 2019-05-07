@@ -14,30 +14,27 @@ class PlottService:
         self.dataService = DataService()
 
     def generatePlotts(self):
-        # 1) Load all user folders in segments
         segmentFolders = self.dataService.getFileNamesInPath(
             config.segmentOutputPath)
-        # 2) Go through all user folders
+
         for folder in segmentFolders:
-            self.goThroughFilesInFolder(folder)
+            dataFrame = self.goThroughFilesInFolder(folder)
+            self.showPlott(dataFrame)
 
     def goThroughFilesInFolder(self, folder):
         pathToFolder = join(config.segmentOutputPath, folder)
-        # 3) read all filenames
         segmentFiles = self.dataService.getFileNamesInPath(
             pathToFolder)
-        data = pd.DataFrame()
+        dataFrame = pd.DataFrame()
+
         for segmentFile in segmentFiles:
             pathToFile = join(pathToFolder, segmentFile)
-            data = data.append(pd.read_csv(
+            dataFrame = dataFrame.append(pd.read_csv(
                 pathToFile, header=None), ignore_index=True)
 
-        data.plot(kind='bar', x=3, y=4, color='red')
-        plt.show()
-        print('hello')
+        return dataFrame
 
-        # 4) Go through all files
-        # 5) Read all segments
-        # 6) Collect speeds of each label
-        # 6.1) Bus -> 2 x 1, 3 x 2, 10x 3,
-        print(folder)
+    def showPlott(self, dataFrame):
+        dataBus = dataFrame.loc[dataFrame[5] == 'bus']
+        dataBus[[4]].plot(kind='hist', rwidth=0.8)
+        plt.show()
