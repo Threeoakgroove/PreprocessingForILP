@@ -83,8 +83,8 @@ class SegmentService:
                     timeLabels.clear()
                     timeLabels.append(TimeLabel(0, startPoint.label))
                     totalDistance = 0
-
-            self.printToFile(segments, userName, fileName)
+            if len(segments) > 0:
+                self.printToFile(segments, userName, fileName)
 
     def makePoint(self, line):
         point = Point(line[0], line[1], self.getLineDateTime(line), line[7])
