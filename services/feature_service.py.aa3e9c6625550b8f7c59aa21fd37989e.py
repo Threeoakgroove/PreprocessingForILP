@@ -3,7 +3,7 @@ from math import atan2, pi, sin, cos, sqrt
 
 class FeatureService():
     'Service that provides functions to calculate features.'
-
+    
     # TODO: acceleration = in contrast to previous
 
     def distanceInMeter(self, point1, point2):

@@ -2,11 +2,12 @@ import logging
 
 from services.label_service import LabelService
 from services.segment_service import SegmentService
+from services.plott_service import PlottService
 
 
 class Main:
 
-    def __init__(self, makeOutput, makeSegments):
+    def __init__(self, makeOutput, makeSegments, makePlotts):
         self.setupLogging()
         logging.info("Programm started.")
 
@@ -24,6 +25,13 @@ class Main:
         else:
             logging.info("Skip generation of segments.")
 
+        if makePlotts:
+            plottService = PlottService()
+            plottService.generatePlotts()
+            logging.info("Generated segments.")
+        else:
+            logging.info("Skip generation of segments.")
+
         logging.info("Programm finished.")
 
     def setupLogging(self):
@@ -37,7 +45,8 @@ class Main:
 
 
 if __name__ == '__main__':
-    makeOutput = False
+    makeOutput = True
     makeSegments = True
+    makePlotts = True
 
-    Main(makeOutput, makeSegments)
+    Main(makeOutput, makeSegments, makePlotts)

@@ -15,15 +15,13 @@ class SegmentService:
     def generateSegments(self):
         userFolderNames = self.getUserFolderNames()
         for userName in userFolderNames:
-            userPath = join(config.labelOutputPath, userName)
+            userInputPath = join(config.labelOutputPath, userName)
             labeledGpsPointFileNames = self.getLabeledGpsPointFileNames(
-                userPath)
+                userInputPath)
             for labeledGpsPointFileName in labeledGpsPointFileNames:
-                filePath = join(userPath, labeledGpsPointFileName)
-                self.generateSegmentsForFile(filePath, labeledGpsPointFileName)
-            # 3) calculate features
-            # 3.3) speed
-            # 3.4) acceleration = in contrast to previous
+                filePath = join(userInputPath, labeledGpsPointFileName)
+                self.generateSegmentsForFile(
+                    filePath, userName, labeledGpsPointFileName)
 
     def getUserFolderNames(self):
         return listdir(config.labelOutputPath)
@@ -31,7 +29,7 @@ class SegmentService:
     def getLabeledGpsPointFileNames(self, userPath):
         return listdir(userPath)
 
-    def generateSegmentsForFile(self, filePath, fileName):
+    def generateSegmentsForFile(self, filePath, userName, fileName):
         with open(filePath) as openFile:
             segments = []
             timeLabels = []
@@ -86,7 +84,7 @@ class SegmentService:
                     timeLabels.append(TimeLabel(0, startPoint.label))
                     totalDistance = 0
 
-            self.printToFile(segments, fileName)
+            self.printToFile(segments, userName, fileName)
 
     def makePoint(self, line):
         point = Point(line[0], line[1], self.getLineDateTime(line), line[7])
@@ -109,10 +107,11 @@ class SegmentService:
                                         currentPoint.dateTime) <=
                 config.segmentDuration)
 
-    def printToFile(self, segments, fileName):
+    def printToFile(self, segments, userName, fileName):
         dataService = DataService()
-        dataService.ensureFolderExists(config.segmentOutputPath)
-        outputPath = join(config.segmentOutputPath, fileName)
+        userFolderPath = join(config.segmentOutputPath, userName)
+        dataService.ensureFolderExists(userFolderPath)
+        outputPath = join(userFolderPath, fileName)
 
         with open(outputPath, 'w') as f:
             f.write(''.join(segments))
