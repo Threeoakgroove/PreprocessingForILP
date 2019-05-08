@@ -19,6 +19,7 @@ class PlottService:
 
         for folder in segmentFolders:
             dataFrame = self.goThroughFilesInFolder(folder)
+            print(dataFrame)
             self.showPlott(dataFrame)
 
     def goThroughFilesInFolder(self, folder):
@@ -30,13 +31,13 @@ class PlottService:
         for segmentFile in segmentFiles:
             pathToFile = join(pathToFolder, segmentFile)
             dataFrame = dataFrame.append(pd.read_csv(
-                pathToFile, header=None), ignore_index=True)
+                pathToFile, sep='\t', index_col=0, header=0))
 
         return dataFrame
 
     def showPlott(self, dataFrame):
-        dataBus = dataFrame.loc[dataFrame[5] == 'bus']
-        dataWalk = dataFrame.loc[dataFrame[5] == 'walk']
-        dataBus[[4]].plot(kind='hist', rwidth=0.8)
-        dataWalk[[4]].plot(kind='hist', rwidth=0.8)
+        dataBus = dataFrame.loc[dataFrame['transportMode'] == 'bus']
+        dataWalk = dataFrame.loc[dataFrame['transportMode'] == 'walk']
+        dataBus[['totalDistance']].plot(kind='hist', rwidth=0.8)
+        dataWalk[['totalDistance']].plot(kind='hist', rwidth=0.8)
         plt.show()
