@@ -25,6 +25,25 @@ class FeatureService():
 
         return difference
 
+    def distanceInMeter(self, p1Lat, p1Long, p2Lat, p2Long):
+        lat1 = p1Lat * (pi/180)
+        lat2 = p2Lat * (pi/180)
+        long1 = p1Long * (pi/180)
+        long2 = p2Long * (pi/180)
+
+        diffLong = (long2 - long1)
+        diffLat = (lat2 - lat1)
+
+        # Haversine formula:
+        earthRadius = 6371
+
+        a = sin(diffLat/2) * sin(diffLat/2) + cos(lat1) * \
+            cos(lat2) * sin(diffLong/2) * sin(diffLong/2)
+        c = 2 * atan2(sqrt(a), sqrt(1-a))
+        difference = earthRadius * c * 1000
+
+        return difference
+
     def getSpeed(self, totalTime, totalDistance):
         speed = 0
         if(totalTime > 0):

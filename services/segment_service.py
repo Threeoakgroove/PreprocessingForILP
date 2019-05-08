@@ -1,9 +1,12 @@
+import logging
+
 from os import listdir
-from os.path import join
+from os.path import join, exists, split
+from shutil import rmtree
 
 import config
+import pandas as pd
 
-from objects.point import Point
 from objects.time_label import TimeLabel
 from services.date_service import DateService
 from services.data_service import DataService
@@ -12,16 +15,35 @@ from services.feature_service import FeatureService
 
 class SegmentService:
 
+    def __init__(self):
+        if exists(config.segmentOutputPath):
+            rmtree(config.segmentOutputPath)
+            logging.info('Old segment output folder removed')
+        self.dateService = DateService()
+        self.dataService = DataService()
+        self.featureService = FeatureService()
+
     def generateSegments(self):
         userFolderNames = self.getUserFolderNames()
+
         for userName in userFolderNames:
+            userPath = join(config.segmentOutputPath, userName)
+            self.dataService.ensureFolderExists(userPath)
             userInputPath = join(config.labelOutputPath, userName)
-            labeledGpsPointFileNames = self.getLabeledGpsPointFileNames(
+            fileNames = self.getLabeledGpsPointFileNames(
                 userInputPath)
-            for labeledGpsPointFileName in labeledGpsPointFileNames:
-                filePath = join(userInputPath, labeledGpsPointFileName)
-                self.generateSegmentsForFile(
-                    filePath, userName, labeledGpsPointFileName)
+
+            for fileName in fileNames:
+                filePath = join(userInputPath, fileName)
+                segmentDf = self.generateSegmentsForFile(filePath)
+                self.printDataFrame(segmentDf, userPath, fileName)
+
+    def printDataFrame(self, df, userPath, fileName):
+        fileNameCsv = fileName.split('.')[0] + '.csv'
+
+        df.to_csv(join(
+            userPath, fileNameCsv),
+            sep='\t', encoding='utf-8')
 
     def getUserFolderNames(self):
         return listdir(config.labelOutputPath)
@@ -29,89 +51,44 @@ class SegmentService:
     def getLabeledGpsPointFileNames(self, userPath):
         return listdir(userPath)
 
-    def generateSegmentsForFile(self, filePath, userName, fileName):
-        with open(filePath) as openFile:
-            segments = []
-            timeLabels = []
-            dateService = DateService()
-            featureService = FeatureService()
-            lines = openFile.readlines()
-            totalDistance = 0
+    def generateSegmentsForFile(self, pathToFile):
+        segmentDf = pd.DataFrame(columns=config.segmentHeader)
+        df = pd.read_csv(pathToFile, header=None)
+        startDate = None
+        lastDate = startDate
+        segmentsDistance = 0
+        segmentLabel = None
 
-            startPoint = self.makePoint(self.getSplit(lines[0]))
-            timeLabels.append(TimeLabel(0, startPoint.label))
-            previousPoint = startPoint
+        for index, row in df.iterrows():
+            currentDate = self.getDate(df, index)
+            if index == 0:
+                startDate = currentDate
+                segmentLabel = df.iat[index, 7]
+            elif self.belongsToSegment(startDate, currentDate):
+                segmentsDistance += self.getDistanceBetween(
+                    df, index - 1, index)
+            else:
+                lastDate = self.getDate(df, index - 1)
+                segmentDf.loc[len(segmentDf)] = [
+                    segmentLabel, startDate, lastDate, segmentsDistance]
 
-            for line in lines[1:]:
-                currentPoint = self.makePoint(self.getSplit(line))
+                startDate = currentDate
+                segmentLabel = df.iat[index, 7]
+                segmentsDistance = self.getDistanceBetween(
+                    df, index - 1, index)
 
-                if self.belongsToSegment(startPoint, currentPoint):
-                    currentTimeLabel = (next(
-                        (timeLabel for timeLabel in timeLabels
-                         if(timeLabel.label == currentPoint.label)),
-                        None))
-                    if currentTimeLabel is None:
-                        timeLabels.append(TimeLabel(0, currentPoint.label))
-                    else:
-                        currentTimeLabel.totalTime += dateService.getDifInSec(
-                            previousPoint.dateTime, currentPoint.dateTime)
+        return segmentDf
 
-                    totalDistance += featureService.distanceInMeter(
-                        previousPoint, currentPoint)
-                    previousPoint = currentPoint
+    def getDistanceBetween(self, df, index1, index2):
+        return self.featureService.distanceInMeter(
+            df.iat[index1, 0], df.iat[index1, 1],
+            df.iat[index2, 0], df.iat[index2, 1])
 
-                else:
-                    totalTime = dateService.getDifInSec(
-                        startPoint.dateTime, previousPoint.dateTime)
+    def getDate(self, df, index):
+        return self.dateService.getDateTimeObjectDash(
+            df.iat[index, 5] + ' ' + df.iat[index, 6])
 
-                    segmentStrings = [
-                        startPoint.dateTime.strftime(
-                            config.dashedDateFormat),
-                        previousPoint.dateTime.strftime(
-                            config.dashedDateFormat),
-                        str(totalTime),
-                        str(totalDistance),
-                        str(featureService.getSpeed(
-                            totalTime, totalDistance)),
-                        startPoint.label,
-                        '\n'
-                    ]
-                    segments.append((',').join(segmentStrings))
+    def belongsToSegment(self, startDate, endDate):
+        difInSec = self.dateService.getDifInSec(startDate, endDate)
 
-                    # Reset
-                    startPoint = currentPoint
-                    timeLabels.clear()
-                    timeLabels.append(TimeLabel(0, startPoint.label))
-                    totalDistance = 0
-            if len(segments) > 0:
-                self.printToFile(segments, userName, fileName)
-
-    def makePoint(self, line):
-        point = Point(line[0], line[1], self.getLineDateTime(line), line[7])
-
-        return point
-
-    def getSplit(self, line):
-        return line.strip().split(',')
-
-    def getLineDateTime(self, splittedLine):
-        dateService = DateService()
-
-        return dateService.getDateTimeObjectDash(
-            splittedLine[5] + ' ' + splittedLine[6]
-        )
-
-    def belongsToSegment(self, startPoint, currentPoint):
-        dateService = DateService()
-        return (dateService.getDifInSec(startPoint.dateTime,
-                                        currentPoint.dateTime) <=
-                config.segmentDuration)
-
-    def printToFile(self, segments, userName, fileName):
-        dataService = DataService()
-        userFolderPath = join(config.segmentOutputPath, userName)
-        dataService.ensureFolderExists(userFolderPath)
-        outputPath = join(userFolderPath, fileName)
-
-        with open(outputPath, 'w') as f:
-            f.write(''.join(segments))
+        return(difInSec <= config.segmentDuration)

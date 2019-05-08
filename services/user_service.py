@@ -16,11 +16,9 @@ from objects.gps_points_file import GpsPointFile
 class UserService:
     'Class to keep all operations of one user together.'
 
-    outputFolderPath = config.labelOutputPath
-
     def __init__(self, pathToUserFolders):
-        if os.path.exists(self.outputFolderPath):
-            shutil.rmtree(self.outputFolderPath)
+        if os.path.exists(config.labelOutputPath):
+            shutil.rmtree(config.labelOutputPath)
             logging.info('Old output folder removed')
         self.pathToUserFolders = pathToUserFolders
 

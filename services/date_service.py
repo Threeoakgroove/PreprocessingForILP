@@ -20,7 +20,12 @@ class DateService:
     def isInRange(self, startTime, endTime, pointTime):
         return startTime <= pointTime <= endTime
 
-    def getDifInSec(self, baseTime, currentTime):
+    def getDifInSec(self, startDate, endDate):
+        difference = abs((endDate-startDate).total_seconds())
+
+        return difference
+
+    def getDifInSecOld(self, baseTime, currentTime):
         difference = abs((currentTime-baseTime).total_seconds())
 
         return difference
