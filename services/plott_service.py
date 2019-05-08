@@ -36,5 +36,7 @@ class PlottService:
 
     def showPlott(self, dataFrame):
         dataBus = dataFrame.loc[dataFrame[5] == 'bus']
+        dataWalk = dataFrame.loc[dataFrame[5] == 'walk']
         dataBus[[4]].plot(kind='hist', rwidth=0.8)
+        dataWalk[[4]].plot(kind='hist', rwidth=0.8)
         plt.show()

@@ -13,7 +13,7 @@ class LabelService:
 
     def generateLabeledGpsPoints(self):
         userNames = self.userService.getUserFolderNames()
-        labelFileUserNames = self.userService.getPathsOfUsersWithLabelFile(
+        labelFileUserNames = self.userService.getLabelUserNames(
             userNames)
 
         for userName in labelFileUserNames:

@@ -92,7 +92,7 @@ class UserService:
             firstLine = open(pathToGpsPointFile).readlines()[6]
             lastLine = open(pathToGpsPointFile).readlines()[indexOfLast]
 
-            gpsPointFiles.append(self.makeGpsPointFile(
+            gpsPointFiles.append(self.makeGpsPoint(
                 pathToGpsPointFile, gpsPointFileName, firstLine, lastLine))
 
         return gpsPointFiles
@@ -108,22 +108,22 @@ class UserService:
 
         return listOfLabels
 
-    def getPathsOfUsersWithLabelFile(self, users):
-        filteredUserPaths = []
+    def getLabelUserNames(self, users):
+        filteredUsers = []
 
         for user in users:
             pathToUser = join(self.pathToUserFolders, user)
 
             if 'labels.txt' in listdir(pathToUser):
-                filteredUserPaths.append(user)
+                filteredUsers.append(user)
 
-        return filteredUserPaths
+        return filteredUsers
 
     def getUserFolderNames(self):
         return listdir(self.pathToUserFolders)
 
-    def makeGpsPointFile(self, pathToGpsPointFile, gpsPointFileName,
-                         firstLine, lastLine):
+    def makeGpsPoint(self, pathToGpsPointFile, gpsPointFileName,
+                     firstLine, lastLine):
         dateService = DateService()
         firstLineSplit = firstLine.strip().split(',')
         lastLineSplit = lastLine.strip().split(',')
