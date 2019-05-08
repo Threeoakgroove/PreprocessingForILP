@@ -36,8 +36,8 @@ class PlottService:
         return dataFrame
 
     def showPlott(self, dataFrame):
-        dataBus = dataFrame.loc[dataFrame['transportMode'] == 'bus']
-        dataWalk = dataFrame.loc[dataFrame['transportMode'] == 'walk']
-        dataBus[['totalDistance']].plot(kind='hist', rwidth=0.8)
-        dataWalk[['totalDistance']].plot(kind='hist', rwidth=0.8)
+        dataBus = dataFrame.loc[dataFrame[config.tmHead] == 'bus']
+        dataWalk = dataFrame.loc[dataFrame[config.tmHead] == 'walk']
+        dataBus[[config.distHead]].plot(kind='hist', rwidth=0.8)
+        dataWalk[[config.distHead]].plot(kind='hist', rwidth=0.8)
         plt.show()

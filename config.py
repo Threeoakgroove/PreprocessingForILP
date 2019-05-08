@@ -8,4 +8,9 @@ slashedDateFormat = "%Y/%m/%d %H:%M:%S"
 
 segmentDuration = 90
 
-segmentHeader = ['transportMode', 'startDate', 'endDate', 'totalDistance']
+tmHead = 'transportMode'
+startDateHead = 'startDate'
+endDateHead = 'endDate'
+distHead = 'distance'
+
+segmentHeader = [tmHead, startDateHead, endDateHead, distHead]
