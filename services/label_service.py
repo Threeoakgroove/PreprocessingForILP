@@ -1,15 +1,16 @@
 from os.path import join
 
+import config
+
 from services.user_service import UserService
 from services.date_service import DateService
 
 
 class LabelService:
-    pathToUserFolders = 'testdata'
 
     # TODO: this is spaghetti code
     def __init__(self):
-        self.userService = UserService(self.pathToUserFolders)
+        self.userService = UserService(config.pathTestData)
 
     def generateLabeledGpsPoints(self):
         userNames = self.userService.getUserFolderNames()
@@ -20,13 +21,13 @@ class LabelService:
             self.generateOutputForUser(userName)
 
     def generateOutputForUser(self, userName):
-        currentPath = join(self.pathToUserFolders, userName)
+        currentPath = join(config.pathTestData, userName)
         labels = self.userService.getListOfLabels(currentPath)
         for label in labels:
             self.checkAllGpsFilesForLabel(label, userName)
 
     def checkAllGpsFilesForLabel(self, label, userName):
-        currentPath = join(self.pathToUserFolders, userName)
+        currentPath = join(config.pathTestData, userName)
         gpsPointFiles = self.userService.getGpsPointFiles(currentPath)
         for gpsPointFile in gpsPointFiles:
             dateService = DateService()

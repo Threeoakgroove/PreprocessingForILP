@@ -14,21 +14,21 @@ class Main:
         logging.info("Programm started.")
 
         if makeOutput:
-            logging.info("Generated labeled GPS points.")
+            logging.info("Generating labeled GPS points.")
             labelService = LabelService()
             labelService.generateLabeledGpsPoints()
         else:
             logging.info("Skip generation of labeled GPS points.")
 
         if makeSegments:
-            logging.info("Generated segments.")
+            logging.info("Generating segments.")
             segmentService = SegmentService()
             segmentService.generateSegments()
         else:
             logging.info("Skip generation of segments.")
 
         if makePlotts:
-            logging.info("Generated segments.")
+            logging.info("Making plotts.")
             plottService = PlottService()
             plottService.generatePlotts()
         else:
@@ -46,7 +46,7 @@ class Main:
         consoleHandler.setLevel(logging.INFO)
 
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s: - %(levelname)s - %(message)s')
+            '%(asctime)s - %(filename)-18s: - %(levelname)s - %(message)s')
         fileHandler.setFormatter(formatter)
         consoleHandler.setFormatter(formatter)
 
@@ -57,6 +57,6 @@ class Main:
 if __name__ == '__main__':
     makeOutput = False
     makeSegments = False
-    makePlotts = False
+    makePlotts = True
 
     Main(makeOutput, makeSegments, makePlotts)

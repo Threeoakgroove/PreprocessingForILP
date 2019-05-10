@@ -16,11 +16,11 @@ from objects.gps_points_file import GpsPointFile
 class UserService:
     'Class to keep all operations of one user together.'
 
-    def __init__(self, pathToUserFolders):
+    def __init__(self, pathTestData):
         if os.path.exists(config.labelOutputPath):
             shutil.rmtree(config.labelOutputPath)
-            logging.info('Old output folder removed.')
-        self.pathToUserFolders = pathToUserFolders
+            logging.info('Labeled output folder removed.')
+        self.pathToUserFolders = pathTestData
 
     def appendLabelToGpsPoints(self, label, userName, gpsPointFile):
         with open(gpsPointFile.path) as openFile:

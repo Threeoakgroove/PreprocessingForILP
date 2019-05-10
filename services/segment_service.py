@@ -18,7 +18,7 @@ class SegmentService:
     def __init__(self):
         if exists(config.segmentOutputPath):
             rmtree(config.segmentOutputPath)
-            logging.info('Old segment output folder removed')
+            logging.info('Segment output folder removed')
         self.dateService = DateService()
         self.dataService = DataService()
         self.featureService = FeatureService()
