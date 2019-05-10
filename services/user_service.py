@@ -19,12 +19,8 @@ class UserService:
     def __init__(self, pathToUserFolders):
         if os.path.exists(config.labelOutputPath):
             shutil.rmtree(config.labelOutputPath)
-            logging.info('Old output folder removed')
+            logging.info('Old output folder removed.')
         self.pathToUserFolders = pathToUserFolders
-
-    def addLabelToPoint(self, labelName, pointLine):
-
-        return lineWithLabel
 
     def appendLabelToGpsPoints(self, label, userName, gpsPointFile):
         with open(gpsPointFile.path) as openFile:

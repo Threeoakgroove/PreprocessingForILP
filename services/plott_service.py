@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from os.path import join
 
 import config
+import logging
 
 from services.data_service import DataService
 

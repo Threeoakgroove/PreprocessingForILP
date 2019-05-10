@@ -1,5 +1,6 @@
 from os.path import join
 
+logfileName = 'logfile.log'
 labelOutputPath = join('output', 'labeled')
 segmentOutputPath = join('output', 'segmented')
 
