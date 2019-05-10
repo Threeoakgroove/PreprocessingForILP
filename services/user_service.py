@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+import pandas as pd
 
 from os import listdir
 from os.path import isfile, join, split
@@ -21,20 +22,19 @@ class UserService:
             shutil.rmtree(config.labelOutputPath)
             logging.info('Labeled output folder removed.')
         self.pathToUserFolders = pathTestData
+        self.dataService = DataService()
 
-    def appendLabelToGpsPoints(self, label, userName, gpsPointFile):
+    def appendLabelToPointsInFile(self, label, userName, gpsPointFile):
         with open(gpsPointFile.path) as openFile:
             indexOfFirstGpsLine = 6
 
             gpsPointLines = openFile.readlines()[indexOfFirstGpsLine:]
-            outputFilePath = self.getOutputFilePath(
-                userName, gpsPointFile)
-            labeledGpsPointLines = self.getLabeledLines(label, gpsPointLines)
-
-            self.printToFile(outputFilePath, labeledGpsPointLines)
+            userPath = self.getOutputFolderPath(userName)
+            labelDataFrame = self.getLabeledLines(label, gpsPointLines)
+            self.printDataFrame(userPath, gpsPointFile.name, labelDataFrame)
 
     def getLabeledLines(self, label, gpsPointLines):
-        labeledGpsPointLines = []
+        labelDf = pd.DataFrame(columns=config.labelHeader)
         dateService = DateService()
 
         for line in gpsPointLines:
@@ -45,27 +45,22 @@ class UserService:
             if(dateService.isInRange(label.startDateTime,
                                      label.endDateTime,
                                      pointsDateTime)):
-                separator = ','
-                splittedLine.append(label.name)
-                splittedLine.append('\n')
 
-                labeledGpsPointLines.append(
-                    separator.join(splittedLine))
+                labelDf.loc[len(labelDf)] = [
+                    splittedLine[0],
+                    splittedLine[1],
+                    pointsDateTime,
+                    label.name]
 
-        return labeledGpsPointLines
+        return labelDf
 
-    def printToFile(self, outputFilePath, labeledGpsPointLines):
-        with open(outputFilePath, 'a') as f:
-            f.write(''.join(labeledGpsPointLines))
+    def printDataFrame(self, userPath, fileName, labelDataFrame):
+        self.dataService.ensureFolderExists(userPath)
+        fileNameCsv = fileName.split('.')[0] + '.csv'
 
-    def getOutputFilePath(self, userName, gpsPointFile):
-        userFolderPath = self.getOutputFolderPath(userName)
-        dataService = DataService()
-        dataService.ensureFolderExists(userFolderPath)
-        outputFilePath = join(userFolderPath,
-                              gpsPointFile.name)
-
-        return outputFilePath
+        labelDataFrame.to_csv(join(
+            userPath, fileNameCsv),
+            sep='\t', encoding='utf-8')
 
     def getOutputFolderPath(self, userName):
         return join(config.labelOutputPath, userName)

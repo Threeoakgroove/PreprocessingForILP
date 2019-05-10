@@ -18,21 +18,21 @@ class Main:
             labelService = LabelService()
             labelService.generateLabeledGpsPoints()
         else:
-            logging.info("Skip generation of labeled GPS points.")
+            logging.info("Skip generating labeled GPS points.")
 
         if makeSegments:
             logging.info("Generating segments.")
             segmentService = SegmentService()
             segmentService.generateSegments()
         else:
-            logging.info("Skip generation of segments.")
+            logging.info("Skip generating segments.")
 
         if makePlotts:
             logging.info("Making plotts.")
             plottService = PlottService()
             plottService.generatePlotts()
         else:
-            logging.info("Skip generation of segments.")
+            logging.info("Skip making plotts.")
 
         logging.info("Programm finished.")
 
@@ -57,6 +57,6 @@ class Main:
 if __name__ == '__main__':
     makeOutput = False
     makeSegments = True
-    makePlotts = True
+    makePlotts = False
 
     Main(makeOutput, makeSegments, makePlotts)

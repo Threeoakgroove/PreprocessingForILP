@@ -17,3 +17,10 @@ distHead = 'distance'
 speedHead = 'speed'
 
 segmentHeader = [tmHead, startDateHead, endDateHead, distHead, speedHead]
+
+longHead = 'long'
+latHead = 'lat'
+dateHead = 'date'
+labelHead = 'label'
+
+labelHeader = [longHead, latHead, dateHead, labelHead]
