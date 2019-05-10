@@ -72,7 +72,7 @@ class UserService:
         return outputFilePath
 
     def getOutputFolderPath(self, userName):
-        return join(self.outputFolderPath, userName)
+        return join(config.labelOutputPath, userName)
 
     def getGpsPointFileNames(self, userPath):
         userTrajectoriesPath = join(userPath, 'Trajectory')
