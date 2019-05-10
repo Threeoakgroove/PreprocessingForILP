@@ -14,5 +14,6 @@ tmHead = 'transMode'
 startDateHead = 'startDate'
 endDateHead = 'endDate'
 distHead = 'distance'
+speedHead = 'speed'
 
-segmentHeader = [tmHead, startDateHead, endDateHead, distHead]
+segmentHeader = [tmHead, startDateHead, endDateHead, distHead, speedHead]

@@ -24,8 +24,3 @@ class DateService:
         difference = abs((endDate-startDate).total_seconds())
 
         return difference
-
-    def getDifInSecOld(self, baseTime, currentTime):
-        difference = abs((currentTime-baseTime).total_seconds())
-
-        return difference

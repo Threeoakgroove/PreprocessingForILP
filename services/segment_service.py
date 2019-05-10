@@ -69,8 +69,15 @@ class SegmentService:
                     df, index - 1, index)
             else:
                 lastDate = self.getDate(df, index - 1)
+                totalTime = self.dateService.getDifInSec(startDate, lastDate)
+                segmentSpeed = self.getSpeed(segmentsDistance, totalTime)
+
                 segmentDf.loc[len(segmentDf)] = [
-                    segmentLabel, startDate, lastDate, segmentsDistance]
+                    segmentLabel,
+                    startDate,
+                    lastDate,
+                    segmentsDistance,
+                    segmentSpeed]
 
                 startDate = currentDate
                 segmentLabel = df.iat[index, 7]
@@ -83,6 +90,14 @@ class SegmentService:
         return self.featureService.distanceInMeter(
             df.iat[index1, 0], df.iat[index1, 1],
             df.iat[index2, 0], df.iat[index2, 1])
+
+    def getSpeed(self, distance, time):
+        speed = 0
+
+        if time > 0:
+            speed = distance / time
+
+        return speed
 
     def getDate(self, df, index):
         return self.dateService.getDateTimeObjectDash(
