@@ -17,10 +17,12 @@ class PlottService:
     def generatePlotts(self):
         segmentFolders = self.dataService.getFileNamesInPath(
             config.segmentOutputPath)
+        dataFrame = pd.DataFrame()
 
         for folder in segmentFolders:
-            dataFrame = self.goThroughFilesInFolder(folder)
-            self.showPlott(dataFrame)
+            dataFrame = dataFrame.append(self.goThroughFilesInFolder(folder))
+            print(len(dataFrame))
+        self.showPlott(dataFrame)
 
     def goThroughFilesInFolder(self, folder):
         pathToFolder = join(config.segmentOutputPath, folder)
@@ -36,8 +38,8 @@ class PlottService:
         return dataFrame
 
     def showPlott(self, dataFrame):
-        # dataBus = dataFrame.loc[dataFrame[config.tmHead] == 'bus']
-        # dataBus[[config.speedHead]].plot(kind='hist', rwidth=0.8)
         dataWalk = dataFrame.loc[dataFrame[config.tmHead] == 'walk']
-        dataWalk[[config.speedHead]].plot(kind='hist', rwidth=0.8)
+        dataWalk[[config.speedHead]].plot(kind='hist', bins=30)
+
+        plt.title("walkspeed frequencies")
         plt.show()
