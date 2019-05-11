@@ -4,6 +4,7 @@ logfileName = 'logfile.log'
 labelOutputPath = join('data', 'output', 'labeled')
 segmentOutputPath = join('data', 'output', 'segmented')
 pathTestData = join('data', 'testdata')
+# pathTestData = join('data', 'Data')
 
 dashedDateFormat = "%Y-%m-%d %H:%M:%S"
 slashedDateFormat = "%Y/%m/%d %H:%M:%S"
@@ -18,9 +19,11 @@ speedHead = 'speed'
 
 segmentHeader = [tmHead, startDateHead, endDateHead, distHead, speedHead]
 
+labelHead = 'label'
+dateHead = 'date'
 longHead = 'long'
 latHead = 'lat'
-dateHead = 'date'
-labelHead = 'label'
 
-labelHeader = [longHead, latHead, dateHead, labelHead]
+labelHeader = [labelHead, dateHead, longHead, latHead]
+
+gpsTimeHead = 'Datetime'

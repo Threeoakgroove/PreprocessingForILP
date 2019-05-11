@@ -1,44 +1,62 @@
+import pandas as pd
+import numpy as np
+
 from os.path import join
 
 import config
 
 from services.user_service import UserService
+from services.data_service import DataService
 from services.date_service import DateService
 
 
 class LabelService:
 
-    # TODO: this is spaghetti code
     def __init__(self):
         self.userService = UserService(config.pathTestData)
+        self.dataService = DataService()
 
+    # TODO outsource blocks into function to improve readability
     def generateLabeledGpsPoints(self):
         userNames = self.userService.getUserFolderNames()
         labelFileUserNames = self.userService.getLabelUserNames(
             userNames)
 
         for userName in labelFileUserNames:
-            self.generateLabelFiles(userName)
+            currentPath = join(config.pathTestData, userName)
+            startColumn = 'Start Time'
+            endColumn = 'End Time'
+            timeColumn = config.gpsTimeHead
 
-    def generateLabelFiles(self, userName):
-        currentPath = join(config.pathTestData, userName)
-        labels = self.userService.getListOfLabels(currentPath)
+            # Get all Labels as a DataFrame
+            labelsDf = self.dataService.getLabelDf(
+                join(currentPath, 'labels.txt'))
+            labelsDf[startColumn] = self.dataService.ensureDateType(
+                startColumn, labelsDf)
+            labelsDf[endColumn] = self.dataService.ensureDateType(
+                endColumn, labelsDf)
 
-        for label in labels:
-            self.checkAllGpsFilesForLabel(label, userName)
+            # Get a DataFrame containing all GpsPoints
+            gpsPointFiles = self.userService.getGpsPointFileNames(currentPath)
+            gpsPointsDf = self.dataService.getGpsPointsDf(
+                join(currentPath, 'Trajectory'), gpsPointFiles)
 
-    def checkAllGpsFilesForLabel(self, label, userName):
-        currentPath = join(config.pathTestData, userName)
-        gpsPointFiles = self.userService.getGpsPointFiles(currentPath)
+            # Go through labels,
+            # for each label generate a subframe of its gps points
+            # add labelname to each point
+            for index, row in labelsDf.iterrows():
+                currentLabel = row['Transportation Mode']
+                mask = ((gpsPointsDf[config.gpsTimeHead] > row[startColumn]) &
+                        (gpsPointsDf[config.gpsTimeHead] <= row[endColumn]))
+                gpsPointsDf.loc[mask, config.labelHead] = currentLabel
+            gpsPointsDf.dropna(how='any', inplace=True)
 
-        for gpsPointFile in gpsPointFiles:
-            dateService = DateService()
-
-            if(dateService.isInRange(gpsPointFile.startTime,
-                                     gpsPointFile.endTime,
-                                     label.startDateTime) or
-               dateService.isInRange(gpsPointFile.startTime,
-                                     gpsPointFile.endTime,
-                                     label.endDateTime)):
-                self.userService.appendLabelToPointsInFile(
-                    label, userName, gpsPointFile)
+            # Print to File
+            outputPath = join(config.labelOutputPath, userName)
+            self.dataService.ensureFolderExists(outputPath)
+            gpsPointsDf.index = np.arange(0, len(gpsPointsDf))
+            gpsPointsDf.to_csv(join(outputPath,
+                                    'labeled.csv'),
+                               sep='\t',
+                               encoding='utf-8',
+                               index=True)

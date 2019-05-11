@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 from os.path import join
@@ -15,14 +16,32 @@ class PlottService:
         self.dataService = DataService()
 
     def generatePlotts(self):
-        segmentFolders = self.dataService.getFileNamesInPath(
-            config.segmentOutputPath)
-        dataFrame = pd.DataFrame()
+        # x und y werte plus Farbe und Darstellung - = strich, o = dots
+        plt.plot([1, 2, 3, 4], [1, 4, 9, 2], 'g-')
+        # bestimmt die achsen länge
+        plt.axis([0, 6, 0, 20])
+        plt.ylabel('some numbers')
+        plt.show()
 
-        for folder in segmentFolders:
-            dataFrame = dataFrame.append(self.goThroughFilesInFolder(folder))
-            print(len(dataFrame))
-        self.showPlott(dataFrame)
+        # data = {'a': np.arange(50),
+        #         'c': np.random.randint(0, 255, 50),
+        #         'd': np.random.randn(50)}
+        # data['b'] = data['a'] + 10 * np.random.randn(50)
+        # data['d'] = np.abs(data['d']) * 100
+
+        # plt.scatter('a', 'b', c='c', s='d', data=data)
+        # plt.xlabel('entry a')
+        # plt.ylabel('entry b')
+        # plt.show()
+
+        # segmentFolders = self.dataService.getFileNamesInPath(
+        #     config.segmentOutputPath)
+        # dataFrame = pd.DataFrame()
+
+        # for folder in segmentFolders:
+        #     dataFrame = dataFrame.append(self.goThroughFilesInFolder(folder))
+        #     print(len(dataFrame))
+        # self.showPlott(dataFrame)
 
     def goThroughFilesInFolder(self, folder):
         pathToFolder = join(config.segmentOutputPath, folder)

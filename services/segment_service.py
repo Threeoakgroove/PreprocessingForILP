@@ -29,15 +29,16 @@ class SegmentService:
         userFolderNames = self.getUserFolderNames()
 
         for userName in userFolderNames:
+            logging.info('Making segments for user: ' + userName)
             userPath = join(config.segmentOutputPath, userName)
             self.dataService.ensureFolderExists(userPath)
-            userInputPath = join(config.labelOutputPath, userName)
+            labeledDataPath = join(config.labelOutputPath, userName)
             fileNames = self.getLabeledGpsPointFileNames(
-                userInputPath)
+                labeledDataPath)
 
             for fileName in fileNames:
-                filePath = join(userInputPath, fileName)
-                segmentDf = self.generateSegmentsForFile(filePath)
+                labelFilePath = join(labeledDataPath, fileName)
+                segmentDf = self.generateSegmentsForFile(labelFilePath)
                 self.printDataFrame(segmentDf, userPath, fileName)
 
     def printDataFrame(self, df, userPath, fileName):
@@ -53,25 +54,26 @@ class SegmentService:
 
     def generateSegmentsForFile(self, pathToFile):
         segmentDf = pd.DataFrame(columns=config.segmentHeader)
-        df = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
+        labeledDf = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
+
         startDate = None
         lastDate = startDate
         segmentsDistance = 0
         segmentLabel = None
 
-        for index, row in df.iterrows():
-            currentDate = self.getDate(df, index)
+        for index, row in labeledDf.iterrows():
+            currentDate = self.getDate(labeledDf, index)
 
             if index == 0:
                 startDate = currentDate
-                segmentLabel = df.iloc[index][config.labelHead]
+                segmentLabel = labeledDf.iloc[index][config.labelHead]
 
             elif self.belongsToSegment(startDate, currentDate):
                 segmentsDistance += self.getDistanceBetween(
-                    df, index - 1, index)
+                    labeledDf, index - 1, index)
 
             else:
-                lastDate = self.getDate(df, index - 1)
+                lastDate = self.getDate(labeledDf, index - 1)
                 totalTime = self.dateService.getDifInSec(startDate, lastDate)
                 segmentSpeed = self.getSpeed(segmentsDistance, totalTime)
 
@@ -83,9 +85,9 @@ class SegmentService:
                     segmentSpeed]
 
                 startDate = currentDate
-                segmentLabel = df.iloc[index][config.labelHead]
+                segmentLabel = labeledDf.iloc[index][config.labelHead]
                 segmentsDistance = self.getDistanceBetween(
-                    df, index - 1, index)
+                    labeledDf, index - 1, index)
 
         return segmentDf
 
@@ -104,7 +106,7 @@ class SegmentService:
 
     def getDate(self, df, index):
         return self.dateService.getDateTimeObjectDash(
-            df.iloc[index][config.dateHead])
+            df.iloc[index][config.gpsTimeHead])
 
     def belongsToSegment(self, startDate, endDate):
         difInSec = self.dateService.getDifInSec(startDate, endDate)
