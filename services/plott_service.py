@@ -20,7 +20,6 @@ class PlottService:
 
         for folder in segmentFolders:
             dataFrame = self.goThroughFilesInFolder(folder)
-            print(dataFrame)
             self.showPlott(dataFrame)
 
     def goThroughFilesInFolder(self, folder):
@@ -37,8 +36,8 @@ class PlottService:
         return dataFrame
 
     def showPlott(self, dataFrame):
-        dataBus = dataFrame.loc[dataFrame[config.tmHead] == 'bus']
+        # dataBus = dataFrame.loc[dataFrame[config.tmHead] == 'bus']
+        # dataBus[[config.speedHead]].plot(kind='hist', rwidth=0.8)
         dataWalk = dataFrame.loc[dataFrame[config.tmHead] == 'walk']
-        dataBus[[config.distHead]].plot(kind='hist', rwidth=0.8)
-        dataWalk[[config.distHead]].plot(kind='hist', rwidth=0.8)
+        dataWalk[[config.speedHead]].plot(kind='hist', rwidth=0.8)
         plt.show()
