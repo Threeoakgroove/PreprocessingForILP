@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import numpy as np
 
@@ -22,7 +23,9 @@ class LabelService:
         labelFileUserNames = self.userService.getLabelUserNames(
             userNames)
 
-        for userName in labelFileUserNames:
+        for index, userName in enumerate(labelFileUserNames):
+            logging.info('Labeling data of user ' + str(index) +
+                         ' of ' + str(len(labelFileUserNames)))
             currentPath = join(config.pathTestData, userName)
             startColumn = 'Start Time'
             endColumn = 'End Time'
