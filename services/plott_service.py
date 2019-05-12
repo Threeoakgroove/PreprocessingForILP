@@ -17,11 +17,11 @@ class PlottService:
 
     def generatePlotts(self):
         # x und y werte plus Farbe und Darstellung - = strich, o = dots
-        plt.plot([1, 2, 3, 4], [1, 4, 9, 2], 'g-')
+        # plt.plot([1, 2, 3, 4], [1, 4, 9, 2], 'g-')
         # bestimmt die achsen länge
-        plt.axis([0, 6, 0, 20])
-        plt.ylabel('some numbers')
-        plt.show()
+        # plt.axis([0, 6, 0, 20])
+        # plt.ylabel('some numbers')
+        # plt.show()
 
         # data = {'a': np.arange(50),
         #         'c': np.random.randint(0, 255, 50),
@@ -34,14 +34,15 @@ class PlottService:
         # plt.ylabel('entry b')
         # plt.show()
 
-        # segmentFolders = self.dataService.getFileNamesInPath(
-        #     config.segmentOutputPath)
-        # dataFrame = pd.DataFrame()
+        segmentFolders = self.dataService.getFileNamesInPath(
+            config.segmentOutputPath)
+        dataFrame = pd.DataFrame()
 
-        # for folder in segmentFolders:
-        #     dataFrame = dataFrame.append(self.goThroughFilesInFolder(folder))
-        #     print(len(dataFrame))
-        # self.showPlott(dataFrame)
+        for folder in segmentFolders:
+            dataFrame = dataFrame.append(
+                self.goThroughFilesInFolder(folder))
+
+        self.showPlott(dataFrame)
 
     def goThroughFilesInFolder(self, folder):
         pathToFolder = join(config.segmentOutputPath, folder)
@@ -56,9 +57,19 @@ class PlottService:
 
         return dataFrame
 
-    def showPlott(self, dataFrame):
-        dataWalk = dataFrame.loc[dataFrame[config.tmHead] == 'walk']
-        dataWalk[[config.speedHead]].plot(kind='hist', bins=30)
+    def showPlott(self, df):
+        walkDf = df.loc[df[config.tmHead] == 'bike']
+        uniqueSpeeds = np.array(walkDf.speed.unique())
+        uniqueSpeeds.sort()
+
+        print(uniqueSpeeds)
+
+        for speed in uniqueSpeeds:
+            occurences = walkDf['speed'].value_counts()
+
+        plt.plot(uniqueSpeeds, occurences)
 
         plt.title("walkspeed frequencies")
+        plt.xlabel('speed')
+        plt.ylabel('occurences')
         plt.show()
