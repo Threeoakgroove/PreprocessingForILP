@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 
-from datetime import timedelta
+from datetime import datetime
 from os import listdir
 from os.path import join, exists, split
 from shutil import rmtree
@@ -39,7 +39,29 @@ class SegmentService:
             for fileName in fileNames:
                 labelFilePath = join(labeledDataPath, fileName)
                 segmentDf = self.generateSegmentsForFile(labelFilePath)
-                self.printDataFrame(segmentDf, userPath, fileName)
+                self.makeTrajectories(segmentDf, userPath)
+                # self.printDataFrame(segmentDf, userPath, fileName)
+
+    def makeTrajectories(self, df, userPath):
+        trajectoryDataFrames = []
+        timeFormat = '%Y-%m-%d %H:%M:%S'
+        startIndex = 0
+        lastTime = datetime.now()
+
+        for index, row in df.iterrows():
+            diff = row['startDate'] - lastTime
+            if(index == 0):
+                lastTime = row['endDate']
+            elif((diff.seconds) > 20 * 60):
+                self.printDataFrame(
+                    df[(df.index >= startIndex) & (df.index < index)],
+                    userPath,
+                    (str(index) + '.csv'))
+                startIndex = index
+
+            lastTime = row['endDate']
+
+        return trajectoryDataFrames
 
     def printDataFrame(self, df, userPath, fileName):
         df.to_csv(join(

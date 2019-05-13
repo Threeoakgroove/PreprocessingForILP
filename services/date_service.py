@@ -24,3 +24,10 @@ class DateService:
         difference = abs((endDate-startDate).total_seconds())
 
         return difference
+
+    def getDifInMin(self, startDate, endDate):
+        difference = abs((endDate-startDate).total_minutes())
+
+        difference /= 60
+
+        return difference

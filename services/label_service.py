@@ -25,7 +25,7 @@ class LabelService:
 
         for index, userName in enumerate(labelFileUserNames):
             logging.info('Labeling data of user ' + str(index) +
-                         ' of ' + str(len(labelFileUserNames)))
+                         ' of ' + str(len(labelFileUserNames) - 1))
             currentPath = join(config.pathTestData, userName)
             startColumn = 'Start Time'
             endColumn = 'End Time'
@@ -40,9 +40,10 @@ class LabelService:
                 endColumn, labelsDf)
 
             # Get a DataFrame containing all GpsPoints
-            gpsPointFiles = self.userService.getGpsPointFileNames(currentPath)
+            gpsPointFileNames = self.userService.getGpsPointFileNames(
+                currentPath)
             gpsPointsDf = self.dataService.getGpsPointsDf(
-                join(currentPath, 'Trajectory'), gpsPointFiles)
+                join(currentPath, 'Trajectory'), gpsPointFileNames)
 
             # Go through labels,
             # for each label generate a subframe of its gps points

@@ -3,8 +3,8 @@ from os.path import join
 logfileName = 'logfile.log'
 labelOutputPath = join('data', 'output', 'labeled')
 segmentOutputPath = join('data', 'output', 'segmented')
-# pathTestData = join('data', 'testdata')
-pathTestData = join('data', 'Data')
+pathTestData = join('data', 'testdata')
+# pathTestData = join('data', 'Data')
 
 dashedDateFormat = "%Y-%m-%d %H:%M:%S"
 slashedDateFormat = "%Y/%m/%d %H:%M:%S"
