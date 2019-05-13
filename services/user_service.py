@@ -34,8 +34,10 @@ class UserService:
 
     def getGpsPointFileNames(self, userPath):
         userTrajectoriesPath = join(userPath, 'Trajectory')
+        fileNames = listdir(userTrajectoriesPath)
+        fileNames.sort()
 
-        return listdir(userTrajectoriesPath)
+        return fileNames
 
     def getLabelUserNames(self, users):
         filteredUsers = []

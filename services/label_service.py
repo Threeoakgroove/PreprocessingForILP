@@ -24,8 +24,8 @@ class LabelService:
             userNames)
 
         for index, userName in enumerate(labelFileUserNames):
-            logging.info('Labeling data of user ' + str(index) +
-                         ' of ' + str(len(labelFileUserNames) - 1))
+            logging.info('Labeling data of user ' + str(index + 1) +
+                         ' of ' + str(len(labelFileUserNames)))
             currentPath = join(config.pathTestData, userName)
             startColumn = 'Start Time'
             endColumn = 'End Time'
