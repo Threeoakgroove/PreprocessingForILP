@@ -34,40 +34,41 @@ class PlottService:
         # plt.ylabel('entry b')
         # plt.show()
 
-        segmentFolders = self.dataService.getFileNamesInPath(
+        userNames = self.dataService.getFileNamesInPath(
             config.segmentOutputPath)
-        dataFrame = pd.DataFrame()
 
-        for folder in segmentFolders:
-            dataFrame = dataFrame.append(
-                self.goThroughFilesInFolder(folder))
+        for userName in userNames:
+            occurences = self.goThroughFilesInFolder(userName)
 
-        self.showPlott(dataFrame)
+        print(occurences[0.750])
 
-    def goThroughFilesInFolder(self, folder):
-        pathToFolder = join(config.segmentOutputPath, folder)
+        self.showPlott(occurences)
+
+    def goThroughFilesInFolder(self, userName):
+        pathToUser = join(config.segmentOutputPath, userName)
         segmentFiles = self.dataService.getFileNamesInPath(
-            pathToFolder)
-        dataFrame = pd.DataFrame()
+            pathToUser)
 
         for segmentFile in segmentFiles:
-            pathToFile = join(pathToFolder, segmentFile)
-            dataFrame = dataFrame.append(pd.read_csv(
-                pathToFile, sep='\t', index_col=0, header=0))
+            pathToFile = join(pathToUser, segmentFile)
+            df = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
+            # calculate the speeds here
+            uniqueSpeeds = np.array(df.speed.unique())
+            uniqueSpeeds.sort()
 
-        return dataFrame
+            for speed in uniqueSpeeds:
+                occurences = df['speed'].value_counts(sort=False)
+                occurences.sort_index()
 
-    def showPlott(self, df):
-        walkDf = df.loc[df[config.tmHead] == 'bike']
-        uniqueSpeeds = np.array(walkDf.speed.unique())
-        uniqueSpeeds.sort()
+        return occurences
 
-        print(uniqueSpeeds)
+    def showPlott(self, occurences):
+        print(occurences)
 
-        for speed in uniqueSpeeds:
-            occurences = walkDf['speed'].value_counts()
-
-        plt.plot(uniqueSpeeds, occurences)
+        # TODO: Where no value is given it should be Zero
+        # TODO: Currently only takes one user file
+        plt.plot(occurences.index.sort_values(),
+                 occurences.sort_index().values)
 
         plt.title("walkspeed frequencies")
         plt.xlabel('speed')
