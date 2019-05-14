@@ -16,31 +16,11 @@ class PlottService:
         self.dataService = DataService()
 
     def generatePlotts(self):
-        # x und y werte plus Farbe und Darstellung - = strich, o = dots
-        # plt.plot([1, 2, 3, 4], [1, 4, 9, 2], 'g-')
-        # bestimmt die achsen länge
-        # plt.axis([0, 6, 0, 20])
-        # plt.ylabel('some numbers')
-        # plt.show()
-
-        # data = {'a': np.arange(50),
-        #         'c': np.random.randint(0, 255, 50),
-        #         'd': np.random.randn(50)}
-        # data['b'] = data['a'] + 10 * np.random.randn(50)
-        # data['d'] = np.abs(data['d']) * 100
-
-        # plt.scatter('a', 'b', c='c', s='d', data=data)
-        # plt.xlabel('entry a')
-        # plt.ylabel('entry b')
-        # plt.show()
-
         userNames = self.dataService.getFileNamesInPath(
             config.segmentOutputPath)
 
         for userName in userNames:
             occurences = self.goThroughFilesInFolder(userName)
-
-        print(occurences[0.750])
 
         self.showPlott(occurences)
 
@@ -53,14 +33,26 @@ class PlottService:
             pathToFile = join(pathToUser, segmentFile)
             df = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
             # calculate the speeds here
-            uniqueSpeeds = np.array(df.speed.unique())
-            uniqueSpeeds.sort()
 
-            for speed in uniqueSpeeds:
-                occurences = df['speed'].value_counts(sort=False)
-                occurences.sort_index()
+            # speedDf = df['speed'].value_counts(sort=False)
+            # occurences = np.array(speedDf.index, speedDf.values)
+            # occurences.sort_index()
+            # print(occurences)
+            # print(occurences.shape)
 
-        return occurences
+            # get all unique values
+            # group dataframe for each value: df.groupby('a').count()
+            # add up to an hashmap like structure
+            result = df.groupby('speed').count()
+            result2 = df['speed'].value_counts().reset_index()
+            result3 = df.groupby('speed').size()
+            print(result)
+            print("=======")
+            print(result2)
+            print("=======")
+            print(result3)
+            print("=======")
+            print("=======")
 
     def showPlott(self, occurences):
         print(occurences)
