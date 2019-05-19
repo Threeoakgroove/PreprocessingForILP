@@ -29,6 +29,8 @@ class PlottService:
         segmentFiles = self.dataService.getFileNamesInPath(
             pathToUser)
 
+        speedMap = dict()
+
         for segmentFile in segmentFiles:
             pathToFile = join(pathToUser, segmentFile)
             df = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
@@ -43,15 +45,16 @@ class PlottService:
             # get all unique values
             # group dataframe for each value: df.groupby('a').count()
             # add up to an hashmap like structure
-            result = df.groupby('speed').count()
-            result2 = df['speed'].value_counts().reset_index()
+
             result3 = df.groupby('speed').size()
-            print(result)
-            print("=======")
-            print(result2)
-            print("=======")
-            print(result3)
-            print("=======")
+            for item in result3.items():
+                if item[0] not in speedMap:
+                    speedMap[item[0]] = item[1]
+                else:
+                    speedMap[item[0]] = speedMap[item[0]] + item[1]
+                    # speedMap[item[0]] = speedMap[item[0]]
+                # else sum up value of item[1] with value in speedMap
+            print(speedMap)
             print("=======")
 
     def showPlott(self, occurences):

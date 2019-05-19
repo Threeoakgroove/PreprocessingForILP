@@ -28,6 +28,8 @@ class SegmentService:
     def generateSegments(self):
         userFolderNames = self.getUserFolderNames()
 
+        walkSegmentsDf = pd.DataFrame()
+
         for userName in userFolderNames:
             logging.info('Making segments for user: ' + userName)
             userPath = join(config.segmentOutputPath, userName)
@@ -106,6 +108,17 @@ class SegmentService:
                     lastDate,
                     segmentsDistance,
                     segmentSpeed]
+
+                # add to labelcollector
+                labelCollectorPath = join(
+                    config.segmentOutputPath,
+                    str('all_' + segmentLabel + '.csv')
+                )
+                csvRow = (str(startDate) + ',' +
+                          str(lastDate) + ',' +
+                          str(segmentSpeed) + '\n')
+                with open(labelCollectorPath, 'a') as fd:
+                    fd.write(csvRow)
 
                 startDate = currentDate
                 segmentLabel = labeledDf.iloc[index][config.labelHead]
