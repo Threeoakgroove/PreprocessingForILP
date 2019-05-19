@@ -35,8 +35,9 @@ class SegmentService:
 
         walkSegmentsDf = pd.DataFrame()
 
-        for userName in userFolderNames:
-            logging.info('Making segments for user: ' + userName)
+        for index, userName in enumerate(userFolderNames):
+            logging.info('Segmenting data of user ' + str(index + 1) +
+                         ' of ' + str(len(userFolderNames)))
             userPath = join(config.segmentOutputPath, userName)
             self.dataService.ensureFolderExists(userPath)
             labeledDataPath = join(config.labelOutputPath, userName)

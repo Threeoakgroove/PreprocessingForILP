@@ -62,4 +62,4 @@ class FeatureService():
         >>> round_of_rating(4.1)
         4.0"""
 
-        return round(number * 8) / 8
+        return round(number * 20) / 20
