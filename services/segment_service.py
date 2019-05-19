@@ -96,35 +96,43 @@ class SegmentService:
 
             if index == 0:
                 startDate = currentDate
-                segmentLabel = labeledDf.iloc[index][config.labelHead]
 
-            elif self.belongsToSegment(startDate, currentDate):
-                segmentsDistance += self.getDistanceBetween(
+            elif index == 1:
+                currentDate = self.getDate(labeledDf, index)
+                segmentLabel = labeledDf.iloc[index][config.labelHead]
+                currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
 
             else:
-                lastDate = self.getDate(labeledDf, index - 1)
-                totalTime = self.dateService.getDifInSec(startDate, lastDate)
-                segmentSpeed = self.featureService.getSpeed(
-                    segmentsDistance, totalTime)
-
-                segmentDf.loc[len(segmentDf)] = [
-                    segmentLabel,
-                    startDate,
-                    lastDate,
-                    segmentsDistance,
-                    segmentSpeed]
-
-                self.addSegmentToCollection(
-                    segmentLabel,
-                    startDate,
-                    lastDate,
-                    segmentSpeed)
-
-                startDate = currentDate
-                segmentLabel = labeledDf.iloc[index][config.labelHead]
-                segmentsDistance = self.getDistanceBetween(
+                currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
+
+                if segmentsDistance + currentDistance < 100:
+                    segmentsDistance += currentDistance
+
+                else:
+                    lastDate = self.getDate(labeledDf, index - 1)
+                    totalTime = self.dateService.getDifInSec(
+                        startDate, lastDate)
+                    segmentSpeed = self.featureService.getSpeed(
+                        segmentsDistance, totalTime)
+
+                    segmentDf.loc[len(segmentDf)] = [
+                        segmentLabel,
+                        startDate,
+                        lastDate,
+                        segmentsDistance,
+                        segmentSpeed]
+
+                    self.addSegmentToCollection(
+                        segmentLabel,
+                        startDate,
+                        lastDate,
+                        segmentSpeed)
+
+                    startDate = lastDate
+                    segmentLabel = labeledDf.iloc[index][config.labelHead]
+                    segmentsDistance = currentDistance
 
         return segmentDf
 

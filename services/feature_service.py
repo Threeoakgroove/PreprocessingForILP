@@ -44,10 +44,10 @@ class FeatureService():
 
         return difference
 
-    def getSpeed(self, totalTime, totalDistance):
+    def getSpeed(self, totalDistance, totalTime):
         speed = 0
         if(totalTime > 0):
-            speed = totalDistance / totalTime
+            speed = float(totalDistance) / float(totalTime)
 
         return self.roundOfRating(speed)
 
@@ -62,4 +62,4 @@ class FeatureService():
         >>> round_of_rating(4.1)
         4.0"""
 
-        return round(number * 20) / 20
+        return round(number * 5) / 5
