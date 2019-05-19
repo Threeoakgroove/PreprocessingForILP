@@ -1,3 +1,4 @@
+import csv
 import logging
 import pandas as pd
 
@@ -113,16 +114,11 @@ class SegmentService:
                     segmentsDistance,
                     segmentSpeed]
 
-                # add to labelcollector
-                labelCollectorPath = join(
-                    self.collectedSegmentsPath,
-                    str('all_' + segmentLabel + '.csv')
-                )
-                csvRow = (str(startDate) + ',' +
-                          str(lastDate) + ',' +
-                          str(segmentSpeed) + '\n')
-                with open(labelCollectorPath, 'a') as fd:
-                    fd.write(csvRow)
+                self.addSegmentToCollection(
+                    segmentLabel,
+                    startDate,
+                    lastDate,
+                    segmentSpeed)
 
                 startDate = currentDate
                 segmentLabel = labeledDf.iloc[index][config.labelHead]
@@ -130,6 +126,22 @@ class SegmentService:
                     labeledDf, index - 1, index)
 
         return segmentDf
+
+    def addSegmentToCollection(self, segmentLabel, startDate,
+                               endDate, segmentSpeed):
+        labelCollectorPath = join(
+            self.collectedSegmentsPath,
+            str('all_' + segmentLabel + '.csv')
+        )
+
+        with open(labelCollectorPath, 'a') as csvfile:
+            filewriter = csv.writer(csvfile, delimiter=',',
+                                    quotechar='|',
+                                    quoting=csv.QUOTE_MINIMAL)
+            filewriter.writerow([str(startDate),
+                                 str(endDate),
+                                 segmentSpeed
+                                 ])
 
     def getDistanceBetween(self, df, index1, index2):
         return self.featureService.distanceInMeter(
