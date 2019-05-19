@@ -16,54 +16,24 @@ class PlottService:
         self.dataService = DataService()
 
     def generatePlotts(self):
-        userNames = self.dataService.getFileNamesInPath(
-            config.segmentOutputPath)
+        relevantLabels = ['walk', 'bike']
 
-        for userName in userNames:
-            occurences = self.goThroughFilesInFolder(userName)
+        for label in relevantLabels:
+            walkData = self.getDataForLabel(label)
+            self.showPlott(walkData)
 
-        self.showPlott(occurences)
+    def getDataForLabel(self, labelName):
+        path = join(config.segmentOutputPath, 'collected',
+                    str('all_' + labelName + '.csv'))
 
-    def goThroughFilesInFolder(self, userName):
-        pathToUser = join(config.segmentOutputPath, userName)
-        segmentFiles = self.dataService.getFileNamesInPath(
-            pathToUser)
+        df = pd.read_csv(path, sep=',', index_col=None, names=[
+                         'startDate', 'endDate', 'speed'], header=None)
+        return df.groupby('speed').size()
 
-        speedMap = dict()
-
-        for segmentFile in segmentFiles:
-            pathToFile = join(pathToUser, segmentFile)
-            df = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
-            # calculate the speeds here
-
-            # speedDf = df['speed'].value_counts(sort=False)
-            # occurences = np.array(speedDf.index, speedDf.values)
-            # occurences.sort_index()
-            # print(occurences)
-            # print(occurences.shape)
-
-            # get all unique values
-            # group dataframe for each value: df.groupby('a').count()
-            # add up to an hashmap like structure
-
-            result3 = df.groupby('speed').size()
-            for item in result3.items():
-                if item[0] not in speedMap:
-                    speedMap[item[0]] = item[1]
-                else:
-                    speedMap[item[0]] = speedMap[item[0]] + item[1]
-                    # speedMap[item[0]] = speedMap[item[0]]
-                # else sum up value of item[1] with value in speedMap
-            print(speedMap)
-            print("=======")
-
-    def showPlott(self, occurences):
-        print(occurences)
-
+    def showPlott(self, df):
         # TODO: Where no value is given it should be Zero
-        # TODO: Currently only takes one user file
-        plt.plot(occurences.index.sort_values(),
-                 occurences.sort_index().values)
+        plt.plot(df.index.sort_values(),
+                 df.sort_index().values)
 
         plt.title("walkspeed frequencies")
         plt.xlabel('speed')
