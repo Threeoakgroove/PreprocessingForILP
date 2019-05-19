@@ -25,6 +25,10 @@ class SegmentService:
         self.dataService = DataService()
         self.featureService = FeatureService()
 
+        self.collectedSegmentsPath = join(
+            config.segmentOutputPath, 'collected')
+        self.dataService.ensureFolderExists(self.collectedSegmentsPath)
+
     def generateSegments(self):
         userFolderNames = self.getUserFolderNames()
 
@@ -111,7 +115,7 @@ class SegmentService:
 
                 # add to labelcollector
                 labelCollectorPath = join(
-                    config.segmentOutputPath,
+                    self.collectedSegmentsPath,
                     str('all_' + segmentLabel + '.csv')
                 )
                 csvRow = (str(startDate) + ',' +
