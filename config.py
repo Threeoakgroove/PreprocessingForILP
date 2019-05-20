@@ -11,6 +11,9 @@ slashedDateFormat = "%Y/%m/%d %H:%M:%S"
 
 segmentDuration = 90
 
+rounding = 5
+maxEvalSpeed = 25 * rounding
+
 tmHead = 'transMode'
 startDateHead = 'startDate'
 endDateHead = 'endDate'

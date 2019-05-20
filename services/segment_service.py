@@ -1,6 +1,7 @@
 import csv
 import logging
 import pandas as pd
+import numpy as np
 
 from datetime import datetime
 from os import listdir
@@ -30,10 +31,14 @@ class SegmentService:
             config.segmentOutputPath, 'collected')
         self.dataService.ensureFolderExists(self.collectedSegmentsPath)
 
+        self.bikeArray = np.ndarray((config.maxEvalSpeed))
+        self.busArray = np.ndarray((config.maxEvalSpeed))
+        self.carArray = np.ndarray((config.maxEvalSpeed))
+        self.walkArray = np.ndarray((config.maxEvalSpeed))
+        self.initArrays()
+
     def generateSegments(self):
         userFolderNames = self.getUserFolderNames()
-
-        walkSegmentsDf = pd.DataFrame()
 
         for index, userName in enumerate(userFolderNames):
             logging.info('Segmenting data of user ' + str(index + 1) +
@@ -48,7 +53,16 @@ class SegmentService:
                 labelFilePath = join(labeledDataPath, fileName)
                 segmentDf = self.generateSegmentsForFile(labelFilePath)
                 self.makeTrajectories(segmentDf, userPath)
-                # self.printDataFrame(segmentDf, userPath, fileName)
+
+        # TODO Print to file
+        print("TEST")
+
+    def initArrays(self):
+        for x in range(0, self.walkArray.shape[0]):
+            self.bikeArray[x] = 0
+            self.busArray[x] = 0
+            self.carArray[x] = 0
+            self.walkArray[x] = 0
 
     def makeTrajectories(self, df, userPath):
         trajectoryDataFrames = []
@@ -124,11 +138,7 @@ class SegmentService:
                         segmentsDistance,
                         segmentSpeed]
 
-                    self.addSegmentToCollection(
-                        segmentLabel,
-                        startDate,
-                        lastDate,
-                        segmentSpeed)
+                    self.countSegment(segmentLabel, segmentSpeed)
 
                     startDate = lastDate
                     segmentLabel = labeledDf.iloc[index][config.labelHead]
@@ -136,21 +146,17 @@ class SegmentService:
 
         return segmentDf
 
-    def addSegmentToCollection(self, segmentLabel, startDate,
-                               endDate, segmentSpeed):
-        labelCollectorPath = join(
-            self.collectedSegmentsPath,
-            str('all_' + segmentLabel + '.csv')
-        )
-
-        with open(labelCollectorPath, 'a') as csvfile:
-            filewriter = csv.writer(csvfile, delimiter=',',
-                                    quotechar='|',
-                                    quoting=csv.QUOTE_MINIMAL)
-            filewriter.writerow([str(startDate),
-                                 str(endDate),
-                                 segmentSpeed
-                                 ])
+    def countSegment(self, segmentLabel, segmentSpeed):
+        index = int(segmentSpeed * config.rounding)
+        if index < config.maxEvalSpeed:
+            if segmentLabel == 'bike':
+                self.bikeArray[index] += 1
+            elif segmentLabel == 'bus':
+                self.busArray[index] += 1
+            elif segmentLabel == 'car':
+                self.carArray[index] += 1
+            elif segmentLabel == 'walk':
+                self.walkArray[index] += 1
 
     def getDistanceBetween(self, df, index1, index2):
         return self.featureService.distanceInMeter(

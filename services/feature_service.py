@@ -1,5 +1,7 @@
 from math import atan2, pi, sin, cos, sqrt
 
+import config
+
 
 class FeatureService():
     'Service that provides functions to calculate features.'
@@ -62,4 +64,4 @@ class FeatureService():
         >>> round_of_rating(4.1)
         4.0"""
 
-        return round(number * 5) / 5
+        return round(number * config.rounding) / config.rounding
