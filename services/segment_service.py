@@ -56,16 +56,15 @@ class SegmentService:
         self.printOccurences()
 
     def printOccurences(self):
-        outputFolder = join('data', 'output')
         header = "occurences"
 
-        np.savetxt(join(outputFolder, 'bike.csv'),
+        np.savetxt(join(self.collectedSegmentsPath, 'bike.csv'),
                    self.bikeArray, fmt="%d", header=header)
-        np.savetxt(join(outputFolder, 'bus.csv'),
+        np.savetxt(join(self.collectedSegmentsPath, 'bus.csv'),
                    self.busArray, fmt="%d", header=header)
-        np.savetxt(join(outputFolder, 'car.csv'),
+        np.savetxt(join(self.collectedSegmentsPath, 'car.csv'),
                    self.carArray, fmt="%d", header=header)
-        np.savetxt(join(outputFolder, 'walk.csv'),
+        np.savetxt(join(self.collectedSegmentsPath, 'walk.csv'),
                    self.walkArray, fmt="%d", header=header)
 
     def initArrays(self):
@@ -76,23 +75,25 @@ class SegmentService:
             self.walkArray[x] = 0
 
     def makeTrajectories(self, df, userPath):
+        timeLimit = 20 * 60
         trajectoryDataFrames = []
         timeFormat = '%Y-%m-%d %H:%M:%S'
         startIndex = 0
-        lastTime = datetime.now()
+        endOfLastPoint = datetime.now()
 
         for index, row in df.iterrows():
-            diff = row['startDate'] - lastTime
-            if(index == 0):
-                lastTime = row['endDate']
-            elif((diff.seconds) > 20 * 60):
+            diff = row['startDate'] - endOfLastPoint
+
+            if(index != 0 and
+               (diff.seconds > timeLimit) or
+               (index == (len(df) - 1))):
                 self.printDataFrame(
                     df[(df.index >= startIndex) & (df.index < index)],
                     userPath,
                     (str(index) + '.csv'))
                 startIndex = index
 
-            lastTime = row['endDate']
+            endOfLastPoint = row['endDate']
 
         return trajectoryDataFrames
 
@@ -108,35 +109,35 @@ class SegmentService:
         return listdir(userPath)
 
     def generateSegmentsForFile(self, pathToFile):
+        timeLimit = 20 * 60  # 20 minutes
         segmentDf = pd.DataFrame(columns=config.segmentHeader)
         labeledDf = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
 
-        startDate = None
-        lastDate = startDate
         segmentsDistance = 0
         segmentLabel = None
+        startDate = None
+        lastDate = startDate
 
         for index, row in labeledDf.iterrows():
             currentDate = self.getDate(labeledDf, index)
 
             if index == 0:
                 startDate = currentDate
+                segmentLabel = labeledDf.iloc[index][config.labelHead]
 
             elif index == 1:
-                currentDate = self.getDate(labeledDf, index)
-                segmentLabel = labeledDf.iloc[index][config.labelHead]
                 currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
 
             else:
                 currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
+                differenceToLast = currentDate - lastDate
 
                 if segmentsDistance + currentDistance < 100:
                     segmentsDistance += currentDistance
-
+                    lastDate = currentDate
                 else:
-                    lastDate = self.getDate(labeledDf, index - 1)
                     totalTime = self.dateService.getDifInSec(
                         startDate, lastDate)
                     segmentSpeed = self.featureService.getSpeed(
@@ -151,9 +152,16 @@ class SegmentService:
 
                     self.countSegment(segmentLabel, segmentSpeed)
 
-                    startDate = lastDate
+                    if differenceToLast.seconds > timeLimit:
+                        startDate = currentDate
+                        segmentsDistance = 0  # to hide untracked movement
+                    else:
+                        startDate = lastDate
+                        segmentsDistance = currentDistance
+
                     segmentLabel = labeledDf.iloc[index][config.labelHead]
-                    segmentsDistance = currentDistance
+
+            lastDate = currentDate
 
         return segmentDf
 
