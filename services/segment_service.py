@@ -53,9 +53,20 @@ class SegmentService:
                 labelFilePath = join(labeledDataPath, fileName)
                 segmentDf = self.generateSegmentsForFile(labelFilePath)
                 self.makeTrajectories(segmentDf, userPath)
+        self.printOccurences()
 
-        # TODO Print to file
-        print("TEST")
+    def printOccurences(self):
+        outputFolder = join('data', 'output')
+        header = "occurences"
+
+        np.savetxt(join(outputFolder, 'bike.csv'),
+                   self.bikeArray, fmt="%d", header=header)
+        np.savetxt(join(outputFolder, 'bus.csv'),
+                   self.busArray, fmt="%d", header=header)
+        np.savetxt(join(outputFolder, 'car.csv'),
+                   self.carArray, fmt="%d", header=header)
+        np.savetxt(join(outputFolder, 'walk.csv'),
+                   self.walkArray, fmt="%d", header=header)
 
     def initArrays(self):
         for x in range(0, self.walkArray.shape[0]):
