@@ -24,16 +24,14 @@ class PlottService:
 
     def getDataForLabel(self, labelName):
         path = join(config.segmentOutputPath, 'collected',
-                    str('all_' + labelName + '.csv'))
+                    str(labelName + '.csv'))
 
-        df = pd.read_csv(path, sep=',', index_col=None, names=[
-                         'startDate', 'endDate', 'speed'], header=None)
-        return df.groupby('speed').size()
+        df = pd.read_csv(path, index_col=None, header=0)
+        return df
 
     def showPlott(self, df):
-        # TODO: Where no value is given it should be Zero
-        plt.plot(df.index.sort_values(),
-                 df.sort_index().values)
+        plt.plot(df.index,
+                 df.values)
 
         plt.title("walkspeed frequencies")
         plt.xlabel('speed')

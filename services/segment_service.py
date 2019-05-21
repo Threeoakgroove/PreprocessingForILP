@@ -109,7 +109,6 @@ class SegmentService:
         return listdir(userPath)
 
     def generateSegmentsForFile(self, pathToFile):
-        timeLimit = 20 * 60  # 20 minutes
         segmentDf = pd.DataFrame(columns=config.segmentHeader)
         labeledDf = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
 
@@ -124,11 +123,9 @@ class SegmentService:
             if index == 0:
                 startDate = currentDate
                 segmentLabel = labeledDf.iloc[index][config.labelHead]
-
             elif index == 1:
                 currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
-
             else:
                 currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
@@ -152,7 +149,7 @@ class SegmentService:
 
                     self.countSegment(segmentLabel, segmentSpeed)
 
-                    if differenceToLast.seconds > timeLimit:
+                    if self.isTrajectoryBreak(differenceToLast):
                         startDate = currentDate
                         segmentsDistance = 0  # to hide untracked movement
                     else:
@@ -164,6 +161,11 @@ class SegmentService:
             lastDate = currentDate
 
         return segmentDf
+
+    def isTrajectoryBreak(self, diff):
+        timeLimit = 20 * 60  # 20 minutes
+
+        return diff.seconds > timeLimit
 
     def countSegment(self, segmentLabel, segmentSpeed):
         index = int(segmentSpeed * config.rounding)
