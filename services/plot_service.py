@@ -10,17 +10,17 @@ import logging
 from services.data_service import DataService
 
 
-class PlottService:
+class PlotService:
 
     def __init__(self):
         self.dataService = DataService()
 
-    def generatePlotts(self):
+    def generatePlots(self):
         relevantLabels = ['walk', 'bike']
 
         for label in relevantLabels:
             walkData = self.getDataForLabel(label)
-            self.showPlott(walkData)
+            self.showPlot(walkData)
 
     def getDataForLabel(self, labelName):
         path = join(config.segmentOutputPath, 'collected',
@@ -29,7 +29,7 @@ class PlottService:
         df = pd.read_csv(path, index_col=None, header=0)
         return df
 
-    def showPlott(self, df):
+    def showPlot(self, df):
         plt.plot(df.index,
                  df.values)
 
