@@ -16,24 +16,29 @@ class PlotService:
         self.dataService = DataService()
 
     def generatePlots(self):
-        relevantLabels = ['walk', 'bike']
+        relevantLabels = ['walk', 'bike', 'bus', 'car']
 
         for label in relevantLabels:
-            walkData = self.getDataForLabel(label)
-            self.showPlot(walkData)
+            array = self.getDataForLabel(label)
+            self.showPlot(array, label)
 
     def getDataForLabel(self, labelName):
         path = join(config.segmentOutputPath, 'collected',
                     str(labelName + '.csv'))
 
-        df = pd.read_csv(path, index_col=None, header=0)
-        return df
+        # array = pd.read_csv(path, index_col=None, header=0)
+        array = np.loadtxt(path)
+        print(array)
+        return array
 
-    def showPlot(self, df):
-        plt.plot(df.index,
-                 df.values)
+    def showPlot(self, array, label):
+        # plt.plot(df.index, df.values)
+        N = len(array)
+        x = range(N)
+        width = 1/1.5
+        plt.bar(x, array, width, color="green")
 
-        plt.title("walkspeed frequencies")
+        plt.title(str(label + " speed frequencies"))
         plt.xlabel('speed')
         plt.ylabel('occurences')
         plt.show()
