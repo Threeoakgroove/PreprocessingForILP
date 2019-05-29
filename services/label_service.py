@@ -17,7 +17,6 @@ class LabelService:
         self.userService = UserService(config.pathTestData)
         self.dataService = DataService()
 
-    # TODO outsource blocks into function to improve readability
     def generateLabeledGpsPoints(self):
         userNames = self.userService.getUserFolderNames()
         labelFileUserNames = self.userService.getLabelUserNames(

@@ -116,6 +116,7 @@ class SegmentService:
         segmentLabel = None
         startDate = None
         lastDate = startDate
+        lastVelocity = 0
 
         for index, row in labeledDf.iterrows():
             currentDate = self.getDate(labeledDf, index)
@@ -137,17 +138,21 @@ class SegmentService:
                 else:
                     totalTime = self.dateService.getDifInSec(
                         startDate, lastDate)
-                    segmentSpeed = self.featureService.getSpeed(
+                    segmentVelocity = self.featureService.getVelocity(
                         segmentsDistance, totalTime)
+
+                    acceleration = segmentVelocity - lastVelocity
+                    lastVelocity = segmentVelocity
 
                     segmentDf.loc[len(segmentDf)] = [
                         segmentLabel,
                         startDate,
                         lastDate,
                         segmentsDistance,
-                        segmentSpeed]
+                        segmentVelocity,
+                        acceleration]
 
-                    self.countSegment(segmentLabel, segmentSpeed)
+                    self.countSegment(segmentLabel, segmentVelocity)
 
                     if self.isTrajectoryBreak(differenceToLast):
                         startDate = currentDate
@@ -167,8 +172,8 @@ class SegmentService:
 
         return diff.seconds > timeLimit
 
-    def countSegment(self, segmentLabel, segmentSpeed):
-        index = int(segmentSpeed * config.rounding)
+    def countSegment(self, segmentLabel, segmentVelocity):
+        index = int(segmentVelocity * config.rounding)
         if index < config.maxEvalSpeed:
             if segmentLabel == 'bike':
                 self.bikeArray[index] += 1

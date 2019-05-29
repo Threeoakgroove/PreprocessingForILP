@@ -11,16 +11,18 @@ slashedDateFormat = "%Y/%m/%d %H:%M:%S"
 
 segmentDuration = 90
 
-rounding = 5
-maxEvalSpeed = 25 * rounding
+rounding = 1
+maxEvalSpeed = 50 * rounding
 
 tmHead = 'transMode'
 startDateHead = 'startDate'
 endDateHead = 'endDate'
 distHead = 'distance'
 speedHead = 'speed'
+accelerationHead = 'acceleration'
 
-segmentHeader = [tmHead, startDateHead, endDateHead, distHead, speedHead]
+segmentHeader = [tmHead, startDateHead, endDateHead,
+                 distHead, speedHead, accelerationHead]
 
 labelHead = 'label'
 dateHead = 'date'

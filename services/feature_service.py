@@ -46,12 +46,12 @@ class FeatureService():
 
         return difference
 
-    def getSpeed(self, totalDistance, totalTime):
-        speed = 0
+    def getVelocity(self, totalDistance, totalTime):
+        velocity = 0
         if(totalTime > 0):
-            speed = float(totalDistance) / float(totalTime)
+            velocity = float(totalDistance) / float(totalTime)
 
-        return self.roundOfRating(speed)
+        return self.roundOfRating(velocity)
 
     def roundOfRating(self, number):
         """Round a number to the closest half integer.

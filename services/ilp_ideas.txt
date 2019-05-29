@@ -1,0 +1,33 @@
+How to ILP with the data:
+
+Categorial values for metrical values:
+======================================
+
+Generel:
+3,6 km/h = 1 m/s
+36 km/h = 10 m/s 
+100 km/h = 27,8 m/s
+
+Idea:
+Num-Value  --> Cat-Value
+------------------------
+ 0 -  2 ms --> very slow
+ 2 -  4 ms --> slow
+ 4 -  8 ms --> medium
+ 8 - 12 ms --> fast
+12 -  x ms --> very fast
+
+has_speed(segmentID, categorialValue)
+
+same for accelerations.
+
+has_acceleration(segmentID, categorialValue)
+
+is_faster_than(segmentID_1, segmentID_2)
+
+has_label(segmentID, labelName)
+
+all_following_segments_are_faster(segmentID, true)
+
+a_slower_segment_follows(segmentID)
+
