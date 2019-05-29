@@ -71,12 +71,26 @@ class SegmentService:
         np.savetxt(join(self.collectedSegmentsPath, 'walk.csv'),
                    self.walkVelocities, fmt="%d", header=header)
 
+        np.savetxt(join(self.collectedSegmentsPath, 'accel_bike.csv'),
+                   self.bikeAccelerations, fmt="%d", header=header)
+        np.savetxt(join(self.collectedSegmentsPath, 'accel_bus.csv'),
+                   self.busAccelerations, fmt="%d", header=header)
+        np.savetxt(join(self.collectedSegmentsPath, 'accel_car.csv'),
+                   self.carAccelerations, fmt="%d", header=header)
+        np.savetxt(join(self.collectedSegmentsPath, 'accel_walk.csv'),
+                   self.walkAccelerations, fmt="%d", header=header)
+
     def initArrays(self):
         for x in range(0, self.walkVelocities.shape[0]):
             self.bikeVelocities[x] = 0
             self.busVelocities[x] = 0
             self.carVelocities[x] = 0
             self.walkVelocities[x] = 0
+
+            self.bikeAccelerations[x] = 0
+            self.busAccelerations[x] = 0
+            self.carAccelerations[x] = 0
+            self.walkAccelerations[x] = 0
 
     def makeTrajectories(self, df, userPath):
         timeLimit = 20 * 60
@@ -178,18 +192,18 @@ class SegmentService:
         return diff.seconds > timeLimit
 
     def countSegment(self, label, velocity, acceleration):
-        index = int(velocity * config.rounding)
+        velocityIndex = int(velocity * config.rounding)
         accelIndex = abs(int(acceleration * config.rounding))
 
-        if index < config.maxEvalSpeed:
+        if velocityIndex < config.maxEvalSpeed:
             if label == 'bike':
-                self.bikeVelocities[index] += 1
+                self.bikeVelocities[velocityIndex] += 1
             elif label == 'bus':
-                self.busVelocities[index] += 1
+                self.busVelocities[velocityIndex] += 1
             elif label == 'car':
-                self.carVelocities[index] += 1
+                self.carVelocities[velocityIndex] += 1
             elif label == 'walk':
-                self.walkVelocities[index] += 1
+                self.walkVelocities[velocityIndex] += 1
 
         if accelIndex < config.maxEvalSpeed:
             if label == 'bike':
