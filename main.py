@@ -4,12 +4,13 @@ import config
 
 from services.label_service import LabelService
 from services.segment_service import SegmentService
+from services.logic_program_service import LogicProgramService
 from services.plot_service import PlotService
 
 
 class Main:
 
-    def __init__(self, makeOutput, makeSegments, makePlots):
+    def __init__(self, makeOutput, makeSegments, makeLogicProgram, makePlots):
         self.setupLogging()
         logging.info("Programm started.")
 
@@ -26,6 +27,13 @@ class Main:
             segmentService.generateSegments()
         else:
             logging.info("Skip generating segments.")
+
+        if makeLogicProgram:
+            logging.info("Generating logic program.")
+            logicProgramService = LogicProgramService()
+            logicProgramService.generateLogicProgram()
+        else:
+            logging.info("Skip generating logic program.")
 
         if makePlots:
             logging.info("Making plots.")
@@ -56,7 +64,8 @@ class Main:
 
 if __name__ == '__main__':
     makeOutput = False
-    makeSegments = True
+    makeSegments = False
+    makeLogicProgram = True
     makePlots = False
 
-    Main(makeOutput, makeSegments, makePlots)
+    Main(makeOutput, makeSegments, makeLogicProgram, makePlots)
