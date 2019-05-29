@@ -55,7 +55,7 @@ class LabelService:
             gpsPointsDf.dropna(how='any', inplace=True)
 
             # Print to File
-            outputPath = join(config.labelOutputPath, userName)
+            outputPath = join(config.labelPath, userName)
             self.dataService.ensureFolderExists(outputPath)
             gpsPointsDf.index = np.arange(0, len(gpsPointsDf))
             gpsPointsDf.to_csv(join(outputPath,

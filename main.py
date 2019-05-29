@@ -63,9 +63,9 @@ class Main:
 
 
 if __name__ == '__main__':
-    makeOutput = False
-    makeSegments = False
+    makeOutput = True
+    makeSegments = True
     makeLogicProgram = True
-    makePlots = False
+    makePlots = True
 
     Main(makeOutput, makeSegments, makeLogicProgram, makePlots)

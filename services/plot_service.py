@@ -23,7 +23,7 @@ class PlotService:
             self.showPlot(array, label)
 
     def getDataForLabel(self, labelName):
-        path = join(config.segmentOutputPath, 'collected',
+        path = join(config.featurePath,
                     str(labelName + '.csv'))
 
         # array = pd.read_csv(path, index_col=None, header=0)

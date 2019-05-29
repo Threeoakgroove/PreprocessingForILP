@@ -18,8 +18,8 @@ class UserService:
     'Class to keep all operations of one user together.'
 
     def __init__(self, pathTestData):
-        if os.path.exists(config.labelOutputPath):
-            shutil.rmtree(config.labelOutputPath)
+        if os.path.exists(config.labelPath):
+            shutil.rmtree(config.labelPath)
             logging.info('Labeled output folder removed.')
         self.pathToUserFolders = pathTestData
         self.dataService = DataService()
@@ -49,6 +49,9 @@ class UserService:
                 filteredUsers.append(user)
 
         return filteredUsers
+
+    def getSegmentUserNames():
+        return listdir(config.segmentPath)
 
     def getUserFolderNames(self):
         return listdir(self.pathToUserFolders)

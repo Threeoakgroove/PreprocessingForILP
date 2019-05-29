@@ -19,17 +19,18 @@ from services.feature_service import FeatureService
 class SegmentService:
 
     def __init__(self):
-        if exists(config.segmentOutputPath):
-            rmtree(config.segmentOutputPath)
+        if exists(config.segmentPath):
+            rmtree(config.segmentPath)
             logging.info('Segment output folder removed')
+        if exists(config.featurePath):
+            rmtree(config.featurePath)
+            logging.info('Feature output folder removed')
 
         self.dateService = DateService()
         self.dataService = DataService()
         self.featureService = FeatureService()
 
-        self.collectedSegmentsPath = join(
-            config.segmentOutputPath, 'collected')
-        self.dataService.ensureFolderExists(self.collectedSegmentsPath)
+        self.dataService.ensureFolderExists(config.featurePath)
 
         self.bikeVelocities = np.ndarray((config.maxEvalSpeed))
         self.bikeAccelerations = np.ndarray((config.maxEvalSpeed))
@@ -47,9 +48,9 @@ class SegmentService:
         for index, userName in enumerate(userFolderNames):
             logging.info('Segmenting data of user ' + str(index + 1) +
                          ' of ' + str(len(userFolderNames)))
-            userPath = join(config.segmentOutputPath, userName)
+            userPath = join(config.segmentPath, userName)
             self.dataService.ensureFolderExists(userPath)
-            labeledDataPath = join(config.labelOutputPath, userName)
+            labeledDataPath = join(config.labelPath, userName)
             fileNames = self.getLabeledGpsPointFileNames(
                 labeledDataPath)
 
@@ -62,22 +63,22 @@ class SegmentService:
     def printOccurences(self):
         header = "occurences"
 
-        np.savetxt(join(self.collectedSegmentsPath, 'bike.csv'),
+        np.savetxt(join(config.featurePath, 'bike.csv'),
                    self.bikeVelocities, fmt="%d", header=header)
-        np.savetxt(join(self.collectedSegmentsPath, 'bus.csv'),
+        np.savetxt(join(config.featurePath, 'bus.csv'),
                    self.busVelocities, fmt="%d", header=header)
-        np.savetxt(join(self.collectedSegmentsPath, 'car.csv'),
+        np.savetxt(join(config.featurePath, 'car.csv'),
                    self.carVelocities, fmt="%d", header=header)
-        np.savetxt(join(self.collectedSegmentsPath, 'walk.csv'),
+        np.savetxt(join(config.featurePath, 'walk.csv'),
                    self.walkVelocities, fmt="%d", header=header)
 
-        np.savetxt(join(self.collectedSegmentsPath, 'accel_bike.csv'),
+        np.savetxt(join(config.featurePath, 'accel_bike.csv'),
                    self.bikeAccelerations, fmt="%d", header=header)
-        np.savetxt(join(self.collectedSegmentsPath, 'accel_bus.csv'),
+        np.savetxt(join(config.featurePath, 'accel_bus.csv'),
                    self.busAccelerations, fmt="%d", header=header)
-        np.savetxt(join(self.collectedSegmentsPath, 'accel_car.csv'),
+        np.savetxt(join(config.featurePath, 'accel_car.csv'),
                    self.carAccelerations, fmt="%d", header=header)
-        np.savetxt(join(self.collectedSegmentsPath, 'accel_walk.csv'),
+        np.savetxt(join(config.featurePath, 'accel_walk.csv'),
                    self.walkAccelerations, fmt="%d", header=header)
 
     def initArrays(self):
@@ -121,7 +122,7 @@ class SegmentService:
             sep='\t', encoding='utf-8')
 
     def getUserFolderNames(self):
-        return listdir(config.labelOutputPath)
+        return listdir(config.labelPath)
 
     def getLabeledGpsPointFileNames(self, userPath):
         return listdir(userPath)
