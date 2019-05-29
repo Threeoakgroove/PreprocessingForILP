@@ -31,10 +31,14 @@ class SegmentService:
             config.segmentOutputPath, 'collected')
         self.dataService.ensureFolderExists(self.collectedSegmentsPath)
 
-        self.bikeArray = np.ndarray((config.maxEvalSpeed))
-        self.busArray = np.ndarray((config.maxEvalSpeed))
-        self.carArray = np.ndarray((config.maxEvalSpeed))
-        self.walkArray = np.ndarray((config.maxEvalSpeed))
+        self.bikeVelocities = np.ndarray((config.maxEvalSpeed))
+        self.bikeAccelerations = np.ndarray((config.maxEvalSpeed))
+        self.busVelocities = np.ndarray((config.maxEvalSpeed))
+        self.busAccelerations = np.ndarray((config.maxEvalSpeed))
+        self.carVelocities = np.ndarray((config.maxEvalSpeed))
+        self.carAccelerations = np.ndarray((config.maxEvalSpeed))
+        self.walkVelocities = np.ndarray((config.maxEvalSpeed))
+        self.walkAccelerations = np.ndarray((config.maxEvalSpeed))
         self.initArrays()
 
     def generateSegments(self):
@@ -59,20 +63,20 @@ class SegmentService:
         header = "occurences"
 
         np.savetxt(join(self.collectedSegmentsPath, 'bike.csv'),
-                   self.bikeArray, fmt="%d", header=header)
+                   self.bikeVelocities, fmt="%d", header=header)
         np.savetxt(join(self.collectedSegmentsPath, 'bus.csv'),
-                   self.busArray, fmt="%d", header=header)
+                   self.busVelocities, fmt="%d", header=header)
         np.savetxt(join(self.collectedSegmentsPath, 'car.csv'),
-                   self.carArray, fmt="%d", header=header)
+                   self.carVelocities, fmt="%d", header=header)
         np.savetxt(join(self.collectedSegmentsPath, 'walk.csv'),
-                   self.walkArray, fmt="%d", header=header)
+                   self.walkVelocities, fmt="%d", header=header)
 
     def initArrays(self):
-        for x in range(0, self.walkArray.shape[0]):
-            self.bikeArray[x] = 0
-            self.busArray[x] = 0
-            self.carArray[x] = 0
-            self.walkArray[x] = 0
+        for x in range(0, self.walkVelocities.shape[0]):
+            self.bikeVelocities[x] = 0
+            self.busVelocities[x] = 0
+            self.carVelocities[x] = 0
+            self.walkVelocities[x] = 0
 
     def makeTrajectories(self, df, userPath):
         timeLimit = 20 * 60
@@ -138,21 +142,22 @@ class SegmentService:
                 else:
                     totalTime = self.dateService.getDifInSec(
                         startDate, lastDate)
-                    segmentVelocity = self.featureService.getVelocity(
+                    velocity = self.featureService.getVelocity(
                         segmentsDistance, totalTime)
 
-                    acceleration = segmentVelocity - lastVelocity
-                    lastVelocity = segmentVelocity
+                    acceleration = velocity - lastVelocity
+                    lastVelocity = velocity
 
                     segmentDf.loc[len(segmentDf)] = [
                         segmentLabel,
                         startDate,
                         lastDate,
                         segmentsDistance,
-                        segmentVelocity,
+                        velocity,
                         acceleration]
 
-                    self.countSegment(segmentLabel, segmentVelocity)
+                    self.countSegment(
+                        segmentLabel, velocity, acceleration)
 
                     if self.isTrajectoryBreak(differenceToLast):
                         startDate = currentDate
@@ -172,17 +177,29 @@ class SegmentService:
 
         return diff.seconds > timeLimit
 
-    def countSegment(self, segmentLabel, segmentVelocity):
-        index = int(segmentVelocity * config.rounding)
+    def countSegment(self, label, velocity, acceleration):
+        index = int(velocity * config.rounding)
+        accelIndex = abs(int(acceleration * config.rounding))
+
         if index < config.maxEvalSpeed:
-            if segmentLabel == 'bike':
-                self.bikeArray[index] += 1
-            elif segmentLabel == 'bus':
-                self.busArray[index] += 1
-            elif segmentLabel == 'car':
-                self.carArray[index] += 1
-            elif segmentLabel == 'walk':
-                self.walkArray[index] += 1
+            if label == 'bike':
+                self.bikeVelocities[index] += 1
+            elif label == 'bus':
+                self.busVelocities[index] += 1
+            elif label == 'car':
+                self.carVelocities[index] += 1
+            elif label == 'walk':
+                self.walkVelocities[index] += 1
+
+        if accelIndex < config.maxEvalSpeed:
+            if label == 'bike':
+                self.bikeAccelerations[accelIndex] += 1
+            elif label == 'bus':
+                self.busAccelerations[accelIndex] += 1
+            elif label == 'car':
+                self.carAccelerations[accelIndex] += 1
+            elif label == 'walk':
+                self.walkAccelerations[accelIndex] += 1
 
     def getDistanceBetween(self, df, index1, index2):
         return self.featureService.distanceInMeter(
