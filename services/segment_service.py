@@ -101,6 +101,7 @@ class SegmentService:
         endOfLastPoint = datetime.now()
 
         for index, row in df.iterrows():
+            print(row)
             diff = row['startDate'] - endOfLastPoint
 
             if(index != 0 and
