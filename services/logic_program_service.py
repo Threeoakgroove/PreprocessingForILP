@@ -48,18 +48,22 @@ class LogicProgramService:
                     sequence.append(df.iloc[index + x])
 
                 print(self.categorialSpeedValueFor(targetSegment['speed']))
-                print(len(sequence))
+                print(targetSegment['speed'])
 
     def categorialSpeedValueFor(self, speed):
         hasSpeedTxt = "has_speed(%s)"
 
         if(0 <= speed < 1):
             return (hasSpeedTxt % "very_slow")
-        if(1 <= speed < 2):
+        elif(1 <= speed < 2):
             return (hasSpeedTxt % "slow")
-        if(2 <= speed < 3):
-            return (hasSpeedTxt % "normal")
-        if(3 <= speed < 5):
+        elif(2 <= speed < 3):
+            return (hasSpeedTxt % "below_medium")
+        elif(3 <= speed < 5):
+            return (hasSpeedTxt % "medium")
+        elif(5 <= speed < 8):
+            return (hasSpeedTxt % "above_medium")
+        elif(8 <= speed < 13):
             return (hasSpeedTxt % "fast")
-        if(5 <= speed):
+        else:
             return (hasSpeedTxt % "very_fast")
