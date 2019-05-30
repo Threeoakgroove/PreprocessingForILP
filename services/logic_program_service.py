@@ -47,5 +47,19 @@ class LogicProgramService:
                 for x in range(self.sequenceSize):
                     sequence.append(df.iloc[index + x])
 
-                print(str(index) + " " + str(len(df)))
+                print(self.categorialSpeedValueFor(targetSegment['speed']))
                 print(len(sequence))
+
+    def categorialSpeedValueFor(self, speed):
+        hasSpeedTxt = "has_speed(%s)"
+
+        if(0 <= speed < 1):
+            return (hasSpeedTxt % "very_slow")
+        if(1 <= speed < 2):
+            return (hasSpeedTxt % "slow")
+        if(2 <= speed < 3):
+            return (hasSpeedTxt % "normal")
+        if(3 <= speed < 5):
+            return (hasSpeedTxt % "fast")
+        if(5 <= speed):
+            return (hasSpeedTxt % "very_fast")
