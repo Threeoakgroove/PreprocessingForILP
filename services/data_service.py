@@ -13,7 +13,7 @@ class DataService:
         if not os.path.exists(path):
             os.makedirs(path)
 
-    def getFileNamesInPath(path):
+    def getFileNamesInPath(self, path):
         return os.listdir(path)
 
     def getLabelDf(self, path):

@@ -12,7 +12,7 @@ class LogicProgramService:
 
     def __init__(self):
         self.userService = UserService
-        self.dataService = DataService
+        self.dataService = DataService()
         self.sequenceSize = 5
 
     def generateLogicProgram(self):
@@ -20,10 +20,14 @@ class LogicProgramService:
 
         for folder in userFolders:
             path = join(config.segmentPath, folder)
-            fileNames = self.dataService.getFileNamesInPath(path)
+            outputPath = join(config.logicProgramPath, folder)
+            self.dataService.ensureFolderExists(outputPath)
 
+            fileNames = self.dataService.getFileNamesInPath(path)
             self.forAllSegmentFiles(path, fileNames)
 
+    # TODO: return df of all logic program segments to main loop
+    # TODO: print this dataframe to a file
     def forAllSegmentFiles(self, path, fileNames):
         for file in fileNames:
             filePath = join(path, file)
@@ -31,8 +35,17 @@ class LogicProgramService:
 
             self.makeLogicSequences(df, file)
 
+    # TODO: make logic sequence for this dataframe and return to segment loop
     def makeLogicSequences(self, df, file):
         for index, row in df.iterrows():
-            sequenceId = str(index) + "_" + file
 
-            print(sequenceId, row[1])
+            if(index < (len(df) - self.sequenceSize)):
+                sequenceId = str(index) + "_" + file
+                sequence = []
+                targetSegment = df.iloc[index + 5]
+
+                for x in range(self.sequenceSize):
+                    sequence.append(df.iloc[index + x])
+
+                print(str(index) + " " + str(len(df)))
+                print(len(sequence))

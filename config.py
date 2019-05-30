@@ -5,6 +5,7 @@ outputPath = join('data', 'output')
 labelPath = join(outputPath, 'labeled')
 segmentPath = join(outputPath, 'segmented')
 featurePath = join(outputPath, 'feature')
+logicProgramPath = join(outputPath, 'logic_program')
 pathTestData = join('data', 'testdata')
 # pathTestData = join('data', 'Data')
 
