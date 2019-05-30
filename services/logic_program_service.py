@@ -48,11 +48,13 @@ class LogicProgramService:
 
                 targetSegment = df.iloc[index + self.sequenceSize]
                 preSegments = []
-                preSpeeds = []
+                preVelocities = []
 
                 # Finished logic translation
-                segment_cat_speeds = []
+                segments_cat_velocity = []
+                segments_cat_accel = []
                 ts_cat_speed = None
+                ts_cat_accel = None
                 ts_predecessor = None
                 # Relations that are only set when they exist
                 pre_all_same_speed = None  # none if false
@@ -60,21 +62,34 @@ class LogicProgramService:
                 for x in range(self.sequenceSize):
                     preSegmentsIds.append(self.getSegmentId(folder, index + x))
                     preSegments.append(df.iloc[index + x])
-                    preSpeeds.append(
+                    preVelocities.append(
                         df.iloc[index + x][config.speedHead])
-                    segment_cat_speeds.append(self.catSpeedValueAsLogicProgram(
+                    segments_cat_velocity.append(self.catVelocityAsLogicProg(
                         preSegmentsIds[x],
                         self.catSpeedValueFor(
-                            preSegments[x][config.speedHead])))
+                            preSegments[x][config.speedHead]
+                        )
+                    ))
+                    segments_cat_accel.append(self.catAccelAsLogicProg(
+                        preSegmentsIds[x],
+                        self.catSpeedValueFor(
+                            abs(preSegments[x][config.accelerationHead])
+                        )
+                    ))
 
                 pre_all_same_speed = self.catPrevAllEqual(
                     targetSegmentId,
-                    preSpeeds)
+                    preVelocities)
 
-                ts_cat_speed = self.catSpeedValueAsLogicProgram(
+                ts_cat_speed = self.catVelocityAsLogicProg(
                     targetSegmentId,
                     self.catSpeedValueFor(
                         targetSegment[config.speedHead]))
+
+                ts_cat_accel = self.catAccelAsLogicProg(
+                    targetSegmentId,
+                    self.catSpeedValueFor(
+                        abs(targetSegment[config.accelerationHead])))
 
                 ts_predecessor = self.catDirectPredecessor(
                     targetSegmentId,
@@ -82,16 +97,33 @@ class LogicProgramService:
                         folder,
                         index + self.sequenceSize - 1))
 
-                print(ts_cat_speed, pre_all_same_speed, ts_predecessor)
+                outputPath = join(config.logicProgramPath,
+                                  folder, sequenceId + ".b")
+                with open(outputPath, "w") as write_file:
+                    write_file.write("% \t Target Segment Features: \n")
+                    write_file.write(ts_cat_speed + "\n")
+                    write_file.write(ts_cat_accel + "\n")
+
+                    write_file.write("\n % \t Predecessor Features: \n")
+                    for x in range(self.sequenceSize):
+                        write_file.write(segments_cat_velocity[x] + "\n")
+                        write_file.write(segments_cat_accel[x] + "\n")
+
+                    write_file.write("\n% \t Relations: \n")
+                    write_file.write(ts_predecessor + "\n")
+                    write_file.close()
 
     def getSegmentId(self, folder, segmentNumber):
         return "seg" + str(folder) + "_" + str(segmentNumber)
 
     def catDirectPredecessor(self, id, predecessorId):
-        return ("has_predecessor(%s, %s)" % (id, predecessorId))
+        return ("direct_predecessor(%s, %s)" % (id, predecessorId))
 
-    def catSpeedValueAsLogicProgram(self, id, catSpeed):
+    def catVelocityAsLogicProg(self, id, catSpeed):
         return ("has_speed(" + id + ", %s)" % catSpeed)
+
+    def catAccelAsLogicProg(self, id, catAccel):
+        return ("has_accel(" + id + ", %s)" % catAccel)
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs
