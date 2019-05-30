@@ -24,46 +24,97 @@ class LogicProgramService:
             self.dataService.ensureFolderExists(outputPath)
 
             fileNames = self.dataService.getFileNamesInPath(path)
-            self.forAllSegmentFiles(path, fileNames)
+            self.forAllSegmentFiles(path, folder, fileNames)
 
     # TODO: return df of all logic program segments to main loop
     # TODO: print this dataframe to a file
-    def forAllSegmentFiles(self, path, fileNames):
+    def forAllSegmentFiles(self, path, folder, fileNames):
         for file in fileNames:
             filePath = join(path, file)
             df = pd.read_csv(filePath, sep='\t', index_col=0, header=0)
 
-            self.makeLogicSequences(df, file)
+            self.makeLogicSequences(folder, df, file)
 
     # TODO: make logic sequence for this dataframe and return to segment loop
-    def makeLogicSequences(self, df, file):
+    def makeLogicSequences(self, folder, df, file):
         for index, row in df.iterrows():
 
             if(index < (len(df) - self.sequenceSize)):
-                sequenceId = str(index) + "_" + file
-                sequence = []
-                targetSegment = df.iloc[index + 5]
+                sequenceId = "sequence" + str(folder) + \
+                    "_" + str(index + self.sequenceSize)
+                targetSegmentId = self.getSegmentId(
+                    folder, index + self.sequenceSize)
+                preSegmentsIds = []
+
+                targetSegment = df.iloc[index + self.sequenceSize]
+                preSegments = []
+                preSpeeds = []
+
+                # Finished logic translation
+                segment_cat_speeds = []
+                ts_cat_speed = None
+                ts_predecessor = None
+                # Relations that are only set when they exist
+                pre_all_same_speed = None  # none if false
 
                 for x in range(self.sequenceSize):
-                    sequence.append(df.iloc[index + x])
+                    preSegmentsIds.append(self.getSegmentId(folder, index + x))
+                    preSegments.append(df.iloc[index + x])
+                    preSpeeds.append(
+                        df.iloc[index + x][config.speedHead])
+                    segment_cat_speeds.append(self.catSpeedValueAsLogicProgram(
+                        preSegmentsIds[x],
+                        self.catSpeedValueFor(
+                            preSegments[x][config.speedHead])))
 
-                print(self.categorialSpeedValueFor(targetSegment['speed']))
-                print(targetSegment['speed'])
+                pre_all_same_speed = self.catPrevAllEqual(
+                    targetSegmentId,
+                    preSpeeds)
 
-    def categorialSpeedValueFor(self, speed):
-        hasSpeedTxt = "has_speed(%s)"
+                ts_cat_speed = self.catSpeedValueAsLogicProgram(
+                    targetSegmentId,
+                    self.catSpeedValueFor(
+                        targetSegment[config.speedHead]))
+
+                ts_predecessor = self.catDirectPredecessor(
+                    targetSegmentId,
+                    self.getSegmentId(
+                        folder,
+                        index + self.sequenceSize - 1))
+
+                print(ts_cat_speed, pre_all_same_speed, ts_predecessor)
+
+    def getSegmentId(self, folder, segmentNumber):
+        return "seg" + str(folder) + "_" + str(segmentNumber)
+
+    def catDirectPredecessor(self, id, predecessorId):
+        return ("has_predecessor(%s, %s)" % (id, predecessorId))
+
+    def catSpeedValueAsLogicProgram(self, id, catSpeed):
+        return ("has_speed(" + id + ", %s)" % catSpeed)
+
+    def catSpeedValueFor(self, speed):
+        # TODO: calculate medium speed of all TMs
 
         if(0 <= speed < 1):
-            return (hasSpeedTxt % "very_slow")
+            return "very_slow"
         elif(1 <= speed < 2):
-            return (hasSpeedTxt % "slow")
+            return "slow"
         elif(2 <= speed < 3):
-            return (hasSpeedTxt % "below_medium")
+            return "below_medium"
         elif(3 <= speed < 5):
-            return (hasSpeedTxt % "medium")
+            return "medium"
         elif(5 <= speed < 8):
-            return (hasSpeedTxt % "above_medium")
+            return "above_medium"
         elif(8 <= speed < 13):
-            return (hasSpeedTxt % "fast")
+            return "fast"
         else:
-            return (hasSpeedTxt % "very_fast")
+            return "very_fast"
+
+    def catPrevAllEqual(self, id, featureList):
+        haveSameSpeed = "all_prev_have_same_speed(%s)"
+
+        if(featureList[1:] == featureList[:-1]):
+            return (haveSameSpeed % id)
+        else:
+            return None
