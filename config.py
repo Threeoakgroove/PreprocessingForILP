@@ -35,3 +35,5 @@ latHead = 'lat'
 labelHeader = [labelHead, dateHead, longHead, latHead]
 
 gpsTimeHead = 'Datetime'
+
+transportmodes = ['bike', 'bus', 'car', 'walk']
