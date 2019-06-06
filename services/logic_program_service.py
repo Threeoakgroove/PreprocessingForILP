@@ -86,7 +86,7 @@ class LogicProgramService:
                             abs(preSegments[x][config.accelerationHead])
                         )
                     ))
-                    segments_labels.append(self.labelAsLogicProg(
+                    segments_labels.append(self.classAsLogicProg(
                         preSegmentsIds[x],
                         preSegments[x][config.tmHead]
                     ))
@@ -99,7 +99,7 @@ class LogicProgramService:
                     targetSegmentId,
                     preVelocities)
 
-                ts_label = self.labelAsLogicProg(
+                ts_label = self.classAsLogicProg(
                     targetSegmentId,
                     targetSegment[config.tmHead])
 
@@ -159,10 +159,10 @@ class LogicProgramService:
         return ("has_speed(%s,%s)" % (id, catSpeed))
 
     def catAccelAsLogicProg(self, id, catAccel):
-        return ("has_accel(%s,%s)" % (id, catAccel))
+        return ("has_acceleration(%s,%s)" % (id, catAccel))
 
-    def labelAsLogicProg(self, id, label):
-        return ("has_transportmode(%s,%s)" % (id, label))
+    def classAsLogicProg(self, id, label):
+        return ("class(%s,%s)" % (id, label))
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs
