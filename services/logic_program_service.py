@@ -47,60 +47,61 @@ class LogicProgramService:
         for index, row in df.iterrows():
 
             if(index < (len(df) - self.sequenceSize)):
-                sequenceId = "sequence" + str(folder) + \
-                    "_" + str(index + self.sequenceSize)
-                targetSegmentId = self.getSegmentId(
-                    folder, index + self.sequenceSize)
-                preSegmentsIds = []
-
                 targetSegment = df.iloc[index + self.sequenceSize]
-                preSegments = []
-                preVelocities = []
-
-                # Finished logic translation
-                translation = []
-                ts_cat_speed = None
-                ts_cat_accel = None
-                ts_predecessor = None
-                # Relations that are only set when they exist
-                pre_all_same_speed = None  # none if false
-
-                for x in range(self.sequenceSize):
-                    preSegmentsIds.append(
-                        self.getPreSegmentId(folder,
-                                             index + x,
-                                             index + self.sequenceSize))
-                    preSegments.append(df.iloc[index + x])
-                    preVelocities.append(self.catSpeedValueFor(
-                        preSegments[x][config.speedHead]))
-
-                    catAcceleration = self.catSpeedValueFor(
-                        abs(preSegments[x][config.accelerationHead]))
-
-                    translation.append(self.getClassAsProgram(
-                        x, targetSegmentId, preSegments[x][config.tmHead],
-                        preVelocities[x], catAcceleration))
-
-                pre_all_same_speed = self.catPrevAllEqual(
-                    targetSegmentId,
-                    preVelocities)
-
-                # TargetSegment
-                ts_label = self.segmentsClassAsLogicProg(
-                    targetSegmentId,
-                    targetSegment[config.tmHead])
-
-                ts_cat_speed = self.catVelocityAsLogicProg(
-                    targetSegmentId,
-                    self.catSpeedValueFor(
-                        targetSegment[config.speedHead]))
-
-                ts_cat_accel = self.catAccelAsLogicProg(
-                    targetSegmentId,
-                    self.catSpeedValueFor(
-                        abs(targetSegment[config.accelerationHead])))
 
                 if(targetSegment[config.tmHead] in config.transportmodes):
+                    sequenceId = "sequence" + str(folder) + \
+                        "_" + str(index + self.sequenceSize)
+                    targetSegmentId = self.getSegmentId(
+                        folder, index + self.sequenceSize)
+                    preSegmentsIds = []
+
+                    preSegments = []
+                    preVelocities = []
+
+                    # Finished logic translation
+                    translation = []
+                    ts_cat_speed = None
+                    ts_cat_accel = None
+                    ts_predecessor = None
+                    # Relations that are only set when they exist
+                    pre_all_same_speed = None  # none if false
+
+                    for x in range(self.sequenceSize):
+                        preSegmentsIds.append(
+                            self.getPreSegmentId(folder,
+                                                 index + x,
+                                                 index + self.sequenceSize))
+                        preSegments.append(df.iloc[index + x])
+                        preVelocities.append(self.catSpeedValueFor(
+                            preSegments[x][config.speedHead]))
+
+                        catAcceleration = self.catSpeedValueFor(
+                            abs(preSegments[x][config.accelerationHead]))
+
+                        translation.append(self.getClassAsProgram(
+                            x, targetSegmentId, preSegments[x][config.tmHead],
+                            preVelocities[x], catAcceleration))
+
+                    pre_all_same_speed = self.catPrevAllEqual(
+                        targetSegmentId,
+                        preVelocities)
+
+                    # TargetSegment
+                    ts_label = self.segmentsClassAsLogicProg(
+                        targetSegmentId,
+                        targetSegment[config.tmHead])
+
+                    ts_cat_speed = self.catVelocityAsLogicProg(
+                        targetSegmentId,
+                        self.catSpeedValueFor(
+                            targetSegment[config.speedHead]))
+
+                    ts_cat_accel = self.catAccelAsLogicProg(
+                        targetSegmentId,
+                        self.catSpeedValueFor(
+                            abs(targetSegment[config.accelerationHead])))
+
                     outputPath = join(config.logicProgramPath,
                                       folder,
                                       targetSegment[config.tmHead],
@@ -119,7 +120,7 @@ class LogicProgramService:
                                 translation[x].acceleration + "\n")
 
                         write_file.write("\n% \t Relations: \n")
-                        write_file.write(ts_predecessor + "\n")
+
                         if(not(pre_all_same_speed is None)):
                             write_file.write(pre_all_same_speed + "\n")
                         write_file.close()
