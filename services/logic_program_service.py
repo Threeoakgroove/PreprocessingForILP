@@ -3,6 +3,7 @@ import config
 from services.data_service import DataService
 from services.user_service import UserService
 
+import logging
 import pandas as pd
 
 from os.path import join
@@ -57,10 +58,7 @@ class LogicProgramService:
                 preVelocities = []
 
                 # Finished logic translation
-                sequence_segments = []
-                segments_cat_velocity = []
-                segments_cat_accel = []
-                segments_labels = []
+                translation = []
                 ts_cat_speed = None
                 ts_cat_accel = None
                 ts_predecessor = None
@@ -73,33 +71,22 @@ class LogicProgramService:
                                              index + x,
                                              index + self.sequenceSize))
                     preSegments.append(df.iloc[index + x])
-                    preVelocities.append(
-                        self.catSpeedValueFor(preSegments[x][config.speedHead]
-                                              ))
-                    segments_cat_velocity.append(self.catVelocityAsLogicProg(
-                        preSegmentsIds[x],
-                        preVelocities[x]))
+                    preVelocities.append(self.catSpeedValueFor(
+                        preSegments[x][config.speedHead]))
 
-                    segments_cat_accel.append(self.catAccelAsLogicProg(
-                        preSegmentsIds[x],
-                        self.catSpeedValueFor(
-                            abs(preSegments[x][config.accelerationHead])
-                        )
-                    ))
-                    segments_labels.append(self.classAsLogicProg(
-                        preSegmentsIds[x],
-                        preSegments[x][config.tmHead]
-                    ))
-                    sequence_segments.append(self.belongsToSegment(
-                        preSegmentsIds[x],
-                        targetSegmentId
-                    ))
+                    catAcceleration = self.catSpeedValueFor(
+                        abs(preSegments[x][config.accelerationHead]))
+
+                    translation.append(self.getClassAsProgram(
+                        x, targetSegmentId, preSegments[x][config.tmHead],
+                        preVelocities[x], catAcceleration))
 
                 pre_all_same_speed = self.catPrevAllEqual(
                     targetSegmentId,
                     preVelocities)
 
-                ts_label = self.classAsLogicProg(
+                # TargetSegment
+                ts_label = self.segmentsClassAsLogicProg(
                     targetSegmentId,
                     targetSegment[config.tmHead])
 
@@ -112,12 +99,6 @@ class LogicProgramService:
                     targetSegmentId,
                     self.catSpeedValueFor(
                         abs(targetSegment[config.accelerationHead])))
-
-                ts_predecessor = self.catDirectPredecessor(
-                    targetSegmentId,
-                    self.getSegmentId(
-                        folder,
-                        index + self.sequenceSize - 1))
 
                 if(targetSegment[config.tmHead] in config.transportmodes):
                     outputPath = join(config.logicProgramPath,
@@ -132,10 +113,10 @@ class LogicProgramService:
 
                         write_file.write("\n % \t Predecessor Features: \n")
                         for x in range(self.sequenceSize):
-                            write_file.write(sequence_segments[x] + "\n")
-                            write_file.write(segments_labels[x] + "\n")
-                            write_file.write(segments_cat_velocity[x] + "\n")
-                            write_file.write(segments_cat_accel[x] + "\n")
+                            write_file.write(translation[x].classValue + "\n")
+                            write_file.write(translation[x].velocity + "\n")
+                            write_file.write(
+                                translation[x].acceleration + "\n")
 
                         write_file.write("\n% \t Relations: \n")
                         write_file.write(ts_predecessor + "\n")
@@ -149,20 +130,11 @@ class LogicProgramService:
     def getSegmentId(self, folder, segmentNumber):
         return ("seg%s_%s" % (str(folder), str(segmentNumber)))
 
-    def belongsToSegment(self, id, tsId):
-        return ("belongs_to_sequence(%s,%s)" % (id, tsId))
-
-    def catDirectPredecessor(self, id, predecessorId):
-        return ("direct_predecessor(%s,%s)" % (id, predecessorId))
-
     def catVelocityAsLogicProg(self, id, catSpeed):
         return ("has_speed(%s,%s)" % (id, catSpeed))
 
     def catAccelAsLogicProg(self, id, catAccel):
         return ("has_acceleration(%s,%s)" % (id, catAccel))
-
-    def classAsLogicProg(self, id, label):
-        return ("class(%s,%s)" % (id, label))
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs
@@ -182,6 +154,103 @@ class LogicProgramService:
         else:
             return "very_fast"
 
+    def getClassAsProgram(self, counter, id, classValue,
+                          velocity, acceleration):
+        predecessor = self.Predecessor()
+
+        if(counter == 0):
+            predecessor.classValue = self.classOldestPredecessor(
+                id, classValue)
+            predecessor.velocity = self.velocityOldestPredecessor(
+                id, velocity)
+            predecessor.acceleration = self.accelOldestPredecessor(
+                id, acceleration)
+
+        elif(counter == 1):
+            predecessor.classValue = self.classSecondPredecessor(
+                id, classValue)
+            predecessor.velocity = self.velocitySecondPredecessor(
+                id, velocity)
+            predecessor.acceleration = self.accelSecondPredecessor(
+                id, acceleration)
+
+        elif(counter == 2):
+            predecessor.classValue = self.classThirdPredecessor(
+                id, classValue)
+            predecessor.velocity = self.velocityThirdPredecessor(
+                id, velocity)
+            predecessor.acceleration = self.accelThirdPredecessor(
+                id, acceleration)
+
+        elif(counter == 3):
+            predecessor.classValue = self.classFourthPredecessor(
+                id, classValue)
+            predecessor.velocity = self.velocityFourthPredecessor(
+                id, velocity)
+            predecessor.acceleration = self.accelFourthPredecessor(
+                id, acceleration)
+
+        elif(counter == 4):
+            predecessor.classValue = self.classDirectPredecessor(
+                id, classValue)
+            predecessor.velocity = self.velocityDirectPredecessor(
+                id, velocity)
+            predecessor.acceleration = self.accelDirectPredecessor(
+                id, acceleration)
+
+        else:
+            logging.warning("Index out of scope for class translation")
+
+        return predecessor
+
+    def classOldestPredecessor(self, id, label):
+        return ("oldest_predecessor_has_class(%s,%s)" % (id, label))
+
+    def classSecondPredecessor(self, id, label):
+        return ("second_predecessor_has_class(%s,%s)" % (id, label))
+
+    def classThirdPredecessor(self, id, label):
+        return ("third_predecessor_has_class(%s,%s)" % (id, label))
+
+    def classFourthPredecessor(self, id, label):
+        return ("fourth_predecessor_has_class(%s,%s)" % (id, label))
+
+    def classDirectPredecessor(self, id, label):
+        return ("direct_predecessor_has_class(%s,%s)" % (id, label))
+
+    def segmentsClassAsLogicProg(self, id, label):
+        return ("class(%s,%s)" % (id, label))
+
+    def accelOldestPredecessor(self, id, label):
+        return ("oldest_predecessor_has_acceleration(%s,%s)" % (id, label))
+
+    def accelSecondPredecessor(self, id, label):
+        return ("second_predecessor_has_acceleration(%s,%s)" % (id, label))
+
+    def accelThirdPredecessor(self, id, label):
+        return ("third_predecessor_has_acceleration(%s,%s)" % (id, label))
+
+    def accelFourthPredecessor(self, id, label):
+        return ("fourth_predecessor_has_acceleration(%s,%s)" % (id, label))
+
+    def accelDirectPredecessor(self, id, label):
+        return ("direct_predecessor_has_acceleration(%s,%s)" % (id, label))
+
+    def velocityOldestPredecessor(self, id, label):
+        return ("oldest_predecessor_has_velocity(%s,%s)" % (id, label))
+
+    def velocitySecondPredecessor(self, id, label):
+        return ("second_predecessor_has_velocity(%s,%s)" % (id, label))
+
+    def velocityThirdPredecessor(self, id, label):
+        return ("third_predecessor_has_velocity%s,%s)" % (id, label))
+
+    def velocityFourthPredecessor(self, id, label):
+        return ("fourth_predecessor_has_velocity(%s,%s)" % (id, label))
+
+    def velocityDirectPredecessor(self, id, label):
+        return ("direct_predecessor_has_velocity(%s,%s)" % (id, label))
+
     def catPrevAllEqual(self, id, featureList):
         haveSameSpeed = "all_prev_have_same_speed(%s)"
 
@@ -189,3 +258,8 @@ class LogicProgramService:
             return (haveSameSpeed % id)
         else:
             return None
+
+    class Predecessor:
+        classValue = "Unknown name"
+        velocity = "Unknown velocity"
+        acceleration = "Unknown major"
