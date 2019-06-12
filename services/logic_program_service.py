@@ -34,8 +34,6 @@ class LogicProgramService:
             transModePath = join(outputPath, transportmode)
             self.dataService.ensureFolderExists(transModePath)
 
-    # TODO: return df of all logic program segments to main loop
-    # TODO: print this dataframe to a file
     def forAllSegmentFiles(self, path, folder, fileNames):
         for file in fileNames:
             filePath = join(path, file)
@@ -52,7 +50,7 @@ class LogicProgramService:
                 if(targetSegment[config.tmHead] in config.transportmodes):
                     sequenceId = "sequence" + str(folder) + \
                         "_" + str(index + self.sequenceSize)
-                    targetSegmentId = self.getSegmentId(
+                    targetSegmentId = self.targetSegmentId(
                         folder, index + self.sequenceSize)
                     translatedSegment = self.getTargetSegment(
                         targetSegmentId, targetSegment)
@@ -107,15 +105,6 @@ class LogicProgramService:
                 write_file.write(pre_all_same_speed + "\n")
             write_file.close()
 
-    def getSegmentId(self, folder, segmentNumber):
-        return ("seg%s_%s" % (str(folder), str(segmentNumber)))
-
-    def catVelocityAsLogicProg(self, id, catSpeed):
-        return ("has_speed(%s,%s)" % (id, catSpeed))
-
-    def catAccelAsLogicProg(self, id, catAccel):
-        return ("has_acceleration(%s,%s)" % (id, catAccel))
-
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs
 
@@ -137,14 +126,14 @@ class LogicProgramService:
     def getTargetSegment(self, id, targetSegment):
         segment = self.Segment()
 
-        segment.classValue = self.segmentsClassAsLogicProg(
+        segment.classValue = self.targetSegmentClass(
             id, targetSegment[config.tmHead])
 
-        segment.velocity = self.catVelocityAsLogicProg(
+        segment.velocity = self.targetSegmentVelocity(
             id, self.catSpeedValueFor(
                 targetSegment[config.speedHead]))
 
-        segment.acceleration = self.catAccelAsLogicProg(
+        segment.acceleration = self.targetSegmentAcceleration(
             id, self.catSpeedValueFor(
                 abs(targetSegment[config.accelerationHead])))
 
@@ -199,63 +188,76 @@ class LogicProgramService:
 
         return segment
 
+    # Class
     def classOldestPredecessor(self, id, label):
-        return ("oldest_predecessor_has_class(%s,%s)" % (id, label))
+        return ("oldest_predecessor_has_class(%s,%s)." % (id, label))
 
     def classSecondPredecessor(self, id, label):
-        return ("second_predecessor_has_class(%s,%s)" % (id, label))
+        return ("second_predecessor_has_class(%s,%s)." % (id, label))
 
     def classThirdPredecessor(self, id, label):
-        return ("third_predecessor_has_class(%s,%s)" % (id, label))
+        return ("third_predecessor_has_class(%s,%s)." % (id, label))
 
     def classFourthPredecessor(self, id, label):
-        return ("fourth_predecessor_has_class(%s,%s)" % (id, label))
+        return ("fourth_predecessor_has_class(%s,%s)." % (id, label))
 
     def classDirectPredecessor(self, id, label):
-        return ("direct_predecessor_has_class(%s,%s)" % (id, label))
+        return ("direct_predecessor_has_class(%s,%s)." % (id, label))
 
-    def segmentsClassAsLogicProg(self, id, label):
-        return ("class(%s,%s)" % (id, label))
-
+    # Acceleration
     def accelOldestPredecessor(self, id, label):
-        return ("oldest_predecessor_has_acceleration(%s,%s)" % (id, label))
+        return ("oldest_predecessor_has_acceleration(%s,%s)." % (id, label))
 
     def accelSecondPredecessor(self, id, label):
-        return ("second_predecessor_has_acceleration(%s,%s)" % (id, label))
+        return ("second_predecessor_has_acceleration(%s,%s)." % (id, label))
 
     def accelThirdPredecessor(self, id, label):
-        return ("third_predecessor_has_acceleration(%s,%s)" % (id, label))
+        return ("third_predecessor_has_acceleration(%s,%s)." % (id, label))
 
     def accelFourthPredecessor(self, id, label):
-        return ("fourth_predecessor_has_acceleration(%s,%s)" % (id, label))
+        return ("fourth_predecessor_has_acceleration(%s,%s)." % (id, label))
 
     def accelDirectPredecessor(self, id, label):
-        return ("direct_predecessor_has_acceleration(%s,%s)" % (id, label))
+        return ("direct_predecessor_has_acceleration(%s,%s)." % (id, label))
 
+    # Velocity
     def velocityOldestPredecessor(self, id, label):
-        return ("oldest_predecessor_has_velocity(%s,%s)" % (id, label))
+        return ("oldest_predecessor_has_velocity(%s,%s)." % (id, label))
 
     def velocitySecondPredecessor(self, id, label):
-        return ("second_predecessor_has_velocity(%s,%s)" % (id, label))
+        return ("second_predecessor_has_velocity(%s,%s)." % (id, label))
 
     def velocityThirdPredecessor(self, id, label):
-        return ("third_predecessor_has_velocity%s,%s)" % (id, label))
+        return ("third_predecessor_has_velocity%s,%s)." % (id, label))
 
     def velocityFourthPredecessor(self, id, label):
-        return ("fourth_predecessor_has_velocity(%s,%s)" % (id, label))
+        return ("fourth_predecessor_has_velocity(%s,%s)." % (id, label))
 
     def velocityDirectPredecessor(self, id, label):
-        return ("direct_predecessor_has_velocity(%s,%s)" % (id, label))
+        return ("direct_predecessor_has_velocity(%s,%s)." % (id, label))
 
     def catPrevAllEqual(self, id, featureList):
-        haveSameSpeed = "all_prev_have_same_speed(%s)"
+        haveSameSpeed = "all_prev_have_same_speed(%s)."
 
         if(featureList[1:] == featureList[:-1]):
             return (haveSameSpeed % id)
         else:
             return None
 
+    # Target Segment
+    def targetSegmentId(self, folder, segmentNumber):
+        return ("seg%s_%s" % (str(folder), str(segmentNumber)))
+
+    def targetSegmentClass(self, id, label):
+        return ("class(%s,%s)." % (id, label))
+
+    def targetSegmentVelocity(self, id, catSpeed):
+        return ("has_speed(%s,%s)." % (id, catSpeed))
+
+    def targetSegmentAcceleration(self, id, catAccel):
+        return ("has_acceleration(%s,%s)." % (id, catAccel))
+
     class Segment:
-        classValue = "Unknown name"
-        velocity = "Unknown velocity"
-        acceleration = "Unknown major"
+        classValue = None
+        velocity = None
+        acceleration = None
