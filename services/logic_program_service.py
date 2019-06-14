@@ -55,7 +55,82 @@ class LogicProgramService:
         self.dataService = DataService()
         self.sequenceSize = 5
 
+        self.segment = "segment"
+        self.targetClass = "class"
+        self.targetVelocity = "velocity"
+        self.targetAccel = "acceleration"
+
+    def printTranslated(self, translated):
+        # Positive Examples
+        with open(join("segments.f"), "w") as file:
+            for translation in translated:
+                file.write("%s\n" % translation.targetClass)
+
+            file.close()
+
+        # Background Knowledge
+        with open(join("segments.b"), "w") as file:
+            file.write("% | SETTINGS\n")
+            # ===============================
+            file.write(":- set(evalfn,posonly).\n" +
+                       ":- set(clauselength,20).\n" +
+                       ":- set(nodes,2000).\n" +
+                       ":- set(gsamplesize,20).\n")
+            file.write("\n")
+
+            file.write("% | MODES\n")
+            # ============================
+            file.write(":- modeh(1,%s(+%s,#class)).\n" %
+                       (self.targetClass, self.segment))
+            file.write(":- modeb(1,%s(+%s,#speed)).\n" %
+                       (self.targetVelocity, self.segment))
+            file.write(":- modeb(1,%s(+%s,#speed)).\n" %
+                       (self.targetAccel, self.segment))
+            file.write("\n")
+
+            file.write("% | DETERMINATIONS\n")
+            # =====================================
+            file.write(":- determination(class/2,%s/2).\n" %
+                       self.targetVelocity)
+            file.write(":- determination(class/2,%s/2).\n" %
+                       self.targetAccel)
+            file.write("\n")
+
+            file.write("% | TYPES\n")
+            # ============================
+            for type in config.transportmodes:
+                file.write("class(%s). \t" % type)
+            file.write("\n")
+
+            for index, type in enumerate(config.speeds):
+                file.write("speed(%s). \t" % type)
+                if index % 4 == 0:
+                    file.write("\n")
+            file.write("\n")
+
+            for index, translation in enumerate(translated):
+                file.write("%s\t" % translation.targetSegId)
+                if index % 4 == 0:
+                    file.write("\n")
+            file.write("\n")
+
+            file.write("% | FEATURES\n")
+            for index, translation in enumerate(translated):
+                file.write("%s\t" % translation.targetVelocity)
+                if index % 2 == 0:
+                    file.write("\n")
+            file.write("\n")
+
+            for index, translation in enumerate(translated):
+                file.write("%s\t" % translation.targetAccel)
+                if index % 2 == 0:
+                    file.write("\n")
+            file.write("\n")
+
+            file.close()
+
     def generateLogicProgram(self):
+        translated = []
         userFolders = self.userService.getSegmentUserNames()
 
         for folder in userFolders:
@@ -64,7 +139,9 @@ class LogicProgramService:
             self.generateOutputFolders(outputPath)
 
             fileNames = self.dataService.getFileNamesInPath(path)
-            self.forAllSegmentFiles(path, folder, fileNames)
+            translated.extend(self.forAllSegmentFiles(path, folder, fileNames))
+
+        self.printTranslated(translated)
 
     def generateOutputFolders(self, outputPath):
         self.dataService.ensureFolderExists(outputPath)
@@ -74,15 +151,19 @@ class LogicProgramService:
             self.dataService.ensureFolderExists(transModePath)
 
     def forAllSegmentFiles(self, path, folder, fileNames):
+        translated = []
         for file in fileNames:
             filePath = join(path, file)
             df = pd.read_csv(filePath, sep='\t', index_col=0, header=0)
 
-            self.makeLogicSequences(folder, df, file)
+            translated.extend(self.translateToLogic(folder, df, file))
 
-    def makeLogicSequences(self, folder, df, file):
+        return translated
+
+    def translateToLogic(self, folder, df, file):
+        translated = []
+
         for index, row in df.iterrows():
-
             if(index < (len(df) - self.sequenceSize)):
                 # HowTo:
                 # =======
@@ -113,42 +194,74 @@ class LogicProgramService:
                 targetSegment = df.iloc[index + self.sequenceSize]
 
                 if(targetSegment[config.tmHead] in config.transportmodes):
-                    sequenceId = "sequence" + str(folder) + \
-                        "_" + str(index + self.sequenceSize)
-                    targetSegmentId = self.targetSegmentId(
+                    obj = self.Sequence()
+                    segId = self.segId(
                         folder, index + self.sequenceSize)
-                    translatedSegment = self.getTargetSegment(
-                        targetSegmentId, targetSegment)
 
-                    preSegments = []
-                    preVelocities = []
-                    translation = []
-                    # Relations that are only set when they exist
-                    pre_all_same_speed = None  # none if false
+                    obj.targetSegId = self.getSegId(segId)
+                    obj.targetClass = self.getTargetClass(
+                        segId, targetSegment)
+                    obj.targetVelocity = self.getTargetVelocity(
+                        segId, targetSegment)
+                    obj.targetAccel = self.getTargetAccel(
+                        segId, targetSegment)
 
-                    for x in range(self.sequenceSize):
-                        preSegments.append(df.iloc[index + x])
-                        preVelocities.append(self.catSpeedValueFor(
-                            preSegments[x][config.speedHead]))
+                    translated.append(obj)
 
-                        catAcceleration = self.catSpeedValueFor(
-                            abs(preSegments[x][config.accelerationHead]))
+        return translated
 
-                        translation.append(self.translatePredecessors(
-                            x, targetSegmentId, preSegments[x][config.tmHead],
-                            preVelocities[x], catAcceleration))
+    def getSegId(self, segId):
+        # returns segment(segmentID).
+        return str("%s(%s)." % (self.segment, segId))
 
-                    pre_all_same_speed = self.catPrevAllEqual(
-                        targetSegmentId,
-                        preVelocities)
+    def getTargetClass(self, segId, targetSegment):
+        className = targetSegment[config.tmHead]
 
-                    outputPath = join(config.logicProgramPath,
-                                      folder,
-                                      targetSegment[config.tmHead],
-                                      sequenceId + ".b")
+        # returns targetSegment(segmentID, class).
+        return str("%s(%s,%s)." % (self.targetClass, segId, className))
 
-                    self.printToFile(outputPath, translatedSegment,
-                                     translation, pre_all_same_speed)
+    def getTargetVelocity(self, segId, targetSegment):
+        rawVelocity = targetSegment[config.speedHead]
+        catVeloicty = self.catSpeedValueFor(rawVelocity)
+
+        # returns targetVelocity(segmentID, speed).
+        return str("%s(%s,%s)." % (self.targetVelocity, segId, catVeloicty))
+
+    def getTargetAccel(self, segId, targetSegment):
+        rawAccel = targetSegment[config.speedHead]
+        catAccel = self.catSpeedValueFor(rawAccel)
+
+        # returns targetAcceleration(segmentID, speed).
+        return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
+
+    class Sequence:
+        # Head
+        targetSegId = None
+        # Feature
+        targetClass = None
+        targetVelocity = None
+        targetAccel = None
+
+    def catSpeedValueFor(self, speed):
+        # TODO: calculate medium speed of all TMs
+        if(0 <= speed < 1):
+            return config.speeds[0]
+        elif(1 <= speed < 2):
+            return config.speeds[1]
+        elif(2 <= speed < 3):
+            return config.speeds[2]
+        elif(3 <= speed < 5):
+            return config.speeds[3]
+        elif(5 <= speed < 8):
+            return config.speeds[4]
+        elif(8 <= speed < 13):
+            return config.speeds[5]
+        else:
+            return config.speeds[6]
+
+    # ====================================================
+    # ====================================================
+    # DEPRECATED
 
     def printToFile(self, outputPath, target, translation, pre_all_same_speed):
         with open(outputPath, "w") as write_file:
@@ -169,40 +282,6 @@ class LogicProgramService:
             if(not(pre_all_same_speed is None)):
                 write_file.write(pre_all_same_speed + "\n")
             write_file.close()
-
-    def catSpeedValueFor(self, speed):
-        # TODO: calculate medium speed of all TMs
-
-        if(0 <= speed < 1):
-            return "very_slow"
-        elif(1 <= speed < 2):
-            return "slow"
-        elif(2 <= speed < 3):
-            return "below_medium"
-        elif(3 <= speed < 5):
-            return "medium"
-        elif(5 <= speed < 8):
-            return "above_medium"
-        elif(8 <= speed < 13):
-            return "fast"
-        else:
-            return "very_fast"
-
-    def getTargetSegment(self, id, targetSegment):
-        segment = self.Segment()
-
-        segment.classValue = self.targetSegmentClass(
-            id, targetSegment[config.tmHead])
-
-        segment.velocity = self.targetSegmentVelocity(
-            id, self.catSpeedValueFor(
-                targetSegment[config.speedHead]))
-
-        segment.acceleration = self.targetSegmentAcceleration(
-            id, self.catSpeedValueFor(
-                abs(targetSegment[config.accelerationHead])))
-
-        return segment
 
     def translatePredecessors(self, counter, id, classValue,
                               velocity, acceleration):
@@ -310,7 +389,7 @@ class LogicProgramService:
             return None
 
     # Target Segment
-    def targetSegmentId(self, folder, segmentNumber):
+    def segId(self, folder, segmentNumber):
         return ("seg%s_%s" % (str(folder), str(segmentNumber)))
 
     def targetSegmentClass(self, id, label):

@@ -37,3 +37,5 @@ labelHeader = [labelHead, dateHead, longHead, latHead]
 gpsTimeHead = 'Datetime'
 
 transportmodes = ['bike', 'bus', 'car', 'walk']
+speeds = ["very_slow", "slow", "below_medium",
+          "medium", "above_medium", "fast", "very_fast"]
