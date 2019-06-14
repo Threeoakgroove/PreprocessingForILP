@@ -36,6 +36,32 @@
 #   seg203 has class(Z)
 #
 ################################################################
+# HowTo:
+# =======
+# get six consecutive lines from dataframe
+#   - sequence size (5) plus target segment
+#
+# current implementation in new structure:
+# =========================================
+# class of targetSegment is only that can be named 'class'
+#   - otherwise this would confuse the aleph-algorithm
+# class of previous segments can still be mentioned elsewise
+#   - prevHasClass(seg1, seg201, bus).
+#   - class(seg201, bus).  <-- this is what will be predicted
+#
+# advantage over current solution:
+# =================================
+# in seg202 the seg1 is faster than seg2
+#   - isFasterThan(seg1,seg2,seg202).
+# in seg202 the seg2 is faster than seg3
+#   - isFasterThan(seg2,seg3,seg202).
+# leading to rules like:
+#   - seg1 is faster than seg 2 and seg 2 is faster than seg 3
+#   - isFasterThan(A,B,Target),
+#       isFasterThan(B,C,Target),
+#       class(Target,bus).
+#
+################################################################
 
 import config
 
@@ -59,17 +85,20 @@ class LogicProgramService:
         self.targetClass = "class"
         self.targetVelocity = "velocity"
         self.targetAccel = "acceleration"
+        self.hasPrevSegment = "hasPrevSegment"
+        self.fasterPrev = "isFasterThanPrevious"
+        self.prevClass = "prevHasClass"
 
     def printTranslated(self, translated):
         # Positive Examples
-        with open(join("segments.f"), "w") as file:
+        with open(config.fAlephPath, "w") as file:
             for translation in translated:
                 file.write("%s\n" % translation.targetClass)
 
             file.close()
 
         # Background Knowledge
-        with open(join("segments.b"), "w") as file:
+        with open(config.bAlephPath, "w") as file:
             file.write("% | SETTINGS\n")
             # ===============================
             file.write(":- set(evalfn,posonly).\n" +
@@ -86,6 +115,12 @@ class LogicProgramService:
                        (self.targetVelocity, self.segment))
             file.write(":- modeb(1,%s(+%s,#speed)).\n" %
                        (self.targetAccel, self.segment))
+            file.write(":- modeb(1,%s(+%s)).\n" %
+                       (self.fasterPrev, self.segment))
+            file.write(":- modeb(1,%s(+%s,#class)).\n" %
+                       (self.prevClass, self.segment))
+            file.write(":- modeb(1,%s(-%s,+%s)).\n" %
+                       (self.hasPrevSegment, self.segment, self.segment))
             file.write("\n")
 
             file.write("% | DETERMINATIONS\n")
@@ -94,6 +129,12 @@ class LogicProgramService:
                        self.targetVelocity)
             file.write(":- determination(class/2,%s/2).\n" %
                        self.targetAccel)
+            file.write(":- determination(class/2,%s/1).\n" %
+                       self.fasterPrev)
+            file.write(":- determination(class/2,%s/2).\n" %
+                       self.prevClass)
+            file.write(":- determination(class/2,%s/2).\n" %
+                       self.hasPrevSegment)
             file.write("\n")
 
             file.write("% | TYPES\n")
@@ -123,6 +164,29 @@ class LogicProgramService:
 
             for index, translation in enumerate(translated):
                 file.write("%s\t" % translation.targetAccel)
+                if index % 2 == 0:
+                    file.write("\n")
+            file.write("\n")
+
+            file.write("% | RELATIONS\n")
+            for index, translation in enumerate(translated):
+                file.write("%s\t" % translation.hasPrevSegment)
+                if index % 2 == 0:
+                    file.write("\n")
+            file.write("\n")
+
+            prettierOutputCounter = 0
+            for index, translation in enumerate(translated):
+                if translation.isFasterThanPrev is not None:
+                    prettierOutputCounter += 1
+                    file.write("%s\t" % translation.isFasterThanPrev)
+                    if (prettierOutputCounter % 2 == 0 or
+                            index == (len(translated) - 1)):
+                        file.write("\n")
+            file.write("\n")
+
+            for index, translation in enumerate(translated):
+                file.write("%s\t" % translation.prevHasClass)
                 if index % 2 == 0:
                     file.write("\n")
             file.write("\n")
@@ -165,32 +229,7 @@ class LogicProgramService:
 
         for index, row in df.iterrows():
             if(index < (len(df) - self.sequenceSize)):
-                # HowTo:
-                # =======
-                # get six consecutive lines from dataframe
-                #   - sequence size (5) plus target segment
-                #
-                # current implementation in new structure:
-                # =========================================
-                # class of targetSegment is only that can be named 'class'
-                #   - otherwise this would confuse the aleph-algorithm
-                # class of previous segments can still be mentioned elsewise
-                #   - prevHasClass(seg1, seg201, bus).
-                #   - class(seg201, bus).  <-- this is what will be predicted
-                #
-                # advantage over current solution:
-                # =================================
-                # in seg202 the seg1 is faster than seg2
-                #   - isFasterThan(seg1,seg2,seg202).
-                # in seg202 the seg2 is faster than seg3
-                #   - isFasterThan(seg2,seg3,seg202).
-                # leading to rules like:
-                #   - seg1 is faster than seg 2 and seg 2 is faster than seg 3
-                #   - isFasterThan(A,B,Target),
-                #       isFasterThan(B,C,Target),
-                #       class(Target,bus).
-                #
-
+                prevSegment = df.iloc[index + self.sequenceSize - 1]
                 targetSegment = df.iloc[index + self.sequenceSize]
 
                 if(targetSegment[config.tmHead] in config.transportmodes):
@@ -205,10 +244,19 @@ class LogicProgramService:
                         segId, targetSegment)
                     obj.targetAccel = self.getTargetAccel(
                         segId, targetSegment)
+                    obj.isFasterThanPrev = self.getFasterThanPrev(
+                        segId, targetSegment, prevSegment)
+                    obj.prevHasClass = self.getPrevClass(
+                        segId, prevSegment)
+                    obj.hasPrevSegment = self.getHasPrevSegment(
+                        segId)
 
                     translated.append(obj)
 
         return translated
+
+    def segId(self, folder, segmentNumber):
+        return ("seg%s_%s" % (str(folder), str(segmentNumber)))
 
     def getSegId(self, segId):
         # returns segment(segmentID).
@@ -234,6 +282,25 @@ class LogicProgramService:
         # returns targetAcceleration(segmentID, speed).
         return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
 
+    def getPrevSegmentId(self, segId):
+        return None
+
+    def getHasPrevSegment(self, segId):
+        prevSegId = str("%s_%s" % (segId, 1))
+
+        return str("%s(%s,%s)." % (self.hasPrevSegment, segId, prevSegId))
+
+    def getFasterThanPrev(self, segId, targetSegment, prevSegment):
+        isFasterThanPrev = None
+        if targetSegment[config.speedHead] > prevSegment[config.speedHead]:
+            isFasterThanPrev = str("%s(%s)." % (self.fasterPrev, segId))
+
+        return isFasterThanPrev
+
+    def getPrevClass(self, segId, prevSegment):
+        prevClass = prevSegment[config.tmHead]
+        return str("%s(%s,%s)." % (self.prevClass, segId, prevClass))
+
     class Sequence:
         # Head
         targetSegId = None
@@ -241,6 +308,11 @@ class LogicProgramService:
         targetClass = None
         targetVelocity = None
         targetAccel = None
+
+        # Relation
+        isFasterThanPrev = None
+        prevHasClass = None
+        hasPrevSegment = None
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs
@@ -389,19 +461,3 @@ class LogicProgramService:
             return None
 
     # Target Segment
-    def segId(self, folder, segmentNumber):
-        return ("seg%s_%s" % (str(folder), str(segmentNumber)))
-
-    def targetSegmentClass(self, id, label):
-        return ("class(%s,%s)." % (id, label))
-
-    def targetSegmentVelocity(self, id, catSpeed):
-        return ("has_speed(%s,%s)." % (id, catSpeed))
-
-    def targetSegmentAcceleration(self, id, catAccel):
-        return ("has_acceleration(%s,%s)." % (id, catAccel))
-
-    class Segment:
-        classValue = None
-        velocity = None
-        acceleration = None
