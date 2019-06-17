@@ -117,10 +117,11 @@ class LogicProgramService:
                        (self.targetAccel, self.segment))
             file.write(":- modeb(1,%s(+%s)).\n" %
                        (self.fasterPrev, self.segment))
-            file.write(":- modeb(1,%s(+%s,#class)).\n" %
-                       (self.prevClass, self.segment))
             file.write(":- modeb(1,%s(-%s,+%s)).\n" %
                        (self.hasPrevSegment, self.segment, self.segment))
+            # - since the segment must already be in the searchspace
+            file.write(":- modeb(1,%s(-%s,#class)).\n" %
+                       (self.prevClass, self.segment))
             file.write("\n")
 
             file.write("% | DETERMINATIONS\n")
@@ -132,9 +133,9 @@ class LogicProgramService:
             file.write(":- determination(class/2,%s/1).\n" %
                        self.fasterPrev)
             file.write(":- determination(class/2,%s/2).\n" %
-                       self.prevClass)
-            file.write(":- determination(class/2,%s/2).\n" %
                        self.hasPrevSegment)
+            file.write(":- determination(class/2,%s/2).\n" %
+                       self.prevClass)
             file.write("\n")
 
             file.write("% | TYPES\n")
@@ -148,6 +149,8 @@ class LogicProgramService:
                 if index % 4 == 0:
                     file.write("\n")
             file.write("\n")
+
+            # TODO: Print prevSegIds as segment(00_00_0).
 
             for index, translation in enumerate(translated):
                 file.write("%s\t" % translation.targetSegId)
@@ -169,12 +172,6 @@ class LogicProgramService:
             file.write("\n")
 
             file.write("% | RELATIONS\n")
-            for index, translation in enumerate(translated):
-                file.write("%s\t" % translation.hasPrevSegment)
-                if index % 2 == 0:
-                    file.write("\n")
-            file.write("\n")
-
             prettierOutputCounter = 0
             for index, translation in enumerate(translated):
                 if translation.isFasterThanPrev is not None:
@@ -185,8 +182,14 @@ class LogicProgramService:
                         file.write("\n")
             file.write("\n")
 
-            for index, translation in enumerate(translated):
-                file.write("%s\t" % translation.prevHasClass)
+            for innerIndex, prevSegment in enumerate(translation.prevSegments):
+                file.write("%s\t" % prevSegment.hasPrevSegment)
+                if innerIndex % 2 == 0:
+                    file.write("\n")
+            file.write("\n")
+
+            for index, prevSegment in enumerate(translation.prevSegments):
+                file.write("%s\t" % prevSegment.prevHasClass)
                 if index % 2 == 0:
                     file.write("\n")
             file.write("\n")
@@ -246,17 +249,28 @@ class LogicProgramService:
                         segId, targetSegment)
                     obj.isFasterThanPrev = self.getFasterThanPrev(
                         segId, targetSegment, prevSegment)
-                    obj.prevHasClass = self.getPrevClass(
-                        segId, prevSegment)
-                    obj.hasPrevSegment = self.getHasPrevSegment(
-                        segId)
+
+                    prevSegId = self.getPrevSegmentId(segId)
+                    for innerIndex, i in enumerate(range(0, self.sequenceSize)):
+                        prev = self.PreviousSegment()
+
+                        prev.targetSegId = self.getSegId(prevSegId)
+                        prev.hasPrevSegment = self.getHasPrevSegment(
+                            segId, prevSegId)
+                        prev.prevHasClass = self.getPrevClass(
+                            prevSegId, prevSegment)
+
+                        obj.prevSegments.append(prev)
+                        prevSegIndex = index - innerIndex - 1
+                        prevSegment = df.iloc[prevSegIndex]
+                        prevSegId = self.getPrevSegmentId(prevSegId)
 
                     translated.append(obj)
 
         return translated
 
     def segId(self, folder, segmentNumber):
-        return ("seg%s_%s" % (str(folder), str(segmentNumber)))
+        return ("seg%s_%s_0" % (str(folder), str(segmentNumber)))
 
     def getSegId(self, segId):
         # returns segment(segmentID).
@@ -283,10 +297,12 @@ class LogicProgramService:
         return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
 
     def getPrevSegmentId(self, segId):
-        return None
+        split = segId.split("_")
+        newSegCount = str(int(split[2]) + 1)
 
-    def getHasPrevSegment(self, segId):
-        prevSegId = str("%s_%s" % (segId, 1))
+        return str("%s_%s_%s" % (split[0], split[1], newSegCount))
+
+    def getHasPrevSegment(self, segId, prevSegId):
 
         return str("%s(%s,%s)." % (self.hasPrevSegment, segId, prevSegId))
 
@@ -297,9 +313,10 @@ class LogicProgramService:
 
         return isFasterThanPrev
 
-    def getPrevClass(self, segId, prevSegment):
+    def getPrevClass(self, prevSegId, prevSegment):
         prevClass = prevSegment[config.tmHead]
-        return str("%s(%s,%s)." % (self.prevClass, segId, prevClass))
+
+        return str("%s(%s,%s)." % (self.prevClass, prevSegId, prevClass))
 
     class Sequence:
         # Head
@@ -311,6 +328,13 @@ class LogicProgramService:
 
         # Relation
         isFasterThanPrev = None
+        prevHasClass = None
+        hasPrevSegment = None
+
+        prevSegments = []
+
+    class PreviousSegment:
+        targetSegId = None
         prevHasClass = None
         hasPrevSegment = None
 
@@ -330,134 +354,3 @@ class LogicProgramService:
             return config.speeds[5]
         else:
             return config.speeds[6]
-
-    # ====================================================
-    # ====================================================
-    # DEPRECATED
-
-    def printToFile(self, outputPath, target, translation, pre_all_same_speed):
-        with open(outputPath, "w") as write_file:
-            write_file.write("% \t Target Segment Features: \n")
-            write_file.write(target.classValue + "\n")
-            write_file.write(target.velocity + "\n")
-            write_file.write(target.acceleration + "\n")
-
-            write_file.write("\n % \t Predecessor Features: \n")
-            for x in range(self.sequenceSize):
-                write_file.write(translation[x].classValue + "\n")
-                write_file.write(translation[x].velocity + "\n")
-                write_file.write(
-                    translation[x].acceleration + "\n")
-
-            write_file.write("\n% \t Relations: \n")
-
-            if(not(pre_all_same_speed is None)):
-                write_file.write(pre_all_same_speed + "\n")
-            write_file.close()
-
-    def translatePredecessors(self, counter, id, classValue,
-                              velocity, acceleration):
-        segment = self.Segment()
-
-        if(counter == 0):
-            segment.classValue = self.classOldestPredecessor(
-                id, classValue)
-            segment.velocity = self.velocityOldestPredecessor(
-                id, velocity)
-            segment.acceleration = self.accelOldestPredecessor(
-                id, acceleration)
-
-        elif(counter == 1):
-            segment.classValue = self.classSecondPredecessor(
-                id, classValue)
-            segment.velocity = self.velocitySecondPredecessor(
-                id, velocity)
-            segment.acceleration = self.accelSecondPredecessor(
-                id, acceleration)
-
-        elif(counter == 2):
-            segment.classValue = self.classThirdPredecessor(
-                id, classValue)
-            segment.velocity = self.velocityThirdPredecessor(
-                id, velocity)
-            segment.acceleration = self.accelThirdPredecessor(
-                id, acceleration)
-
-        elif(counter == 3):
-            segment.classValue = self.classFourthPredecessor(
-                id, classValue)
-            segment.velocity = self.velocityFourthPredecessor(
-                id, velocity)
-            segment.acceleration = self.accelFourthPredecessor(
-                id, acceleration)
-
-        elif(counter == 4):
-            segment.classValue = self.classDirectPredecessor(
-                id, classValue)
-            segment.velocity = self.velocityDirectPredecessor(
-                id, velocity)
-            segment.acceleration = self.accelDirectPredecessor(
-                id, acceleration)
-
-        else:
-            logging.warning("Index out of scope for class translation")
-
-        return segment
-
-    # Class
-    def classOldestPredecessor(self, id, label):
-        return ("oldest_predecessor_has_class(%s,%s)." % (id, label))
-
-    def classSecondPredecessor(self, id, label):
-        return ("second_predecessor_has_class(%s,%s)." % (id, label))
-
-    def classThirdPredecessor(self, id, label):
-        return ("third_predecessor_has_class(%s,%s)." % (id, label))
-
-    def classFourthPredecessor(self, id, label):
-        return ("fourth_predecessor_has_class(%s,%s)." % (id, label))
-
-    def classDirectPredecessor(self, id, label):
-        return ("direct_predecessor_has_class(%s,%s)." % (id, label))
-
-    # Acceleration
-    def accelOldestPredecessor(self, id, label):
-        return ("oldest_predecessor_has_acceleration(%s,%s)." % (id, label))
-
-    def accelSecondPredecessor(self, id, label):
-        return ("second_predecessor_has_acceleration(%s,%s)." % (id, label))
-
-    def accelThirdPredecessor(self, id, label):
-        return ("third_predecessor_has_acceleration(%s,%s)." % (id, label))
-
-    def accelFourthPredecessor(self, id, label):
-        return ("fourth_predecessor_has_acceleration(%s,%s)." % (id, label))
-
-    def accelDirectPredecessor(self, id, label):
-        return ("direct_predecessor_has_acceleration(%s,%s)." % (id, label))
-
-    # Velocity
-    def velocityOldestPredecessor(self, id, label):
-        return ("oldest_predecessor_has_velocity(%s,%s)." % (id, label))
-
-    def velocitySecondPredecessor(self, id, label):
-        return ("second_predecessor_has_velocity(%s,%s)." % (id, label))
-
-    def velocityThirdPredecessor(self, id, label):
-        return ("third_predecessor_has_velocity%s,%s)." % (id, label))
-
-    def velocityFourthPredecessor(self, id, label):
-        return ("fourth_predecessor_has_velocity(%s,%s)." % (id, label))
-
-    def velocityDirectPredecessor(self, id, label):
-        return ("direct_predecessor_has_velocity(%s,%s)." % (id, label))
-
-    def catPrevAllEqual(self, id, featureList):
-        haveSameSpeed = "all_prev_have_same_speed(%s)."
-
-        if(featureList[1:] == featureList[:-1]):
-            return (haveSameSpeed % id)
-        else:
-            return None
-
-    # Target Segment
