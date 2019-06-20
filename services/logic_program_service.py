@@ -150,11 +150,15 @@ class LogicProgramService:
                     file.write("\n")
             file.write("\n")
 
-            # TODO: Print prevSegIds as segment(00_00_0).
-
             for index, translation in enumerate(translated):
                 file.write("%s\t" % translation.targetSegId)
                 if index % 4 == 0:
+                    file.write("\n")
+            file.write("\n")
+            # TODO: Print prevSegIds as segment(00_00_0).
+            for index, prevSegment in enumerate(translation.prevSegments):
+                file.write("%s\t" % prevSegment.id)
+                if index % 2 == 0:
                     file.write("\n")
             file.write("\n")
 
@@ -237,10 +241,10 @@ class LogicProgramService:
 
                 if(targetSegment[config.tmHead] in config.transportmodes):
                     obj = self.Sequence()
-                    segId = self.segId(
+                    segId = self.makeSegId(
                         folder, index + self.sequenceSize)
 
-                    obj.targetSegId = self.getSegId(segId)
+                    obj.targetSegId = self.getLogicSegId(segId)
                     obj.targetClass = self.getTargetClass(
                         segId, targetSegment)
                     obj.targetVelocity = self.getTargetVelocity(
@@ -254,7 +258,7 @@ class LogicProgramService:
                     for innerIndex, i in enumerate(range(0, self.sequenceSize)):
                         prev = self.PreviousSegment()
 
-                        prev.targetSegId = self.getSegId(prevSegId)
+                        prev.id = self.getLogicSegId(prevSegId)
                         prev.hasPrevSegment = self.getHasPrevSegment(
                             segId, prevSegId)
                         prev.prevHasClass = self.getPrevClass(
@@ -269,10 +273,10 @@ class LogicProgramService:
 
         return translated
 
-    def segId(self, folder, segmentNumber):
+    def makeSegId(self, folder, segmentNumber):
         return ("seg%s_%s_0" % (str(folder), str(segmentNumber)))
 
-    def getSegId(self, segId):
+    def getLogicSegId(self, segId):
         # returns segment(segmentID).
         return str("%s(%s)." % (self.segment, segId))
 
@@ -334,7 +338,7 @@ class LogicProgramService:
         prevSegments = []
 
     class PreviousSegment:
-        targetSegId = None
+        id = None
         prevHasClass = None
         hasPrevSegment = None
 
