@@ -1,7 +1,7 @@
 % | SETTINGS
 :- set(evalfn,posonly).
 :- set(clauselength,20).
-:- set(nodes,2000).
+:- set(nodes,20000).
 :- set(gsamplesize,20).
 
 % | MODES
