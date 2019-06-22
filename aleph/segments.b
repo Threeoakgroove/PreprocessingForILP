@@ -1,11 +1,16 @@
 % | SETTINGS
-:- set(evalfn,posonly).
+:- set(i,5).
 :- set(clauselength,20).
+:- set(minacc,0.6).
+:- set(minscore,3).
+:- set(minpos,3).
+:- set(noise,3).
 :- set(nodes,2000).
-:- set(gsamplesize,20).
+:- set(explore,true).
+:- set(max_features,10).
 
 % | MODES
-:- modeh(1,class(+segment,#class)).
+:- modeh(1,class(+segment)).
 :- modeb(1,velocity(+segment,#speed)).
 :- modeb(1,acceleration(+segment,#speed)).
 :- modeb(1,isFasterThanPrevious(+segment)).
@@ -22,7 +27,6 @@
 :- determination(class/2,hasChangepoint/2).
 
 % | TYPES
-class(bike). 	class(bus). 	class(car). 	class(walk). 	
 speed(very_slow). 	
 speed(slow). 	speed(below_medium). 	speed(medium). 	speed(above_medium). 	
 speed(fast). 	speed(very_fast). 	

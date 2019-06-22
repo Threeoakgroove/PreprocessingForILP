@@ -8,6 +8,7 @@ featurePath = join(outputPath, 'feature')
 logicProgramPath = join(outputPath, 'logic_program')
 bAlephPath = join('aleph', 'segments.b')
 fAlephPath = join('aleph', 'segments.f')
+nAlephPath = join('aleph', 'segments.n')
 pathTestData = join('data', 'testdata')
 # pathTestData = join('data', 'Data')
 

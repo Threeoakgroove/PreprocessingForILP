@@ -94,23 +94,35 @@ class LogicProgramService:
         # Positive Examples
         with open(config.fAlephPath, "w") as file:
             for translation in translated:
-                file.write("%s\n" % translation.targetClass)
+                if translation.thisClass == "walk":
+                    file.write("%s\n" % translation.targetClass)
+            file.close()
 
+        with open(config.nAlephPath, "w") as file:
+            for translation in translated:
+                if translation.thisClass != "walk":
+                    file.write("%s\n" % translation.targetClass)
             file.close()
 
         # Background Knowledge
         with open(config.bAlephPath, "w") as file:
             file.write("% | SETTINGS\n")
             # ===============================
-            file.write(":- set(evalfn,posonly).\n" +
-                       ":- set(clauselength,20).\n" +
-                       ":- set(nodes,2000).\n" +
-                       ":- set(gsamplesize,20).\n")
+            file.write(
+                ":- set(i,5).\n" +
+                ":- set(clauselength,20).\n" +
+                ":- set(minacc,0.6).\n" +
+                ":- set(minscore,3).\n" +
+                ":- set(minpos,3).\n" +
+                ":- set(noise,3).\n" +
+                ":- set(nodes,2000).\n" +
+                ":- set(explore,true).\n" +
+                ":- set(max_features,10).\n")
             file.write("\n")
 
             file.write("% | MODES\n")
             # ============================
-            file.write(":- modeh(1,%s(+%s,#class)).\n" %
+            file.write(":- modeh(1,%s(+%s)).\n" %
                        (self.targetClass, self.segment))
             file.write(":- modeb(1,%s(+%s,#speed)).\n" %
                        (self.targetVelocity, self.segment))
@@ -137,13 +149,13 @@ class LogicProgramService:
             # 1 segment can have 1 class (for the previous segments)
             file.write(":- determination(class/2,%s/2).\n" %
                        self.targetVelocity)
-            file.write(":- determination(class/2,%s/2).\n" %
+            file.write(":- determination(class/1,%s/2).\n" %
                        self.targetAccel)
-            file.write(":- determination(class/2,%s/1).\n" %
+            file.write(":- determination(class/1,%s/1).\n" %
                        self.fasterPrev)
-            file.write(":- determination(class/2,%s/2).\n" %
+            file.write(":- determination(class/1,%s/2).\n" %
                        self.hasPrevSegment)
-            file.write(":- determination(class/2,%s/2).\n" %
+            file.write(":- determination(class/1,%s/2).\n" %
                        self.prevClass)
             file.write(":- determination(class/2,%s/2).\n" %
                        self.hasChangepoint)
@@ -151,10 +163,6 @@ class LogicProgramService:
 
             file.write("% | TYPES\n")
             # ============================
-            for type in config.transportmodes:
-                file.write("class(%s). \t" % type)
-            file.write("\n")
-
             for index, type in enumerate(config.speeds):
                 file.write("speed(%s). \t" % type)
                 if index % 4 == 0:
@@ -264,6 +272,8 @@ class LogicProgramService:
                         folder, index + self.sequenceSize)
 
                     # Features
+                    obj.thisClass = targetSegment[config.tmHead]
+
                     obj.targetSegId = self.getLogicSegId(segId)
                     obj.targetClass = self.getTargetClass(
                         segId, targetSegment)
@@ -315,7 +325,7 @@ class LogicProgramService:
         className = targetSegment[config.tmHead]
 
         # returns targetSegment(segmentID, class).
-        return str("%s(%s,%s)." % (self.targetClass, segId, className))
+        return str("%s(%s)." % (self.targetClass, segId))
 
     def getTargetVelocity(self, segId, targetSegment):
         rawVelocity = targetSegment[config.speedHead]
@@ -361,6 +371,7 @@ class LogicProgramService:
         return str("%s(%s,%s)." % (self.prevClass, prevSegId, prevClass))
 
     class Sequence:
+        thisClass = None
         # Head
         targetSegId = None
         # Feature
