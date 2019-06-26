@@ -10,11 +10,11 @@ from services.plot_service import PlotService
 
 class Main:
 
-    def __init__(self, makeOutput, makeSegments, makeLogicProgram, makePlots):
+    def __init__(self, labelData, makeSegments, makeLogicProgram, showPlots):
         self.setupLogging()
         logging.info("Programm started.")
 
-        if makeOutput:
+        if labelData:
             logging.info("Generating labeled GPS points.")
             labelService = LabelService()
             labelService.generateLabeledGpsPoints()
@@ -35,7 +35,7 @@ class Main:
         else:
             logging.info("Skip generating logic program.")
 
-        if makePlots:
+        if showPlots:
             logging.info("Making plots.")
             plotService = PlotService()
             plotService.generatePlots()
@@ -63,9 +63,9 @@ class Main:
 
 
 if __name__ == '__main__':
-    makeOutput = False
+    labelData = True
     makeSegments = False
-    makeLogicProgram = True
-    makePlots = False
+    makeLogicProgram = False
+    showPlots = False
 
-    Main(makeOutput, makeSegments, makeLogicProgram, makePlots)
+    Main(labelData, makeSegments, makeLogicProgram, showPlots)

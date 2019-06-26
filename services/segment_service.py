@@ -47,7 +47,8 @@ class SegmentService:
 
         for index, userName in enumerate(userFolderNames):
             logging.info('Segmenting data of user ' + str(index + 1) +
-                         ' of ' + str(len(userFolderNames)))
+                         ' of ' + str(len(userFolderNames)) + ' (' +
+                         userName + ')')
             userPath = join(config.segmentPath, userName)
             self.dataService.ensureFolderExists(userPath)
             labeledDataPath = join(config.labelPath, userName)
@@ -101,7 +102,6 @@ class SegmentService:
         endOfLastPoint = datetime.now()
 
         for index, row in df.iterrows():
-            print(row)
             diff = row['startDate'] - endOfLastPoint
 
             if(index != 0 and
@@ -189,9 +189,10 @@ class SegmentService:
         return segmentDf
 
     def isTrajectoryBreak(self, diff):
-        timeLimit = 20 * 60  # 20 minutes
+        minutes = 20
+        timeLimitSec = minutes * 60
 
-        return diff.seconds > timeLimit
+        return diff.seconds > timeLimitSec
 
     def countSegment(self, label, velocity, acceleration):
         velocityIndex = int(velocity * config.rounding)
