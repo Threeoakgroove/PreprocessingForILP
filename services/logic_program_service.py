@@ -88,6 +88,7 @@ class LogicProgramService:
         self.hasPrevSegment = "hasPrevSegment"
         self.fasterPrev = "isFasterThanPrevious"
         self.prevClass = "prevHasClass"
+        self.hasChangepoint = "hasChangepoint"
 
     def printTranslated(self, translated):
         # Positive Examples
@@ -117,15 +118,23 @@ class LogicProgramService:
                        (self.targetAccel, self.segment))
             file.write(":- modeb(1,%s(+%s)).\n" %
                        (self.fasterPrev, self.segment))
-            file.write(":- modeb(1,%s(-%s,+%s)).\n" %
-                       (self.hasPrevSegment, self.segment, self.segment))
-            # - since the segment must already be in the searchspace
+            file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
+                       (self.sequenceSize, self.hasPrevSegment,
+                        self.segment, self.segment))
             file.write(":- modeb(1,%s(-%s,#class)).\n" %
                        (self.prevClass, self.segment))
+            file.write(":- modeb(1,%s(-%s)).\n" %
+                       (self.hasChangepoint, self.segment))
             file.write("\n")
 
             file.write("% | DETERMINATIONS\n")
             # =====================================
+            # segment statt class
+            # 1 segment can have 5 previous segments
+            # 1 segment can have 1 velocity
+            # 1 segment can have 1 acceleration
+            # ...
+            # 1 segment can have 1 class (for the previous segments)
             file.write(":- determination(class/2,%s/2).\n" %
                        self.targetVelocity)
             file.write(":- determination(class/2,%s/2).\n" %
@@ -136,6 +145,8 @@ class LogicProgramService:
                        self.hasPrevSegment)
             file.write(":- determination(class/2,%s/2).\n" %
                        self.prevClass)
+            file.write(":- determination(class/2,%s/2).\n" %
+                       self.hasChangepoint)
             file.write("\n")
 
             file.write("% | TYPES\n")
@@ -155,7 +166,7 @@ class LogicProgramService:
                 if index % 4 == 0:
                     file.write("\n")
             file.write("\n")
-            # TODO: Print prevSegIds as segment(00_00_0).
+
             for index, prevSegment in enumerate(translation.prevSegments):
                 file.write("%s\t" % prevSegment.id)
                 if index % 2 == 0:
@@ -198,6 +209,14 @@ class LogicProgramService:
                     file.write("\n")
             file.write("\n")
 
+            for index, translation in enumerate(translated):
+                if translation.hasChangepoint is not None:
+                    file.write("%s\n" % translation.hasChangepoint)
+
+            for index, prevSegment in enumerate(translation.prevSegments):
+                if prevSegment.hasChangepoint is not None:
+                    file.write("%s\n" % prevSegment.hasChangepoint)
+
             file.close()
 
     def generateLogicProgram(self):
@@ -236,14 +255,15 @@ class LogicProgramService:
 
         for index, row in df.iterrows():
             if(index < (len(df) - self.sequenceSize)):
-                prevSegment = df.iloc[index + self.sequenceSize - 1]
                 targetSegment = df.iloc[index + self.sequenceSize]
+                prevSegment = df.iloc[index + self.sequenceSize - 1]
 
                 if(targetSegment[config.tmHead] in config.transportmodes):
                     obj = self.Sequence()
                     segId = self.makeSegId(
                         folder, index + self.sequenceSize)
 
+                    # Features
                     obj.targetSegId = self.getLogicSegId(segId)
                     obj.targetClass = self.getTargetClass(
                         segId, targetSegment)
@@ -251,10 +271,15 @@ class LogicProgramService:
                         segId, targetSegment)
                     obj.targetAccel = self.getTargetAccel(
                         segId, targetSegment)
+                    obj.hasChangepoint = self.getHasChangepoint(
+                        segId, targetSegment, prevSegment)
+
+                    # Relations
                     obj.isFasterThanPrev = self.getFasterThanPrev(
                         segId, targetSegment, prevSegment)
 
                     prevSegId = self.getPrevSegmentId(segId)
+                    innerPrevSegment = None
                     for innerIndex, i in enumerate(range(0, self.sequenceSize)):
                         prev = self.PreviousSegment()
 
@@ -264,9 +289,15 @@ class LogicProgramService:
                         prev.prevHasClass = self.getPrevClass(
                             prevSegId, prevSegment)
 
+                        if innerIndex != 0:
+                            prev.hasChangepoint = self.getHasChangepoint(
+                                prevSegId, prevSegment, innerPrevSegment)
+
                         obj.prevSegments.append(prev)
                         prevSegIndex = index - innerIndex - 1
                         prevSegment = df.iloc[prevSegIndex]
+                        innerPrevSegIndex = prevSegIndex - 1
+                        innerPrevSegment = df.iloc[innerPrevSegIndex]
                         prevSegId = self.getPrevSegmentId(prevSegId)
 
                     translated.append(obj)
@@ -300,6 +331,13 @@ class LogicProgramService:
         # returns targetAcceleration(segmentID, speed).
         return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
 
+    def getHasChangepoint(self, segId, targetSegment, prevSegment):
+        hasChangepoint = None
+        if targetSegment[config.tmHead] != prevSegment[config.tmHead]:
+            hasChangepoint = str("%s(%s)." % (self.hasChangepoint, segId))
+
+        return hasChangepoint
+
     def getPrevSegmentId(self, segId):
         split = segId.split("_")
         newSegCount = str(int(split[2]) + 1)
@@ -329,6 +367,7 @@ class LogicProgramService:
         targetClass = None
         targetVelocity = None
         targetAccel = None
+        hasChangepoint = None
 
         # Relation
         isFasterThanPrev = None
@@ -341,6 +380,7 @@ class LogicProgramService:
         id = None
         prevHasClass = None
         hasPrevSegment = None
+        hasChangepoint = None
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs
