@@ -45,10 +45,12 @@ TODO Für Donnerstag:
 Implementierung:
 ----------------
 neue Features:
-* hasChangepoint - feature 
+* hasChangepoint - feature (/)
 * hasStopPoint - feature 
-* tmChangeInAnyPrior - relation
-* look at determinations again
+* tmChangeInAnyPrior - relation (/)
+* look at determinations again (/)
+
+* add hasChangepoint already in segmentation step
 
 Selektion von je 100 Objekten pro Target
 * 1. Implementierung = random 100

@@ -58,7 +58,7 @@ class SegmentService:
             for fileName in fileNames:
                 labelFilePath = join(labeledDataPath, fileName)
                 segmentDf = self.generateSegmentsForFile(labelFilePath)
-                self.makeTrajectories(segmentDf, userPath)
+                self.writeTrajectories(segmentDf, userPath)
         self.printOccurences()
 
     def printOccurences(self):
@@ -94,7 +94,7 @@ class SegmentService:
             self.carAccelerations[x] = 0
             self.walkAccelerations[x] = 0
 
-    def makeTrajectories(self, df, userPath):
+    def writeTrajectories(self, df, userPath):
         timeLimit = 20 * 60
         trajectoryDataFrames = []
         timeFormat = '%Y-%m-%d %H:%M:%S'
@@ -129,14 +129,15 @@ class SegmentService:
         return listdir(userPath)
 
     def generateSegmentsForFile(self, pathToFile):
-        segmentDf = pd.DataFrame(columns=config.segmentHeader)
         labeledDf = pd.read_csv(pathToFile, sep='\t', index_col=0, header=0)
+        segmentDf = pd.DataFrame(columns=config.segmentHeader)
 
         segmentsDistance = 0
         segmentLabel = None
         startDate = None
         lastDate = startDate
         lastVelocity = 0
+        acceleration = 0
 
         for index, row in labeledDf.iterrows():
             currentDate = self.getDate(labeledDf, index)
@@ -152,8 +153,8 @@ class SegmentService:
                     labeledDf, index - 1, index)
                 differenceToLast = currentDate - lastDate
 
-                if segmentsDistance + currentDistance < 100:
-                    segmentsDistance += currentDistance
+                segmentsDistance += currentDistance
+                if segmentsDistance < 100:
                     lastDate = currentDate
                 else:
                     totalTime = self.dateService.getDifInSec(
@@ -161,7 +162,10 @@ class SegmentService:
                     velocity = self.featureService.getVelocity(
                         segmentsDistance, totalTime)
 
-                    acceleration = velocity - lastVelocity
+                    if self.dateService.getDifInSec(startDate, lastDate):
+                        acceleration = velocity - lastVelocity
+                    else:
+                        acceleration = velocity
                     lastVelocity = velocity
 
                     segmentDf.loc[len(segmentDf)] = [

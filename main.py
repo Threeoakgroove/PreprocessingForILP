@@ -12,37 +12,37 @@ class Main:
 
     def __init__(self, labelData, makeSegments, makeLogicProgram, showPlots):
         self.setupLogging()
-        logging.info("Programm started.")
+        logging.info("Programm Started.")
 
         if labelData:
-            logging.info("Generating labeled GPS points.")
+            logging.info("Label GPS Points.")
             labelService = LabelService()
             labelService.generateLabeledGpsPoints()
         else:
-            logging.info("Skip generating labeled GPS points.")
+            logging.info("Skip labeling GPS Points.")
 
         if makeSegments:
-            logging.info("Generating segments.")
+            logging.info("Generating Segments.")
             segmentService = SegmentService()
             segmentService.generateSegments()
         else:
-            logging.info("Skip generating segments.")
+            logging.info("Skip Generating Segments.")
 
         if makeLogicProgram:
-            logging.info("Generating logic program.")
+            logging.info("Generating Logic Program.")
             logicProgramService = LogicProgramService()
             logicProgramService.generateLogicProgram()
         else:
-            logging.info("Skip generating logic program.")
+            logging.info("Skip Generating Logic Program.")
 
         if showPlots:
-            logging.info("Making plots.")
+            logging.info("Making Plots.")
             plotService = PlotService()
             plotService.generatePlots()
         else:
-            logging.info("Skip making plots.")
+            logging.info("Skip Making Plots.")
 
-        logging.info("Programm finished.")
+        logging.info("Programm Finished.")
 
     def setupLogging(self):
         logger = logging.getLogger()
@@ -64,7 +64,7 @@ class Main:
 
 if __name__ == '__main__':
     labelData = False
-    makeSegments = False
+    makeSegments = True
     makeLogicProgram = True
     showPlots = False
 
