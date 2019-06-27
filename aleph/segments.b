@@ -11,6 +11,7 @@
 :- modeb(1,isFasterThanPrevious(+segment)).
 :- modeb(1,hasPrevSegment(-segment,+segment)).
 :- modeb(1,prevHasClass(-segment,#class)).
+:- modeb(1,hasChangepoint(-segment)).
 
 % | DETERMINATIONS
 :- determination(class/2,velocity/2).
@@ -18,6 +19,7 @@
 :- determination(class/2,isFasterThanPrevious/1).
 :- determination(class/2,hasPrevSegment/2).
 :- determination(class/2,prevHasClass/2).
+:- determination(class/2,hasChangepoint/2).
 
 % | TYPES
 class(bike). 	class(bus). 	class(car). 	class(walk). 	
@@ -387,6 +389,7 @@ acceleration(seg021_101_0,very_fast).	acceleration(seg021_102_0,very_fast).
 acceleration(seg021_103_0,very_fast).	acceleration(seg010_8859_0,very_slow).	
 acceleration(seg010_8860_0,slow).	acceleration(seg010_8861_0,slow).	
 
+hasChangepoint(seg010_8859_0).
 % | RELATIONS
 isFasterThanPrevious(seg021_138_0).	isFasterThanPrevious(seg021_141_0).	
 isFasterThanPrevious(seg021_145_0).	isFasterThanPrevious(seg021_146_0).	
