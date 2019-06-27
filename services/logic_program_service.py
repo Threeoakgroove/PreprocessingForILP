@@ -77,6 +77,9 @@ from os.path import join
 class LogicProgramService:
 
     def __init__(self):
+        self.isWalkAgainstAll = True
+        self.segmentsPerClass = 10
+
         self.userService = UserService
         self.dataService = DataService()
         self.sequenceSize = 5
@@ -91,46 +94,40 @@ class LogicProgramService:
         self.hasChangepoint = "hasChangepoint"
 
     def printTranslated(self, translated):
-        # Positive Examples
-        with open(config.fAlephPath, "w") as file:
-            for translation in translated:
-                if translation.thisClass == "walk":
-                    file.write("%s\n" % translation.targetClass)
-            file.close()
-
-        with open(config.nAlephPath, "w") as file:
-            for translation in translated:
-                if translation.thisClass != "walk":
-                    file.write("%s\n" % translation.targetClass)
-            file.close()
+        transportMode = "walk"
+        settings = None
+        modeH = None
+        classArity = 1
+        # :- modeh(1,class(+segment,#class)).
+        if self.isWalkAgainstAll:
+            self.printPosAndNegExamples(translated, transportMode)
+            settings = self.getWalkSettings()
+            modeH = str(":- modeh(1,%s(+%s)).\n" %
+                        (self.targetClass, self.segment))
+        else:
+            self.printPosOnly(translated)
+            settings = self.getSettings()
+            modeH = str(":- modeh(1,%s(+%s,#class)).\n" %
+                        (self.targetClass, self.segment))
+            classArity = 2
 
         # Background Knowledge
         with open(config.bAlephPath, "w") as file:
             file.write("% | SETTINGS\n")
-            # ===============================
-            file.write(
-                ":- set(i,5).\n" +
-                ":- set(clauselength,20).\n" +
-                ":- set(minacc,0.6).\n" +
-                ":- set(minscore,3).\n" +
-                ":- set(minpos,3).\n" +
-                ":- set(noise,3).\n" +
-                ":- set(nodes,2000).\n" +
-                ":- set(explore,true).\n" +
-                ":- set(max_features,10).\n")
+            # ===============================            
+            file.write(settings)
             file.write("\n")
 
             file.write("% | MODES\n")
             # ============================
-            file.write(":- modeh(1,%s(+%s)).\n" %
-                       (self.targetClass, self.segment))
+            file.write(modeH)
             file.write(":- modeb(1,%s(+%s,#speed)).\n" %
                        (self.targetVelocity, self.segment))
             file.write(":- modeb(1,%s(+%s,#speed)).\n" %
                        (self.targetAccel, self.segment))
             file.write(":- modeb(1,%s(+%s)).\n" %
                        (self.fasterPrev, self.segment))
-            file.write(":- modeb(%d,%s(-%s,+%s)).\n" %
+            file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
                        (self.sequenceSize, self.hasPrevSegment,
                         self.segment, self.segment))
             file.write(":- modeb(1,%s(+%s,#class)).\n" %
@@ -147,22 +144,27 @@ class LogicProgramService:
             # 1 segment can have 1 acceleration
             # ...
             # 1 segment can have 1 class (for the previous segments)
-            file.write(":- determination(class/2,%s/2).\n" %
-                       self.targetVelocity)
-            file.write(":- determination(class/1,%s/2).\n" %
-                       self.targetAccel)
-            file.write(":- determination(class/1,%s/1).\n" %
-                       self.fasterPrev)
-            file.write(":- determination(class/1,%s/2).\n" %
-                       self.hasPrevSegment)
-            file.write(":- determination(class/1,%s/2).\n" %
-                       self.prevClass)
-            file.write(":- determination(class/2,%s/2).\n" %
-                       self.hasChangepoint)
+            file.write(":- determination(class/%d,%s/2).\n" %
+                       (classArity, self.targetVelocity))
+            file.write(":- determination(class/%d,%s/2).\n" %
+                       (classArity, self.targetAccel))
+            file.write(":- determination(class/%d,%s/1).\n" %
+                       (classArity, self.fasterPrev))
+            file.write(":- determination(class/%d,%s/2).\n" %
+                       (classArity, self.hasPrevSegment))
+            file.write(":- determination(class/%d,%s/2).\n" %
+                       (classArity, self.prevClass))
+            file.write(":- determination(class/%d,%s/1).\n" %
+                       (classArity, self.hasChangepoint))
             file.write("\n")
 
             file.write("% | TYPES\n")
             # ============================
+            if not self.isWalkAgainstAll:
+                for type in config.transportmodes:
+                    file.write("class(%s). \t" % type)
+                    file.write("\n")
+
             for index, type in enumerate(config.speeds):
                 file.write("speed(%s). \t" % type)
                 if index % 4 == 0:
@@ -227,26 +229,57 @@ class LogicProgramService:
 
             file.close()
 
+    def getWalkSettings(self):
+        return str(
+                ":- set(i,5).\n" +
+                ":- set(clauselength,20).\n" +
+                ":- set(minacc,0.6).\n" +
+                ":- set(minscore,3).\n" +
+                ":- set(minpos,3).\n" +
+                ":- set(noise,3).\n" +
+                ":- set(nodes,2000).\n" +
+                ":- set(explore,true).\n" +
+                ":- set(max_features,10).\n")
+
+    def getSettings(self):
+        return str(
+                ":- set(evalfn,posonly).\n" +
+                ":- set(clauselength,20).\n" +
+                ":- set(nodes,2000).\n" +
+                ":- set(gsamplesize,20).\n")
+
+    def printPosAndNegExamples(self, translated, transportMode):
+        # Positive Examples
+        with open(config.fAlephPath, "w") as file:
+            for translation in translated:
+                if translation.thisClass == transportMode:
+                    file.write("%s\n" % translation.targetClass)
+            file.close()
+
+        # Negative Examples
+        with open(config.nAlephPath, "w") as file:
+            for translation in translated:
+                if translation.thisClass != transportMode:
+                    file.write("%s\n" % translation.targetClass)
+            file.close()
+
+    def printPosOnly(self, translated):
+        with open(config.fAlephPath, "w") as file:
+                for translation in translated:
+                    file.write("%s\n" % translation.targetClass)
+                file.close()
+
     def generateLogicProgram(self):
         translated = []
         userFolders = self.userService.getSegmentUserNames()
 
         for folder in userFolders:
             path = join(config.segmentPath, folder)
-            outputPath = join(config.logicProgramPath, folder)
-            self.generateOutputFolders(outputPath)
-
+            
             fileNames = self.dataService.getFileNamesInPath(path)
             translated.extend(self.forAllSegmentFiles(path, folder, fileNames))
 
         self.printTranslated(translated)
-
-    def generateOutputFolders(self, outputPath):
-        self.dataService.ensureFolderExists(outputPath)
-
-        for transportmode in config.transportmodes:
-            transModePath = join(outputPath, transportmode)
-            self.dataService.ensureFolderExists(transModePath)
 
     def forAllSegmentFiles(self, path, folder, fileNames):
         translated = []
@@ -274,9 +307,9 @@ class LogicProgramService:
                     # Features
                     obj.thisClass = targetSegment[config.tmHead]
 
-                    obj.targetSegId = self.getLogicSegId(segId)
                     obj.targetClass = self.getTargetClass(
                         segId, targetSegment)
+                    obj.targetSegId = self.getLogicSegId(segId)
                     obj.targetVelocity = self.getTargetVelocity(
                         segId, targetSegment)
                     obj.targetAccel = self.getTargetAccel(
@@ -323,9 +356,15 @@ class LogicProgramService:
 
     def getTargetClass(self, segId, targetSegment):
         className = targetSegment[config.tmHead]
+        targetClass = None
 
-        # returns targetSegment(segmentID, class).
-        return str("%s(%s)." % (self.targetClass, segId))
+        if self.isWalkAgainstAll:
+            targetClass = str("%s(%s)." % (self.targetClass, segId))
+        else:
+            targetClass = str("%s(%s,%s)." % (
+                self.targetClass, segId, className))
+
+        return targetClass
 
     def getTargetVelocity(self, segId, targetSegment):
         rawVelocity = targetSegment[config.speedHead]

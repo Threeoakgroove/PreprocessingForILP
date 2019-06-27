@@ -1,6 +1,3 @@
-class(seg010_8859_0).
-class(seg010_8860_0).
-class(seg010_8861_0).
 class(seg020_162_0).
 class(seg020_163_0).
 class(seg020_164_0).
