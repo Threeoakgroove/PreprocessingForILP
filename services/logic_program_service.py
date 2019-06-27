@@ -77,13 +77,21 @@ from os.path import join
 class LogicProgramService:
 
     def __init__(self):
-        self.isWalkAgainstAll = True
-        self.segmentsPerClass = 10
-
         self.userService = UserService
         self.dataService = DataService()
+
+        # Settings for logic output
+        self.isWalkAgainstAll = True
+        self.transportMode = "walk"
+        self.segmentsPerClass = 10
         self.sequenceSize = 5
 
+        # Remove the old ILP files
+        self.dataService.removeFile(config.bAlephPath)
+        self.dataService.removeFile(config.fAlephPath)
+        self.dataService.removeFile(config.nAlephPath)
+
+        # Define Strings
         self.segment = "segment"
         self.targetClass = "class"
         self.targetVelocity = "velocity"
@@ -94,13 +102,12 @@ class LogicProgramService:
         self.hasChangepoint = "hasChangepoint"
 
     def printTranslated(self, translated):
-        transportMode = "walk"
         settings = None
         modeH = None
         classArity = 1
         # :- modeh(1,class(+segment,#class)).
         if self.isWalkAgainstAll:
-            self.printPosAndNegExamples(translated, transportMode)
+            self.printPosAndNegExamples(translated, self.transportMode)
             settings = self.getWalkSettings()
             modeH = str(":- modeh(1,%s(+%s)).\n" %
                         (self.targetClass, self.segment))
@@ -114,7 +121,7 @@ class LogicProgramService:
         # Background Knowledge
         with open(config.bAlephPath, "w") as file:
             file.write("% | SETTINGS\n")
-            # ===============================            
+            # ===============================
             file.write(settings)
             file.write("\n")
 
@@ -130,8 +137,8 @@ class LogicProgramService:
             file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
                        (self.sequenceSize, self.hasPrevSegment,
                         self.segment, self.segment))
-            file.write(":- modeb(1,%s(+%s,#class)).\n" %
-                       (self.prevClass, self.segment))
+            file.write(":- modeb(%d,%s(+%s,#class)).\n" %
+                       (self.sequenceSize, self.prevClass, self.segment))
             file.write(":- modeb(1,%s(+%s)).\n" %
                        (self.hasChangepoint, self.segment))
             file.write("\n")
@@ -275,7 +282,7 @@ class LogicProgramService:
 
         for folder in userFolders:
             path = join(config.segmentPath, folder)
-            
+
             fileNames = self.dataService.getFileNamesInPath(path)
             translated.extend(self.forAllSegmentFiles(path, folder, fileNames))
 
@@ -323,7 +330,8 @@ class LogicProgramService:
 
                     prevSegId = self.getPrevSegmentId(segId)
                     innerPrevSegment = None
-                    for innerIndex, i in enumerate(range(0, self.sequenceSize)):
+                    for innerIndex, i in enumerate(range(
+                            0, self.sequenceSize)):
                         prev = self.PreviousSegment()
 
                         prev.id = self.getLogicSegId(prevSegId)

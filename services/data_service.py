@@ -47,3 +47,7 @@ class DataService:
 
     def ensureDateType(self, column, df):
         return pd.to_datetime(df[column])
+
+    def removeFile(self, filePath):
+        if os.path.exists(filePath):
+            os.remove(filePath)

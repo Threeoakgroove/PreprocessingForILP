@@ -15,7 +15,7 @@
 :- modeb(1,acceleration(+segment,#speed)).
 :- modeb(1,isFasterThanPrevious(+segment)).
 :- modeb(5,hasPrevSegment(+segment,-segment)).
-:- modeb(1,prevHasClass(+segment,#class)).
+:- modeb(5,prevHasClass(+segment,#class)).
 :- modeb(1,hasChangepoint(+segment)).
 
 % | DETERMINATIONS
