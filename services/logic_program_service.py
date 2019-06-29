@@ -94,11 +94,12 @@ class LogicProgramService:
         # Define Strings
         self.segment = "segment"
         self.targetClass = "class"
+        self.constTransportMode = "transport_mode"
         self.targetVelocity = "velocity"
         self.targetAccel = "acceleration"
         self.hasPrevSegment = "hasPrevSegment"
         self.fasterPrev = "isFasterThanPrevious"
-        self.prevClass = "prevHasClass"
+        self.prevTransportMode = "prevHasTransportMode"
         self.hasChangepoint = "hasChangepoint"
 
     def printTranslated(self, translated):
@@ -137,10 +138,12 @@ class LogicProgramService:
             file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
                        (self.sequenceSize, self.hasPrevSegment,
                         self.segment, self.segment))
-            file.write(":- modeb(%d,%s(+%s,#class)).\n" %
-                       (self.sequenceSize, self.prevClass, self.segment))
-            file.write(":- modeb(1,%s(+%s)).\n" %
-                       (self.hasChangepoint, self.segment))
+            file.write(":- modeb(%d,%s(+%s,#%s)).\n" %
+                       (self.sequenceSize, self.prevTransportMode,
+                        self.segment, self.constTransportMode))
+            file.write(":- modeb(%d,%s(+%s)).\n" %
+                       (self.sequenceSize, self.hasChangepoint,
+                        self.segment))
             file.write("\n")
 
             file.write("% | DETERMINATIONS\n")
@@ -160,17 +163,22 @@ class LogicProgramService:
             file.write(":- determination(class/%d,%s/2).\n" %
                        (classArity, self.hasPrevSegment))
             file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, self.prevClass))
+                       (classArity, self.prevTransportMode))
             file.write(":- determination(class/%d,%s/1).\n" %
                        (classArity, self.hasChangepoint))
             file.write("\n")
 
             file.write("% | TYPES\n")
             # ============================
+            # Only used, when all four classes should be predicted
             if not self.isWalkAgainstAll:
                 for type in config.transportmodes:
                     file.write("class(%s). \t" % type)
                     file.write("\n")
+
+            for type in config.transportmodes:
+                file.write("%s(%s). \t" % (self.constTransportMode, type))
+                file.write("\n")
 
             for index, type in enumerate(config.speeds):
                 file.write("speed(%s). \t" % type)
@@ -238,22 +246,18 @@ class LogicProgramService:
 
     def getWalkSettings(self):
         return str(
-                ":- set(i,5).\n" +
-                ":- set(clauselength,20).\n" +
-                ":- set(minacc,0.6).\n" +
-                ":- set(minscore,3).\n" +
+                ":- set(i,6).\n" +
                 ":- set(minpos,3).\n" +
                 ":- set(noise,3).\n" +
-                ":- set(nodes,2000).\n" +
-                ":- set(explore,true).\n" +
-                ":- set(max_features,10).\n")
+                ":- set(nodes,20000).\n")
 
     def getSettings(self):
         return str(
                 ":- set(evalfn,posonly).\n" +
-                ":- set(clauselength,20).\n" +
-                ":- set(nodes,2000).\n" +
-                ":- set(gsamplesize,20).\n")
+                ":- set(minpos,3).\n" +
+                ":- set(noise,0).\n" +
+                ":- set(nodes,20000).\n" +
+                ":- set(gsamplesize,100).\n")
 
     def printPosAndNegExamples(self, translated, transportMode):
         # Positive Examples
@@ -415,7 +419,7 @@ class LogicProgramService:
     def getPrevClass(self, prevSegId, prevSegment):
         prevClass = prevSegment[config.tmHead]
 
-        return str("%s(%s,%s)." % (self.prevClass, prevSegId, prevClass))
+        return str("%s(%s,%s)." % (self.prevTransportMode, prevSegId, prevClass))
 
     class Sequence:
         thisClass = None
