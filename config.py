@@ -20,6 +20,8 @@ segmentDuration = 90
 rounding = 1
 maxEvalSpeed = 50 * rounding
 
+empty = "empty"
+
 # Segment Header
 tmHead = 'transMode'
 startDateHead = 'startDate'
@@ -51,6 +53,7 @@ speeds = ["very_slow", "slow", "below_medium",
 rawClass = 'rawClass'
 targetSegId = 'segment_id'
 targetClass = 'class'
+transportTargetClass = 'tmClass'
 targetVelocity = 'velocity'
 targetAcceleration = 'acceleration'
 targetHasChangepoint = 'hasChangepoint'
@@ -63,6 +66,7 @@ translationHeader = [rawClass,
                      targetSegId,
                      hasPrevSegment,
                      targetClass,
+                     transportTargetClass,
                      targetVelocity,
                      targetAcceleration,
                      targetHasChangepoint,

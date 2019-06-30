@@ -75,15 +75,13 @@ import numpy as np
 from os.path import join
 
 
-class LogicProgramService:
+class TranslateService:
 
     def __init__(self):
         self.userService = UserService
         self.dataService = DataService()
 
         # Settings for logic output
-        self.isWalkAgainstAll = True
-        self.transportMode = "walk"
         self.segmentsPerClass = 10
         self.sequenceSize = 5
 
@@ -97,13 +95,12 @@ class LogicProgramService:
         self.targetClass = config.targetClass
         self.targetVelocity = config.targetVelocity
         self.targetAccel = config.targetAcceleration
-        self.constTransportMode = "transport_mode"
         self.hasPrevSegment = config.hasPrevSegment
         self.fasterPrev = config.isFasterThanPrev
         self.prevTransportMode = config.prevTransportMode
         self.hasChangepoint = config.targetHasChangepoint
 
-    def generateLogicProgram(self):
+    def translateSegments(self):
         translated = []
         userFolders = self.userService.getSegmentUserNames()
 
@@ -128,164 +125,6 @@ class LogicProgramService:
             translations = self.translateToLogic(userFolder, df, fileName)
             translations.to_csv(fileOutputPath, sep='\t', encoding='utf-8')
 
-            self.printTranslated(translations)
-
-    def printTranslated(self, translationDf):
-        settings = None
-        modeH = None
-        classArity = 1
-        # :- modeh(1,class(+segment,#class)).
-        if self.isWalkAgainstAll:
-            self.printPosAndNegExamples(translationDf, self.transportMode)
-            settings = self.getWalkSettings()
-            modeH = str(":- modeh(1,%s(+%s)).\n" %
-                        (self.targetClass, self.segment))
-        else:
-            self.printPosOnly(translationDf)
-            settings = self.getSettings()
-            modeH = str(":- modeh(1,%s(+%s,#class)).\n" %
-                        (self.targetClass, self.segment))
-            classArity = 2
-
-        # Background Knowledge
-        with open(config.bAlephPath, "w") as file:
-            file.write("% | SETTINGS\n")
-            # ===============================
-            file.write(settings)
-            file.write("\n")
-
-            file.write("% | MODES\n")
-            # ============================
-            file.write(modeH)
-            file.write(":- modeb(1,%s(+%s,#speed)).\n" %
-                       (self.targetVelocity, self.segment))
-            file.write(":- modeb(1,%s(+%s,#speed)).\n" %
-                       (self.targetAccel, self.segment))
-            file.write(":- modeb(1,%s(+%s)).\n" %
-                       (self.fasterPrev, self.segment))
-            file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
-                       (self.sequenceSize, self.hasPrevSegment,
-                        self.segment, self.segment))
-            file.write(":- modeb(%d,%s(+%s,#%s)).\n" %
-                       (self.sequenceSize, self.prevTransportMode,
-                        self.segment, self.constTransportMode))
-            file.write(":- modeb(%d,%s(+%s)).\n" %
-                       (self.sequenceSize, self.hasChangepoint,
-                        self.segment))
-            file.write("\n")
-
-            file.write("% | DETERMINATIONS\n")
-            # =================================
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, self.targetVelocity))
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, self.targetAccel))
-            file.write(":- determination(class/%d,%s/1).\n" %
-                       (classArity, self.fasterPrev))
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, self.hasPrevSegment))
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, self.prevTransportMode))
-            file.write(":- determination(class/%d,%s/1).\n" %
-                       (classArity, self.hasChangepoint))
-            file.write("\n")
-
-            file.write("% | TYPES\n")
-            # ============================
-            # Only used, when all four classes should be predicted
-            if not self.isWalkAgainstAll:
-                for type in config.transportmodes:
-                    file.write("class(%s).\n" % type)
-                file.write("\n")
-
-            for type in config.transportmodes:
-                file.write("%s(%s).\n" % (self.constTransportMode, type))
-            file.write("\n")
-
-            for type in config.speeds:
-                file.write("speed(%s).\n" % type)
-            file.write("\n")
-
-            for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.targetSegId])
-
-                for prevSegmentId in translation[config.hasPrevSegment]:
-                    file.write("%s\t" % prevSegmentId)
-                file.write("\n")
-            file.write("\n")
-
-            file.write("% | FEATURES\n")
-            for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.targetVelocity])
-            file.write("\n")
-
-            for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.targetAcceleration])
-            file.write("\n")
-
-            for index, translation in translationDf.iterrows():
-                for prevTransportMode in translation[config.prevTransportMode]:
-                    file.write("%s\t" % prevTransportMode)
-                file.write("\n")
-            file.write("\n")
-
-            file.write("% | RELATIONS\n")
-            for index, translation in translationDf.iterrows():
-                if translation[config.isFasterThanPrev] is not None:
-                    file.write("%s\n" % translation.isFasterThanPrev)
-            file.write("\n")
-
-            for index, translation in translationDf.iterrows():
-                currentHasChangepoint = translation[
-                    config.targetHasChangepoint]
-
-                if currentHasChangepoint is not None:
-                    file.write("%s\n" % currentHasChangepoint)
-
-            for index, translation in translationDf.iterrows():
-                for prevHasChangepoint in translation[
-                        config.prevHasChangepoint]:
-                    if prevHasChangepoint is not None:
-                        file.write("%s\n" % prevHasChangepoint)
-
-            file.close()
-
-    def getWalkSettings(self):
-        return str(
-                ":- set(i,6).\n" +
-                ":- set(minpos,3).\n" +
-                ":- set(noise,3).\n" +
-                ":- set(nodes,20000).\n")
-
-    def getSettings(self):
-        return str(
-                ":- set(evalfn,posonly).\n" +
-                ":- set(minpos,3).\n" +
-                ":- set(noise,0).\n" +
-                ":- set(nodes,20000).\n" +
-                ":- set(gsamplesize,100).\n")
-
-    def printPosAndNegExamples(self, translationDf, transportMode):
-        # Positive Examples
-        with open(config.fAlephPath, "w") as file:
-            for index, row in translationDf.iterrows():
-                if row[config.rawClass] == transportMode:
-                    file.write("%s\n" % row[config.targetClass])
-            file.close()
-
-        # Negative Examples
-        with open(config.nAlephPath, "w") as file:
-            for index, row in translationDf.iterrows():
-                if row[config.rawClass] != transportMode:
-                    file.write("%s\n" % row[config.targetClass])
-            file.close()
-
-    def printPosOnly(self, translationDf):
-        with open(config.fAlephPath, "w") as file:
-            for index, row in translationDf.iterrows():
-                file.write("%s\n" % row[config.targetClass])
-            file.close()
-
     def translateToLogic(self, folder, df, file):
         translated = []
         translationDf = pd.DataFrame(columns=config.translationHeader)
@@ -306,7 +145,8 @@ class LogicProgramService:
                 # Features
                 obj.rawClass = targetSegment[config.tmHead]
 
-                obj.targetClass = self.getTargetClass(
+                obj.targetClass = self.getTargetClass(segId)
+                obj.transportTargetClass = self.getTransportTargetClass(
                     segId, targetSegment)
                 obj.targetSegId = self.getLogicSegId(segId)
                 obj.targetVelocity = self.getTargetVelocity(
@@ -360,8 +200,9 @@ class LogicProgramService:
                 translationDf.loc[len(translationDf)] = [
                         obj.rawClass,
                         obj.targetSegId,
-                        hasPrevSegmentsList,
+                        str(hasPrevSegmentsList),
                         obj.targetClass,
+                        obj.transportTargetClass,
                         obj.targetVelocity,
                         obj.targetAccel,
                         obj.hasChangepoint,
@@ -378,15 +219,13 @@ class LogicProgramService:
         # returns segment(segmentID).
         return str("%s(%s)." % (self.segment, segId))
 
-    def getTargetClass(self, segId, targetSegment):
-        className = targetSegment[config.tmHead]
-        targetClass = None
+    def getTargetClass(self, segId):
+        return str("%s(%s)." % (self.targetClass, segId))
 
-        if self.isWalkAgainstAll:
-            targetClass = str("%s(%s)." % (self.targetClass, segId))
-        else:
-            targetClass = str("%s(%s,%s)." % (
-                self.targetClass, segId, className))
+    def getTransportTargetClass(self, segId, targetSegment):
+        className = targetSegment[config.tmHead]
+        targetClass = str("%s(%s,%s)." % (
+            self.targetClass, segId, className))
 
         return targetClass
 
@@ -405,7 +244,7 @@ class LogicProgramService:
         return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
 
     def getHasChangepoint(self, segId, targetSegment, prevSegment):
-        hasChangepointString = None
+        hasChangepointString = config.empty
         hasChangepoint = targetSegment[config.hasChangepoint]
 
         if hasChangepoint == 1:
@@ -425,7 +264,7 @@ class LogicProgramService:
         return str("%s(%s,%s)." % (self.hasPrevSegment, segId, prevSegId))
 
     def getFasterThanPrev(self, segId, targetSegment, prevSegment):
-        isFasterThanPrev = None
+        isFasterThanPrev = config.empty
         if targetSegment[config.speedHead] > prevSegment[config.speedHead]:
             isFasterThanPrev = str("%s(%s)." % (self.fasterPrev, segId))
 
@@ -438,27 +277,28 @@ class LogicProgramService:
                                    prevSegId, transportMode))
 
     class Sequence:
-        rawClass = None
+        rawClass = config.empty
         # Head
-        targetSegId = None
+        targetSegId = config.empty
         # Feature
-        targetClass = None
-        targetVelocity = None
-        targetAccel = None
-        hasChangepoint = None
+        targetClass = config.empty
+        transportTargetClass = config.empty
+        targetVelocity = config.empty
+        targetAccel = config.empty
+        hasChangepoint = config.empty
 
         # Relation
-        isFasterThanPrev = None
-        prevHasClass = None
-        hasPrevSegment = None
+        isFasterThanPrev = config.empty
+        prevHasClass = config.empty
+        hasPrevSegment = config.empty
 
         prevSegments = []
 
     class PreviousSegment:
-        id = None
-        hasTransportMode = None
-        hasPrevSegment = None
-        hasChangepoint = None
+        id = config.empty
+        hasTransportMode = config.empty
+        hasPrevSegment = config.empty
+        hasChangepoint = config.empty
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs

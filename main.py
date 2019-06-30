@@ -2,15 +2,21 @@ import logging
 
 import config
 
+from services.aleph_service import AlephService
 from services.label_service import LabelService
-from services.segment_service import SegmentService
-from services.logic_program_service import LogicProgramService
 from services.plot_service import PlotService
+from services.segment_service import SegmentService
+from services.translate_service import TranslateService
 
 
 class Main:
 
-    def __init__(self, labelData, makeSegments, makeLogicProgram, showPlots):
+    def __init__(self,
+                 labelData,
+                 makeSegments,
+                 makeTranslations,
+                 createLogicProgram,
+                 showPlots):
         self.setupLogging()
         logging.info("Programm Started.")
 
@@ -28,10 +34,17 @@ class Main:
         else:
             logging.info("Skip Generating Segments.")
 
-        if makeLogicProgram:
+        if makeTranslations:
+            logging.info("Translating Segments.")
+            translateService = TranslateService()
+            translateService.translateSegments()
+        else:
+            logging.info("Skip Translating Segments.")
+
+        if createLogicProgram:
             logging.info("Generating Logic Program.")
-            logicProgramService = LogicProgramService()
-            logicProgramService.generateLogicProgram()
+            alephService = AlephService()
+            alephService.generateLogicProgram()
         else:
             logging.info("Skip Generating Logic Program.")
 
@@ -65,7 +78,12 @@ class Main:
 if __name__ == '__main__':
     labelData = False
     makeSegments = False
-    makeLogicProgram = True
+    makeTranslations = False
+    createLogicProgram = True
     showPlots = False
 
-    Main(labelData, makeSegments, makeLogicProgram, showPlots)
+    Main(labelData,
+         makeSegments,
+         makeTranslations,
+         createLogicProgram,
+         showPlots)
