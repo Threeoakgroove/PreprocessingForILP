@@ -70,6 +70,7 @@ from services.user_service import UserService
 
 import logging
 import pandas as pd
+import numpy as np
 
 from os.path import join
 
@@ -304,6 +305,7 @@ class LogicProgramService:
 
     def translateToLogic(self, folder, df, file):
         translated = []
+        df.index = np.arange(len(df))
 
         for index, row in df.iterrows():
             if(index < (len(df) - self.sequenceSize)):
