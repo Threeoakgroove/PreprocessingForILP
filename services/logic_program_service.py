@@ -305,6 +305,7 @@ class LogicProgramService:
 
     def translateToLogic(self, folder, df, file):
         translated = []
+        firstSegmentIndex = df.index[0]
         df.index = np.arange(len(df))
 
         for index, row in df.iterrows():
@@ -314,8 +315,9 @@ class LogicProgramService:
 
                 if(targetSegment[config.tmHead] in config.transportmodes):
                     obj = self.Sequence()
+                    segmentIndex = firstSegmentIndex + index
                     segId = self.makeSegId(
-                        folder, index + self.sequenceSize)
+                        folder, segmentIndex + self.sequenceSize)
 
                     # Features
                     obj.thisClass = targetSegment[config.tmHead]
