@@ -1,8 +1,10 @@
+import logging
 import os
 import pandas as pd
 
-from os.path import join
 from io import StringIO
+from os.path import join
+from shutil import rmtree
 
 import config
 
@@ -12,6 +14,7 @@ class DataService:
     def ensureFolderExists(self, path):
         if not os.path.exists(path):
             os.makedirs(path)
+            logging.info('created empty folder at %s' % path)
 
     def getFileNamesInPath(self, path):
         fileNames = os.listdir(path)
@@ -54,3 +57,8 @@ class DataService:
     def removeFile(self, filePath):
         if os.path.exists(filePath):
             os.remove(filePath)
+
+    def removeFolderIfExists(self, path):
+        if os.path.exists(path):
+            rmtree(path)
+            logging.info('old folder removed at %s' % path)

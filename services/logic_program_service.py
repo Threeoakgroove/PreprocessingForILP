@@ -81,6 +81,10 @@ class LogicProgramService:
         self.userService = UserService
         self.dataService = DataService()
 
+        # Output Folder for Translated files
+        self.dataService.removeFolderIfExists(config.translationPath)
+        self.dataService.ensureFolderExists(config.translationPath)
+
         # Settings for logic output
         self.isWalkAgainstAll = True
         self.transportMode = "walk"
@@ -170,13 +174,7 @@ class LogicProgramService:
             file.write("\n")
 
             file.write("% | DETERMINATIONS\n")
-            # =====================================
-            # segment statt class
-            # 1 segment can have 5 previous segments
-            # 1 segment can have 1 velocity
-            # 1 segment can have 1 acceleration
-            # ...
-            # 1 segment can have 1 class (for the previous segments)
+            # =================================
             file.write(":- determination(class/%d,%s/2).\n" %
                        (classArity, self.targetVelocity))
             file.write(":- determination(class/%d,%s/2).\n" %

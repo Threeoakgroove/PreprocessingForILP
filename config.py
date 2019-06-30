@@ -2,10 +2,10 @@ from os.path import join
 
 logfileName = 'logfile.log'
 outputPath = join('data', 'output')
-labelPath = join(outputPath, 'labeled')
+labelPath = join(outputPath, 'labelled')
 segmentPath = join(outputPath, 'segmented')
-featurePath = join(outputPath, 'feature')
-logicProgramPath = join(outputPath, 'logic_program')
+featurePath = join(outputPath, 'featured')
+translationPath = join(outputPath, 'translated')
 bAlephPath = join('aleph', 'segments.b')
 fAlephPath = join('aleph', 'segments.f')
 nAlephPath = join('aleph', 'segments.n')

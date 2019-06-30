@@ -5,8 +5,7 @@ import numpy as np
 
 from datetime import datetime
 from os import listdir
-from os.path import join, exists, split
-from shutil import rmtree
+from os.path import join, split
 
 import config
 
@@ -19,17 +18,11 @@ from services.feature_service import FeatureService
 class SegmentService:
 
     def __init__(self):
-        if exists(config.segmentPath):
-            rmtree(config.segmentPath)
-            logging.info('Segment output folder removed')
-        if exists(config.featurePath):
-            rmtree(config.featurePath)
-            logging.info('Feature output folder removed')
-
         self.dateService = DateService()
         self.dataService = DataService()
         self.featureService = FeatureService()
 
+        self.dataService.removeFolderIfExists(config.featurePath)
         self.dataService.ensureFolderExists(config.featurePath)
 
         self.bikeVelocities = np.ndarray((config.maxEvalSpeed))
@@ -50,7 +43,9 @@ class SegmentService:
                          ' of ' + str(len(userFolderNames)) + ' (' +
                          userName + ')')
             userPath = join(config.segmentPath, userName)
+            self.dataService.removeFolderIfExists(userPath)
             self.dataService.ensureFolderExists(userPath)
+
             labeledDataPath = join(config.labelPath, userName)
             fileNames = self.getLabeledGpsPointFileNames(
                 labeledDataPath)
