@@ -95,14 +95,12 @@ class SegmentService:
             self.walkAccelerations[x] = 0
 
     def writeTrajectories(self, df, userPath):
-        timeLimit = 20 * 60
-        trajectoryDataFrames = []
-        timeFormat = '%Y-%m-%d %H:%M:%S'
         startIndex = 0
         endOfLastPoint = datetime.now()
 
         for index, row in df.iterrows():
             diff = row['startDate'] - endOfLastPoint
+            timeLimit = 20 * 60
 
             if(index != 0 and
                (diff.seconds > timeLimit) or
@@ -110,12 +108,10 @@ class SegmentService:
                 self.printDataFrame(
                     df[(df.index >= startIndex) & (df.index < index)],
                     userPath,
-                    (str(index) + '.csv'))
+                    (str("trajectory%010d" % index) + '.csv'))
                 startIndex = index
 
             endOfLastPoint = row['endDate']
-
-        return trajectoryDataFrames
 
     def printDataFrame(self, df, userPath, fileName):
         df.to_csv(join(
@@ -123,7 +119,10 @@ class SegmentService:
             sep='\t', encoding='utf-8')
 
     def getUserFolderNames(self):
-        return listdir(config.labelPath)
+        userFolderNames = listdir(config.labelPath)
+        userFolderNames.sort()
+
+        return userFolderNames
 
     def getLabeledGpsPointFileNames(self, userPath):
         return listdir(userPath)
@@ -138,13 +137,20 @@ class SegmentService:
         lastDate = startDate
         lastVelocity = 0
         acceleration = 0
+        hasChangepoint = False
 
         for index, row in labeledDf.iterrows():
             currentDate = self.getDate(labeledDf, index)
+            currentLabel = labeledDf.iloc[index][config.labelHead]
+
+            # if there is already a changepoint detected, do not check again
+            if hasChangepoint is not True:
+                hasChangepoint = self.hasSegmentsLabelChanged(
+                    segmentLabel, currentLabel, index)
 
             if index == 0:
                 startDate = currentDate
-                segmentLabel = labeledDf.iloc[index][config.labelHead]
+                segmentLabel = currentLabel
             elif index == 1:
                 currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
@@ -174,7 +180,8 @@ class SegmentService:
                         lastDate,
                         segmentsDistance,
                         velocity,
-                        acceleration]
+                        acceleration,
+                        hasChangepoint]
 
                     self.countSegment(
                         segmentLabel, velocity, acceleration)
@@ -188,9 +195,18 @@ class SegmentService:
 
                     segmentLabel = labeledDf.iloc[index][config.labelHead]
 
+            # Reset
+            hasChangepoint = False
             lastDate = currentDate
 
         return segmentDf
+
+    def hasSegmentsLabelChanged(self, oldLabel, currentLabel, index):
+        hasChanged = False
+        if index != 0 and oldLabel != currentLabel:
+                hasChanged = True
+
+        return hasChanged
 
     def isTrajectoryBreak(self, diff):
         minutes = 20

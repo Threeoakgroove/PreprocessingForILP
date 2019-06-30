@@ -14,7 +14,10 @@ class DataService:
             os.makedirs(path)
 
     def getFileNamesInPath(self, path):
-        return os.listdir(path)
+        fileNames = os.listdir(path)
+        fileNames.sort()
+
+        return fileNames
 
     def getLabelDf(self, path):
         labelDf = pd.read_csv(path, sep='\t', header=0)

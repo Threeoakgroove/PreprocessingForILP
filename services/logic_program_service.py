@@ -102,6 +102,28 @@ class LogicProgramService:
         self.prevTransportMode = "prevHasTransportMode"
         self.hasChangepoint = "hasChangepoint"
 
+    def generateLogicProgram(self):
+        translated = []
+        userFolders = self.userService.getSegmentUserNames()
+
+        for folder in userFolders:
+            path = join(config.segmentPath, folder)
+
+            fileNames = self.dataService.getFileNamesInPath(path)
+            translated.extend(self.forAllSegmentFiles(path, folder, fileNames))
+
+        self.printTranslated(translated)
+
+    def forAllSegmentFiles(self, path, folder, fileNames):
+        translated = []
+        for file in fileNames:
+            filePath = join(path, file)
+            df = pd.read_csv(filePath, sep='\t', index_col=0, header=0)
+
+            translated.extend(self.translateToLogic(folder, df, file))
+
+        return translated
+
     def printTranslated(self, translated):
         settings = None
         modeH = None
@@ -280,28 +302,6 @@ class LogicProgramService:
                     file.write("%s\n" % translation.targetClass)
                 file.close()
 
-    def generateLogicProgram(self):
-        translated = []
-        userFolders = self.userService.getSegmentUserNames()
-
-        for folder in userFolders:
-            path = join(config.segmentPath, folder)
-
-            fileNames = self.dataService.getFileNamesInPath(path)
-            translated.extend(self.forAllSegmentFiles(path, folder, fileNames))
-
-        self.printTranslated(translated)
-
-    def forAllSegmentFiles(self, path, folder, fileNames):
-        translated = []
-        for file in fileNames:
-            filePath = join(path, file)
-            df = pd.read_csv(filePath, sep='\t', index_col=0, header=0)
-
-            translated.extend(self.translateToLogic(folder, df, file))
-
-        return translated
-
     def translateToLogic(self, folder, df, file):
         translated = []
 
@@ -394,7 +394,7 @@ class LogicProgramService:
 
     def getHasChangepoint(self, segId, targetSegment, prevSegment):
         hasChangepoint = None
-        if targetSegment[config.tmHead] != prevSegment[config.tmHead]:
+        if targetSegment[config.hasChangepoint] is True:
             hasChangepoint = str("%s(%s)." % (self.hasChangepoint, segId))
 
         return hasChangepoint

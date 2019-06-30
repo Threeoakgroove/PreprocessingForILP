@@ -26,9 +26,11 @@ endDateHead = 'endDate'
 distHead = 'distance'
 speedHead = 'speed'
 accelerationHead = 'acceleration'
+hasChangepoint = 'hasChangepoint'
 
 segmentHeader = [tmHead, startDateHead, endDateHead,
-                 distHead, speedHead, accelerationHead]
+                 distHead, speedHead, accelerationHead,
+                 hasChangepoint]
 
 labelHead = 'label'
 dateHead = 'date'

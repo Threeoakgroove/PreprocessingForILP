@@ -51,7 +51,10 @@ class UserService:
         return filteredUsers
 
     def getSegmentUserNames():
-        return listdir(config.segmentPath)
+        userNames = listdir(config.segmentPath)
+        userNames.sort()
+
+        return userNames
 
     def getUserFolderNames(self):
         return listdir(self.pathToUserFolders)
