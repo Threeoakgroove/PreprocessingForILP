@@ -395,11 +395,14 @@ class LogicProgramService:
         return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
 
     def getHasChangepoint(self, segId, targetSegment, prevSegment):
-        hasChangepoint = None
-        if targetSegment[config.hasChangepoint] is True:
-            hasChangepoint = str("%s(%s)." % (self.hasChangepoint, segId))
+        hasChangepointString = None
+        hasChangepoint = targetSegment[config.hasChangepoint]
 
-        return hasChangepoint
+        if hasChangepoint == 1:
+            hasChangepointString = str(
+                "%s(%s)." % (self.hasChangepoint, segId))
+
+        return hasChangepointString
 
     def getPrevSegmentId(self, segId):
         split = segId.split("_")
