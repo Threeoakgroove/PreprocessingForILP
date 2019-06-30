@@ -20,6 +20,7 @@ segmentDuration = 90
 rounding = 1
 maxEvalSpeed = 50 * rounding
 
+# Segment Header
 tmHead = 'transMode'
 startDateHead = 'startDate'
 endDateHead = 'endDate'
@@ -32,6 +33,7 @@ segmentHeader = [tmHead, startDateHead, endDateHead,
                  distHead, speedHead, accelerationHead,
                  hasChangepoint]
 
+# Label Header
 labelHead = 'label'
 dateHead = 'date'
 longHead = 'long'
@@ -44,3 +46,26 @@ gpsTimeHead = 'Datetime'
 transportmodes = ['bike', 'bus', 'car', 'walk']
 speeds = ["very_slow", "slow", "below_medium",
           "medium", "above_medium", "fast", "very_fast"]
+
+# Translation Header
+rawClass = 'rawClass'
+targetSegId = 'segment_id'
+targetClass = 'class'
+targetVelocity = 'velocity'
+targetAcceleration = 'acceleration'
+targetHasChangepoint = 'hasChangepoint'
+isFasterThanPrev = 'isFasterThanPrev'
+hasPrevSegment = 'hasPrevSegments'
+prevTransportMode = 'prevHaveTransportModes'
+prevHasChangepoint = 'prevHasChangepoint'
+
+translationHeader = [rawClass,
+                     targetSegId,
+                     hasPrevSegment,
+                     targetClass,
+                     targetVelocity,
+                     targetAcceleration,
+                     targetHasChangepoint,
+                     isFasterThanPrev,
+                     prevTransportMode,
+                     prevHasChangepoint]

@@ -81,10 +81,6 @@ class LogicProgramService:
         self.userService = UserService
         self.dataService = DataService()
 
-        # Output Folder for Translated files
-        self.dataService.removeFolderIfExists(config.translationPath)
-        self.dataService.ensureFolderExists(config.translationPath)
-
         # Settings for logic output
         self.isWalkAgainstAll = True
         self.transportMode = "walk"
@@ -98,49 +94,54 @@ class LogicProgramService:
 
         # Define Strings
         self.segment = "segment"
-        self.targetClass = "class"
+        self.targetClass = config.targetClass
+        self.targetVelocity = config.targetVelocity
+        self.targetAccel = config.targetAcceleration
         self.constTransportMode = "transport_mode"
-        self.targetVelocity = "velocity"
-        self.targetAccel = "acceleration"
-        self.hasPrevSegment = "hasPrevSegment"
-        self.fasterPrev = "isFasterThanPrevious"
-        self.prevTransportMode = "prevHasTransportMode"
-        self.hasChangepoint = "hasChangepoint"
+        self.hasPrevSegment = config.hasPrevSegment
+        self.fasterPrev = config.isFasterThanPrev
+        self.prevTransportMode = config.prevTransportMode
+        self.hasChangepoint = config.targetHasChangepoint
 
     def generateLogicProgram(self):
         translated = []
         userFolders = self.userService.getSegmentUserNames()
 
-        for folder in userFolders:
-            path = join(config.segmentPath, folder)
+        for userFolder in userFolders:
+            # Prepare for output
+            outputPath = join(config.translationPath, userFolder)
+            self.dataService.removeFolderIfExists(outputPath)
+            self.dataService.ensureFolderExists(outputPath)
 
-            fileNames = self.dataService.getFileNamesInPath(path)
-            translated.extend(self.forAllSegmentFiles(path, folder, fileNames))
+            # Get Input
+            path = join(config.segmentPath, userFolder)
+            self.forAllSegmentFiles(path, outputPath, userFolder)
 
-        self.printTranslated(translated)
+    def forAllSegmentFiles(self, path, outputPath, userFolder):
+        fileNames = self.dataService.getFileNamesInPath(path)
 
-    def forAllSegmentFiles(self, path, folder, fileNames):
-        translated = []
-        for file in fileNames:
-            filePath = join(path, file)
+        for fileName in fileNames:
+            filePath = join(path, fileName)
             df = pd.read_csv(filePath, sep='\t', index_col=0, header=0)
 
-            translated.extend(self.translateToLogic(folder, df, file))
+            fileOutputPath = join(outputPath, fileName)
+            translations = self.translateToLogic(userFolder, df, fileName)
+            translations.to_csv(fileOutputPath, sep='\t', encoding='utf-8')
 
-        return translated
+            self.printTranslated(translations)
 
-    def printTranslated(self, translated):
+    def printTranslated(self, translationDf):
         settings = None
         modeH = None
         classArity = 1
         # :- modeh(1,class(+segment,#class)).
         if self.isWalkAgainstAll:
-            self.printPosAndNegExamples(translated, self.transportMode)
+            self.printPosAndNegExamples(translationDf, self.transportMode)
             settings = self.getWalkSettings()
             modeH = str(":- modeh(1,%s(+%s)).\n" %
                         (self.targetClass, self.segment))
         else:
-            self.printPosOnly(translated)
+            self.printPosOnly(translationDf)
             settings = self.getSettings()
             modeH = str(":- modeh(1,%s(+%s,#class)).\n" %
                         (self.targetClass, self.segment))
@@ -194,74 +195,58 @@ class LogicProgramService:
             # Only used, when all four classes should be predicted
             if not self.isWalkAgainstAll:
                 for type in config.transportmodes:
-                    file.write("class(%s). \t" % type)
-                    file.write("\n")
-
-            for type in config.transportmodes:
-                file.write("%s(%s). \t" % (self.constTransportMode, type))
+                    file.write("class(%s).\n" % type)
                 file.write("\n")
 
-            for index, type in enumerate(config.speeds):
-                file.write("speed(%s). \t" % type)
-                if index % 4 == 0:
-                    file.write("\n")
+            for type in config.transportmodes:
+                file.write("%s(%s).\n" % (self.constTransportMode, type))
             file.write("\n")
 
-            for index, translation in enumerate(translated):
-                file.write("%s\t" % translation.targetSegId)
-                if index % 4 == 0:
-                    file.write("\n")
+            for type in config.speeds:
+                file.write("speed(%s).\n" % type)
             file.write("\n")
 
-            for index, prevSegment in enumerate(translation.prevSegments):
-                file.write("%s\t" % prevSegment.id)
-                if index % 2 == 0:
-                    file.write("\n")
+            for index, translation in translationDf.iterrows():
+                file.write("%s\n" % translation[config.targetSegId])
+
+                for prevSegmentId in translation[config.hasPrevSegment]:
+                    file.write("%s\t" % prevSegmentId)
+                file.write("\n")
             file.write("\n")
 
             file.write("% | FEATURES\n")
-            for index, translation in enumerate(translated):
-                file.write("%s\t" % translation.targetVelocity)
-                if index % 2 == 0:
-                    file.write("\n")
+            for index, translation in translationDf.iterrows():
+                file.write("%s\n" % translation[config.targetVelocity])
             file.write("\n")
 
-            for index, translation in enumerate(translated):
-                file.write("%s\t" % translation.targetAccel)
-                if index % 2 == 0:
-                    file.write("\n")
+            for index, translation in translationDf.iterrows():
+                file.write("%s\n" % translation[config.targetAcceleration])
+            file.write("\n")
+
+            for index, translation in translationDf.iterrows():
+                for prevTransportMode in translation[config.prevTransportMode]:
+                    file.write("%s\t" % prevTransportMode)
+                file.write("\n")
             file.write("\n")
 
             file.write("% | RELATIONS\n")
-            prettierOutputCounter = 0
-            for index, translation in enumerate(translated):
-                if translation.isFasterThanPrev is not None:
-                    prettierOutputCounter += 1
-                    file.write("%s\t" % translation.isFasterThanPrev)
-                    if (prettierOutputCounter % 2 == 0 or
-                            index == (len(translated) - 1)):
-                        file.write("\n")
+            for index, translation in translationDf.iterrows():
+                if translation[config.isFasterThanPrev] is not None:
+                    file.write("%s\n" % translation.isFasterThanPrev)
             file.write("\n")
 
-            for innerIndex, prevSegment in enumerate(translation.prevSegments):
-                file.write("%s\t" % prevSegment.hasPrevSegment)
-                if innerIndex % 2 == 0:
-                    file.write("\n")
-            file.write("\n")
+            for index, translation in translationDf.iterrows():
+                currentHasChangepoint = translation[
+                    config.targetHasChangepoint]
 
-            for index, prevSegment in enumerate(translation.prevSegments):
-                file.write("%s\t" % prevSegment.prevHasClass)
-                if index % 2 == 0:
-                    file.write("\n")
-            file.write("\n")
+                if currentHasChangepoint is not None:
+                    file.write("%s\n" % currentHasChangepoint)
 
-            for index, translation in enumerate(translated):
-                if translation.hasChangepoint is not None:
-                    file.write("%s\n" % translation.hasChangepoint)
-
-            for index, prevSegment in enumerate(translation.prevSegments):
-                if prevSegment.hasChangepoint is not None:
-                    file.write("%s\n" % prevSegment.hasChangepoint)
+            for index, translation in translationDf.iterrows():
+                for prevHasChangepoint in translation[
+                        config.prevHasChangepoint]:
+                    if prevHasChangepoint is not None:
+                        file.write("%s\n" % prevHasChangepoint)
 
             file.close()
 
@@ -280,29 +265,31 @@ class LogicProgramService:
                 ":- set(nodes,20000).\n" +
                 ":- set(gsamplesize,100).\n")
 
-    def printPosAndNegExamples(self, translated, transportMode):
+    def printPosAndNegExamples(self, translationDf, transportMode):
         # Positive Examples
         with open(config.fAlephPath, "w") as file:
-            for translation in translated:
-                if translation.thisClass == transportMode:
-                    file.write("%s\n" % translation.targetClass)
+            for index, row in translationDf.iterrows():
+                if row[config.rawClass] == transportMode:
+                    file.write("%s\n" % row[config.targetClass])
             file.close()
 
         # Negative Examples
         with open(config.nAlephPath, "w") as file:
-            for translation in translated:
-                if translation.thisClass != transportMode:
-                    file.write("%s\n" % translation.targetClass)
+            for index, row in translationDf.iterrows():
+                if row[config.rawClass] != transportMode:
+                    file.write("%s\n" % row[config.targetClass])
             file.close()
 
-    def printPosOnly(self, translated):
+    def printPosOnly(self, translationDf):
         with open(config.fAlephPath, "w") as file:
-                for translation in translated:
-                    file.write("%s\n" % translation.targetClass)
-                file.close()
+            for index, row in translationDf.iterrows():
+                file.write("%s\n" % row[config.targetClass])
+            file.close()
 
     def translateToLogic(self, folder, df, file):
         translated = []
+        translationDf = pd.DataFrame(columns=config.translationHeader)
+
         firstSegmentIndex = df.index[0]
         df.index = np.arange(len(df))
 
@@ -311,55 +298,78 @@ class LogicProgramService:
                 targetSegment = df.iloc[index + self.sequenceSize]
                 prevSegment = df.iloc[index + self.sequenceSize - 1]
 
-                if(targetSegment[config.tmHead] in config.transportmodes):
-                    obj = self.Sequence()
-                    segmentIndex = firstSegmentIndex + index
-                    segId = self.makeSegId(
-                        folder, segmentIndex + self.sequenceSize)
+                obj = self.Sequence()
+                segmentIndex = firstSegmentIndex + index
+                segId = self.makeSegId(
+                    folder, segmentIndex + self.sequenceSize)
 
-                    # Features
-                    obj.thisClass = targetSegment[config.tmHead]
+                # Features
+                obj.rawClass = targetSegment[config.tmHead]
 
-                    obj.targetClass = self.getTargetClass(
-                        segId, targetSegment)
-                    obj.targetSegId = self.getLogicSegId(segId)
-                    obj.targetVelocity = self.getTargetVelocity(
-                        segId, targetSegment)
-                    obj.targetAccel = self.getTargetAccel(
-                        segId, targetSegment)
-                    obj.hasChangepoint = self.getHasChangepoint(
-                        segId, targetSegment, prevSegment)
+                obj.targetClass = self.getTargetClass(
+                    segId, targetSegment)
+                obj.targetSegId = self.getLogicSegId(segId)
+                obj.targetVelocity = self.getTargetVelocity(
+                    segId, targetSegment)
+                obj.targetAccel = self.getTargetAccel(
+                    segId, targetSegment)
+                obj.hasChangepoint = self.getHasChangepoint(
+                    segId, targetSegment, prevSegment)
+                obj.isFasterThanPrev = self.getFasterThanPrev(
+                    segId, targetSegment, prevSegment)
 
-                    # Relations
-                    obj.isFasterThanPrev = self.getFasterThanPrev(
-                        segId, targetSegment, prevSegment)
+                # Relations
+                prevSegId = self.getPrevSegmentId(segId)
+                innerPrevSegment = None
+                prevSegments = []
+                for innerIndex, i in enumerate(range(
+                        0, self.sequenceSize)):
+                    prev = self.PreviousSegment()
 
-                    prevSegId = self.getPrevSegmentId(segId)
-                    innerPrevSegment = None
-                    for innerIndex, i in enumerate(range(
-                            0, self.sequenceSize)):
-                        prev = self.PreviousSegment()
+                    prev.id = self.getLogicSegId(prevSegId)
+                    prev.hasPrevSegment = self.getHasPrevSegment(
+                        segId, prevSegId)
+                    prev.hasTransportMode = self.getPrevTransportMode(
+                        prevSegId, prevSegment)
 
-                        prev.id = self.getLogicSegId(prevSegId)
-                        prev.hasPrevSegment = self.getHasPrevSegment(
-                            segId, prevSegId)
-                        prev.prevHasClass = self.getPrevClass(
-                            prevSegId, prevSegment)
+                    if innerIndex != 0:
+                        prev.hasChangepoint = self.getHasChangepoint(
+                            prevSegId, prevSegment, innerPrevSegment)
 
-                        if innerIndex != 0:
-                            prev.hasChangepoint = self.getHasChangepoint(
-                                prevSegId, prevSegment, innerPrevSegment)
+                    prevSegments.append(prev)
+                    prevSegIndex = index - innerIndex - 1
+                    prevSegment = df.iloc[prevSegIndex]
+                    innerPrevSegIndex = prevSegIndex - 1
+                    innerPrevSegment = df.iloc[innerPrevSegIndex]
+                    prevSegId = self.getPrevSegmentId(prevSegId)
 
-                        obj.prevSegments.append(prev)
-                        prevSegIndex = index - innerIndex - 1
-                        prevSegment = df.iloc[prevSegIndex]
-                        innerPrevSegIndex = prevSegIndex - 1
-                        innerPrevSegment = df.iloc[innerPrevSegIndex]
-                        prevSegId = self.getPrevSegmentId(prevSegId)
+                obj.prevSegments = prevSegments
 
-                    translated.append(obj)
+                translated.append(obj)
 
-        return translated
+                hasPrevSegmentsList = []
+                prevHaveTransportModes = []
+                prevHaveChangepoints = []
+                for prevSegment in obj.prevSegments:
+                    hasPrevSegmentsList.append(prevSegment.id)
+                    prevHaveTransportModes.append(
+                        prevSegment.hasTransportMode)
+                    prevHaveChangepoints.append(
+                        prevSegment.hasChangepoint)
+
+                translationDf.loc[len(translationDf)] = [
+                        obj.rawClass,
+                        obj.targetSegId,
+                        hasPrevSegmentsList,
+                        obj.targetClass,
+                        obj.targetVelocity,
+                        obj.targetAccel,
+                        obj.hasChangepoint,
+                        obj.isFasterThanPrev,
+                        prevHaveTransportModes,
+                        prevHaveChangepoints]
+
+        return translationDf
 
     def makeSegId(self, folder, segmentNumber):
         return ("seg%s_%s_0" % (str(folder), str(segmentNumber)))
@@ -421,13 +431,14 @@ class LogicProgramService:
 
         return isFasterThanPrev
 
-    def getPrevClass(self, prevSegId, prevSegment):
-        prevClass = prevSegment[config.tmHead]
+    def getPrevTransportMode(self, prevSegId, prevSegment):
+        transportMode = prevSegment[config.tmHead]
 
-        return str("%s(%s,%s)." % (self.prevTransportMode, prevSegId, prevClass))
+        return str("%s(%s,%s)." % (self.prevTransportMode,
+                                   prevSegId, transportMode))
 
     class Sequence:
-        thisClass = None
+        rawClass = None
         # Head
         targetSegId = None
         # Feature
@@ -445,7 +456,7 @@ class LogicProgramService:
 
     class PreviousSegment:
         id = None
-        prevHasClass = None
+        hasTransportMode = None
         hasPrevSegment = None
         hasChangepoint = None
 
