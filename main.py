@@ -63,8 +63,8 @@ class Main:
 
 
 if __name__ == '__main__':
-    labelData = False
-    makeSegments = False
+    labelData = True
+    makeSegments = True
     makeLogicProgram = True
     showPlots = False
 
