@@ -85,11 +85,6 @@ class TranslateService:
         self.segmentsPerClass = 10
         self.sequenceSize = 5
 
-        # Remove the old ILP files
-        self.dataService.removeFile(config.bAlephPath)
-        self.dataService.removeFile(config.fAlephPath)
-        self.dataService.removeFile(config.nAlephPath)
-
         # Define Strings
         self.segment = "segment"
         self.targetClass = config.targetClass

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import random
+import logging
 
 from os.path import join
 from ast import literal_eval
@@ -13,55 +14,108 @@ from services.data_service import DataService
 class AlephService:
 
     def __init__(self):
-        self.isWalkAgainstAll = True
-        self.amountOfSegments = 10000
+        self.isOneAgainstAll = False
         self.transportMode = "walk"
+        self.amountOfSegments = 200
         self.dataService = DataService()
 
+        # Remove the old ILP files
+        self.dataService.removeFile(config.bAlephPath)
+        self.dataService.removeFile(config.fAlephPath)
+        self.dataService.removeFile(config.nAlephPath)
+
         self.usedSegments = []
+        self.walkCounter = 0
+        self.bikeCounter = 0
+        self.busCounter = 0
+        self.carCounter = 0
+        self.nonWalkCounter = 0
 
     def generateLogicProgram(self):
-        # 3. Version
-        # Schaue nach dem TM
-        # wähle je 100 pro TM
-
         # 4. Version
-        # Wähle X mit changepoint und Y ohne
+        # TODO Wähle X mit changepoint und Y ohne
 
         translationDf = self.generateSegmentDf()
-
-        # print dataframe to aleph file
-        if translationDf.size > 0:
-            self.printTranslated(translationDf)
+        self.printTranslated(translationDf)
 
     def generateSegmentDf(self):
         segmentDf = pd.DataFrame(columns=config.translationHeader)
         userFolders = self.dataService.getFileNamesInPath(
             config.translationPath)
 
-        for x in range(self.amountOfSegments):
+        while len(segmentDf) < self.amountOfSegments:
             folder = self.getRandomFolder(userFolders)
             file = self.getRandomFileInFolder(folder)
             row = self.getRandomRowFromDf(folder, file)
-            segmentDf.loc[len(segmentDf)] = row
+
+            rowTargetSegId = row[config.targetSegId]
+            rowTransportMode = row[config.rawClass]
+
+            if((self.canRowBeAddedOAA(
+                     rowTargetSegId, rowTransportMode) is False) or
+                    (not self.isOneAgainstAll and self.canRowBeAdded(
+                     rowTargetSegId, rowTransportMode) is False)):
+                continue
+            else:
+                segmentDf.loc[len(segmentDf)] = row
+                self.usedSegments.append(row[config.targetSegId])
+                self.updateCounters(rowTransportMode)
 
         return segmentDf
+
+    def updateCounters(self, rowTransportMode):
+        if self.isOneAgainstAll:
+            if(rowTransportMode == self.transportMode):
+                self.walkCounter += 1
+            else:
+                self.nonWalkCounter += 1
+        else:
+            if(rowTransportMode == "walk"):
+                self.walkCounter += 1
+            elif(rowTransportMode == "bike"):
+                self.bikeCounter += 1
+            elif(rowTransportMode == "bus"):
+                self.busCounter += 1
+            elif(rowTransportMode == "car"):
+                self.carCounter += 1
+            else:
+                logging.warn(
+                    "Unknown transport-mode in data %s" % rowTransportMode)
+
+    def canRowBeAddedOAA(self, rowTargetSegId, rowTransportMode):
+        canBeAdded = True
+        if (self.isOneAgainstAll and (rowTargetSegId in self.usedSegments or
+            (rowTransportMode == self.transportMode and
+                self.walkCounter >= (self.amountOfSegments / 2)) or
+            (rowTransportMode != self.transportMode and
+                self.nonWalkCounter >= (self.amountOfSegments / 2)))):
+            canBeAdded = False
+
+        return canBeAdded
+
+    def canRowBeAdded(self, rowTargetSegId, rowTransportMode):
+        canBeAdded = True
+        if (rowTargetSegId in self.usedSegments or
+            (rowTransportMode == "walk" and
+                self.walkCounter >= (self.amountOfSegments / 4)) or
+            (rowTransportMode == "bike" and
+                self.bikeCounter >= (self.amountOfSegments / 4)) or
+            (rowTransportMode == "bus" and
+                self.busCounter >= (self.amountOfSegments / 4)) or
+            (rowTransportMode == "car" and
+                self.carCounter >= (self.amountOfSegments / 4))):
+            canBeAdded = False
+
+        return canBeAdded
 
     def getRandomRowFromDf(self, folder, file):
         path = join(config.translationPath, folder, file)
         selectedDf = pd.read_csv(path, sep='\t', index_col=0, header=0)
 
         dfLength = len(selectedDf._values)
-
         randomRow = random.randrange(0, dfLength)
 
-        row = selectedDf.iloc[randomRow, :]
-        while (row[config.targetSegId] in self.usedSegments):
-            randomRow = random.randrange(0, dfLength)
-            row = selectedDf.iloc[randomRow, :]
-        self.usedSegments.append(row[config.targetSegId])
-
-        return row
+        return selectedDf.iloc[randomRow, :]
 
     def getRandomFileInFolder(self, folder):
         folderPath = join(config.translationPath, folder)
@@ -93,7 +147,7 @@ class AlephService:
         sequenceSize = 5
         transportMode = "transport_mode"
         # :- modeh(1,class(+segment,#class)).
-        if self.isWalkAgainstAll:
+        if self.isOneAgainstAll:
             self.printPosAndNegExamples(translationDf, self.transportMode)
             settings = self.getWalkSettings()
             modeH = str(":- modeh(1,%s(+%s)).\n" %
@@ -151,7 +205,7 @@ class AlephService:
             file.write("% | TYPES\n")
             # ============================
             # Only used, when all four classes should be predicted
-            if not self.isWalkAgainstAll:
+            if not self.isOneAgainstAll:
                 for type in config.transportmodes:
                     file.write("class(%s).\n" % type)
                 file.write("\n")
@@ -248,5 +302,5 @@ class AlephService:
     def printPosOnly(self, translationDf):
         with open(config.fAlephPath, "w") as file:
             for index, row in translationDf.iterrows():
-                file.write("%s\n" % row[config.targetClass])
+                file.write("%s\n" % row[config.transportTargetClass])
             file.close()
