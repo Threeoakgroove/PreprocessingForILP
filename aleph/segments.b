@@ -1,13 +1,11 @@
 % | SETTINGS
-:- set(evalfn,posonly).
-:- set(i,100).
+:- set(i,6).
 :- set(minpos,3).
-:- set(noise,0).
+:- set(noise,3).
 :- set(nodes,20000).
-:- set(gsamplesize,100).
 
 % | MODES
-:- modeh(1,class(+segment,#class)).
+:- modeh(1,hasTransportMode(+segment)).
 :- modeb(1,velocity(+segment,#speed)).
 :- modeb(1,acceleration(+segment,#speed)).
 :- modeb(1,isFasterThanPrev(+segment)).
@@ -16,19 +14,14 @@
 :- modeb(5,hasChangepoint(+segment)).
 
 % | DETERMINATIONS
-:- determination(class/2,velocity/2).
-:- determination(class/2,acceleration/2).
-:- determination(class/2,isFasterThanPrev/1).
-:- determination(class/2,hasPrevSegments/2).
-:- determination(class/2,prevHasTransportModes/2).
-:- determination(class/2,hasChangepoint/1).
+:- determination(hasTransportMode/1,velocity/2).
+:- determination(hasTransportMode/1,acceleration/2).
+:- determination(hasTransportMode/1,isFasterThanPrev/1).
+:- determination(hasTransportMode/1,hasPrevSegments/2).
+:- determination(hasTransportMode/1,prevHasTransportModes/2).
+:- determination(hasTransportMode/1,hasChangepoint/1).
 
 % | TYPES
-class(bike).
-class(bus).
-class(car).
-class(walk).
-
 transport_mode(bike).
 transport_mode(bus).
 transport_mode(car).
@@ -42,1115 +35,1103 @@ speed(above_medium).
 speed(fast).
 speed(very_fast).
 
-segment(seg020_2470_0).
-segment(seg020_2470_1).	segment(seg020_2470_2).	segment(seg020_2470_3).	segment(seg020_2470_4).	segment(seg020_2470_5).	
-segment(seg020_3157_0).
-segment(seg020_3157_1).	segment(seg020_3157_2).	segment(seg020_3157_3).	segment(seg020_3157_4).	segment(seg020_3157_5).	
-segment(seg021_952_0).
-segment(seg021_952_1).	segment(seg021_952_2).	segment(seg021_952_3).	segment(seg021_952_4).	segment(seg021_952_5).	
-segment(seg021_981_0).
-segment(seg021_981_1).	segment(seg021_981_2).	segment(seg021_981_3).	segment(seg021_981_4).	segment(seg021_981_5).	
-segment(seg020_3098_0).
-segment(seg020_3098_1).	segment(seg020_3098_2).	segment(seg020_3098_3).	segment(seg020_3098_4).	segment(seg020_3098_5).	
-segment(seg020_3258_0).
-segment(seg020_3258_1).	segment(seg020_3258_2).	segment(seg020_3258_3).	segment(seg020_3258_4).	segment(seg020_3258_5).	
-segment(seg020_3504_0).
-segment(seg020_3504_1).	segment(seg020_3504_2).	segment(seg020_3504_3).	segment(seg020_3504_4).	segment(seg020_3504_5).	
-segment(seg021_447_0).
-segment(seg021_447_1).	segment(seg021_447_2).	segment(seg021_447_3).	segment(seg021_447_4).	segment(seg021_447_5).	
-segment(seg021_154_0).
-segment(seg021_154_1).	segment(seg021_154_2).	segment(seg021_154_3).	segment(seg021_154_4).	segment(seg021_154_5).	
-segment(seg021_586_0).
-segment(seg021_586_1).	segment(seg021_586_2).	segment(seg021_586_3).	segment(seg021_586_4).	segment(seg021_586_5).	
-segment(seg020_4253_0).
-segment(seg020_4253_1).	segment(seg020_4253_2).	segment(seg020_4253_3).	segment(seg020_4253_4).	segment(seg020_4253_5).	
-segment(seg021_996_0).
-segment(seg021_996_1).	segment(seg021_996_2).	segment(seg021_996_3).	segment(seg021_996_4).	segment(seg021_996_5).	
-segment(seg020_4109_0).
-segment(seg020_4109_1).	segment(seg020_4109_2).	segment(seg020_4109_3).	segment(seg020_4109_4).	segment(seg020_4109_5).	
-segment(seg020_2150_0).
-segment(seg020_2150_1).	segment(seg020_2150_2).	segment(seg020_2150_3).	segment(seg020_2150_4).	segment(seg020_2150_5).	
-segment(seg020_3810_0).
-segment(seg020_3810_1).	segment(seg020_3810_2).	segment(seg020_3810_3).	segment(seg020_3810_4).	segment(seg020_3810_5).	
-segment(seg020_1157_0).
-segment(seg020_1157_1).	segment(seg020_1157_2).	segment(seg020_1157_3).	segment(seg020_1157_4).	segment(seg020_1157_5).	
-segment(seg020_3598_0).
-segment(seg020_3598_1).	segment(seg020_3598_2).	segment(seg020_3598_3).	segment(seg020_3598_4).	segment(seg020_3598_5).	
-segment(seg020_2940_0).
-segment(seg020_2940_1).	segment(seg020_2940_2).	segment(seg020_2940_3).	segment(seg020_2940_4).	segment(seg020_2940_5).	
-segment(seg021_454_0).
-segment(seg021_454_1).	segment(seg021_454_2).	segment(seg021_454_3).	segment(seg021_454_4).	segment(seg021_454_5).	
-segment(seg021_558_0).
-segment(seg021_558_1).	segment(seg021_558_2).	segment(seg021_558_3).	segment(seg021_558_4).	segment(seg021_558_5).	
-segment(seg021_613_0).
-segment(seg021_613_1).	segment(seg021_613_2).	segment(seg021_613_3).	segment(seg021_613_4).	segment(seg021_613_5).	
-segment(seg020_3178_0).
-segment(seg020_3178_1).	segment(seg020_3178_2).	segment(seg020_3178_3).	segment(seg020_3178_4).	segment(seg020_3178_5).	
-segment(seg021_517_0).
-segment(seg021_517_1).	segment(seg021_517_2).	segment(seg021_517_3).	segment(seg021_517_4).	segment(seg021_517_5).	
-segment(seg020_3006_0).
-segment(seg020_3006_1).	segment(seg020_3006_2).	segment(seg020_3006_3).	segment(seg020_3006_4).	segment(seg020_3006_5).	
-segment(seg020_951_0).
-segment(seg020_951_1).	segment(seg020_951_2).	segment(seg020_951_3).	segment(seg020_951_4).	segment(seg020_951_5).	
-segment(seg020_4889_0).
-segment(seg020_4889_1).	segment(seg020_4889_2).	segment(seg020_4889_3).	segment(seg020_4889_4).	segment(seg020_4889_5).	
-segment(seg021_780_0).
-segment(seg021_780_1).	segment(seg021_780_2).	segment(seg021_780_3).	segment(seg021_780_4).	segment(seg021_780_5).	
-segment(seg021_556_0).
-segment(seg021_556_1).	segment(seg021_556_2).	segment(seg021_556_3).	segment(seg021_556_4).	segment(seg021_556_5).	
-segment(seg020_1166_0).
-segment(seg020_1166_1).	segment(seg020_1166_2).	segment(seg020_1166_3).	segment(seg020_1166_4).	segment(seg020_1166_5).	
-segment(seg020_288_0).
-segment(seg020_288_1).	segment(seg020_288_2).	segment(seg020_288_3).	segment(seg020_288_4).	segment(seg020_288_5).	
-segment(seg020_790_0).
-segment(seg020_790_1).	segment(seg020_790_2).	segment(seg020_790_3).	segment(seg020_790_4).	segment(seg020_790_5).	
-segment(seg020_463_0).
-segment(seg020_463_1).	segment(seg020_463_2).	segment(seg020_463_3).	segment(seg020_463_4).	segment(seg020_463_5).	
-segment(seg021_455_0).
-segment(seg021_455_1).	segment(seg021_455_2).	segment(seg021_455_3).	segment(seg021_455_4).	segment(seg021_455_5).	
-segment(seg021_772_0).
-segment(seg021_772_1).	segment(seg021_772_2).	segment(seg021_772_3).	segment(seg021_772_4).	segment(seg021_772_5).	
+segment(seg021_550_0).
+segment(seg021_550_1).	segment(seg021_550_2).	segment(seg021_550_3).	segment(seg021_550_4).	segment(seg021_550_5).	
+segment(seg021_205_0).
+segment(seg021_205_1).	segment(seg021_205_2).	segment(seg021_205_3).	segment(seg021_205_4).	segment(seg021_205_5).	
+segment(seg021_158_0).
+segment(seg021_158_1).	segment(seg021_158_2).	segment(seg021_158_3).	segment(seg021_158_4).	segment(seg021_158_5).	
+segment(seg021_985_0).
+segment(seg021_985_1).	segment(seg021_985_2).	segment(seg021_985_3).	segment(seg021_985_4).	segment(seg021_985_5).	
+segment(seg021_213_0).
+segment(seg021_213_1).	segment(seg021_213_2).	segment(seg021_213_3).	segment(seg021_213_4).	segment(seg021_213_5).	
+segment(seg020_2831_0).
+segment(seg020_2831_1).	segment(seg020_2831_2).	segment(seg020_2831_3).	segment(seg020_2831_4).	segment(seg020_2831_5).	
+segment(seg021_982_0).
+segment(seg021_982_1).	segment(seg021_982_2).	segment(seg021_982_3).	segment(seg021_982_4).	segment(seg021_982_5).	
+segment(seg020_563_0).
+segment(seg020_563_1).	segment(seg020_563_2).	segment(seg020_563_3).	segment(seg020_563_4).	segment(seg020_563_5).	
+segment(seg021_298_0).
+segment(seg021_298_1).	segment(seg021_298_2).	segment(seg021_298_3).	segment(seg021_298_4).	segment(seg021_298_5).	
+segment(seg020_58_0).
+segment(seg020_58_1).	segment(seg020_58_2).	segment(seg020_58_3).	segment(seg020_58_4).	segment(seg020_58_5).	
+segment(seg021_551_0).
+segment(seg021_551_1).	segment(seg021_551_2).	segment(seg021_551_3).	segment(seg021_551_4).	segment(seg021_551_5).	
+segment(seg021_354_0).
+segment(seg021_354_1).	segment(seg021_354_2).	segment(seg021_354_3).	segment(seg021_354_4).	segment(seg021_354_5).	
+segment(seg021_605_0).
+segment(seg021_605_1).	segment(seg021_605_2).	segment(seg021_605_3).	segment(seg021_605_4).	segment(seg021_605_5).	
+segment(seg021_736_0).
+segment(seg021_736_1).	segment(seg021_736_2).	segment(seg021_736_3).	segment(seg021_736_4).	segment(seg021_736_5).	
+segment(seg020_4068_0).
+segment(seg020_4068_1).	segment(seg020_4068_2).	segment(seg020_4068_3).	segment(seg020_4068_4).	segment(seg020_4068_5).	
+segment(seg021_359_0).
+segment(seg021_359_1).	segment(seg021_359_2).	segment(seg021_359_3).	segment(seg021_359_4).	segment(seg021_359_5).	
+segment(seg020_2426_0).
+segment(seg020_2426_1).	segment(seg020_2426_2).	segment(seg020_2426_3).	segment(seg020_2426_4).	segment(seg020_2426_5).	
+segment(seg020_110_0).
+segment(seg020_110_1).	segment(seg020_110_2).	segment(seg020_110_3).	segment(seg020_110_4).	segment(seg020_110_5).	
+segment(seg021_9_0).
+segment(seg021_9_1).	segment(seg021_9_2).	segment(seg021_9_3).	segment(seg021_9_4).	segment(seg021_9_5).	
+segment(seg020_2967_0).
+segment(seg020_2967_1).	segment(seg020_2967_2).	segment(seg020_2967_3).	segment(seg020_2967_4).	segment(seg020_2967_5).	
+segment(seg020_3651_0).
+segment(seg020_3651_1).	segment(seg020_3651_2).	segment(seg020_3651_3).	segment(seg020_3651_4).	segment(seg020_3651_5).	
+segment(seg020_542_0).
+segment(seg020_542_1).	segment(seg020_542_2).	segment(seg020_542_3).	segment(seg020_542_4).	segment(seg020_542_5).	
+segment(seg021_500_0).
+segment(seg021_500_1).	segment(seg021_500_2).	segment(seg021_500_3).	segment(seg021_500_4).	segment(seg021_500_5).	
+segment(seg021_675_0).
+segment(seg021_675_1).	segment(seg021_675_2).	segment(seg021_675_3).	segment(seg021_675_4).	segment(seg021_675_5).	
+segment(seg021_84_0).
+segment(seg021_84_1).	segment(seg021_84_2).	segment(seg021_84_3).	segment(seg021_84_4).	segment(seg021_84_5).	
+segment(seg021_196_0).
+segment(seg021_196_1).	segment(seg021_196_2).	segment(seg021_196_3).	segment(seg021_196_4).	segment(seg021_196_5).	
+segment(seg020_4167_0).
+segment(seg020_4167_1).	segment(seg020_4167_2).	segment(seg020_4167_3).	segment(seg020_4167_4).	segment(seg020_4167_5).	
+segment(seg021_770_0).
+segment(seg021_770_1).	segment(seg021_770_2).	segment(seg021_770_3).	segment(seg021_770_4).	segment(seg021_770_5).	
+segment(seg020_2104_0).
+segment(seg020_2104_1).	segment(seg020_2104_2).	segment(seg020_2104_3).	segment(seg020_2104_4).	segment(seg020_2104_5).	
+segment(seg021_591_0).
+segment(seg021_591_1).	segment(seg021_591_2).	segment(seg021_591_3).	segment(seg021_591_4).	segment(seg021_591_5).	
+segment(seg021_497_0).
+segment(seg021_497_1).	segment(seg021_497_2).	segment(seg021_497_3).	segment(seg021_497_4).	segment(seg021_497_5).	
+segment(seg021_75_0).
+segment(seg021_75_1).	segment(seg021_75_2).	segment(seg021_75_3).	segment(seg021_75_4).	segment(seg021_75_5).	
+segment(seg020_989_0).
+segment(seg020_989_1).	segment(seg020_989_2).	segment(seg020_989_3).	segment(seg020_989_4).	segment(seg020_989_5).	
+segment(seg021_169_0).
+segment(seg021_169_1).	segment(seg021_169_2).	segment(seg021_169_3).	segment(seg021_169_4).	segment(seg021_169_5).	
+segment(seg021_271_0).
+segment(seg021_271_1).	segment(seg021_271_2).	segment(seg021_271_3).	segment(seg021_271_4).	segment(seg021_271_5).	
+segment(seg021_882_0).
+segment(seg021_882_1).	segment(seg021_882_2).	segment(seg021_882_3).	segment(seg021_882_4).	segment(seg021_882_5).	
 segment(seg020_3757_0).
 segment(seg020_3757_1).	segment(seg020_3757_2).	segment(seg020_3757_3).	segment(seg020_3757_4).	segment(seg020_3757_5).	
-segment(seg020_828_0).
-segment(seg020_828_1).	segment(seg020_828_2).	segment(seg020_828_3).	segment(seg020_828_4).	segment(seg020_828_5).	
-segment(seg021_611_0).
-segment(seg021_611_1).	segment(seg021_611_2).	segment(seg021_611_3).	segment(seg021_611_4).	segment(seg021_611_5).	
-segment(seg021_469_0).
-segment(seg021_469_1).	segment(seg021_469_2).	segment(seg021_469_3).	segment(seg021_469_4).	segment(seg021_469_5).	
-segment(seg021_656_0).
-segment(seg021_656_1).	segment(seg021_656_2).	segment(seg021_656_3).	segment(seg021_656_4).	segment(seg021_656_5).	
-segment(seg020_2363_0).
-segment(seg020_2363_1).	segment(seg020_2363_2).	segment(seg020_2363_3).	segment(seg020_2363_4).	segment(seg020_2363_5).	
-segment(seg021_676_0).
-segment(seg021_676_1).	segment(seg021_676_2).	segment(seg021_676_3).	segment(seg021_676_4).	segment(seg021_676_5).	
-segment(seg021_47_0).
-segment(seg021_47_1).	segment(seg021_47_2).	segment(seg021_47_3).	segment(seg021_47_4).	segment(seg021_47_5).	
-segment(seg020_4129_0).
-segment(seg020_4129_1).	segment(seg020_4129_2).	segment(seg020_4129_3).	segment(seg020_4129_4).	segment(seg020_4129_5).	
-segment(seg020_338_0).
-segment(seg020_338_1).	segment(seg020_338_2).	segment(seg020_338_3).	segment(seg020_338_4).	segment(seg020_338_5).	
-segment(seg020_2934_0).
-segment(seg020_2934_1).	segment(seg020_2934_2).	segment(seg020_2934_3).	segment(seg020_2934_4).	segment(seg020_2934_5).	
-segment(seg021_1150_0).
-segment(seg021_1150_1).	segment(seg021_1150_2).	segment(seg021_1150_3).	segment(seg021_1150_4).	segment(seg021_1150_5).	
-segment(seg020_4369_0).
-segment(seg020_4369_1).	segment(seg020_4369_2).	segment(seg020_4369_3).	segment(seg020_4369_4).	segment(seg020_4369_5).	
-segment(seg021_467_0).
-segment(seg021_467_1).	segment(seg021_467_2).	segment(seg021_467_3).	segment(seg021_467_4).	segment(seg021_467_5).	
-segment(seg020_2338_0).
-segment(seg020_2338_1).	segment(seg020_2338_2).	segment(seg020_2338_3).	segment(seg020_2338_4).	segment(seg020_2338_5).	
-segment(seg021_703_0).
-segment(seg021_703_1).	segment(seg021_703_2).	segment(seg021_703_3).	segment(seg021_703_4).	segment(seg021_703_5).	
-segment(seg021_72_0).
-segment(seg021_72_1).	segment(seg021_72_2).	segment(seg021_72_3).	segment(seg021_72_4).	segment(seg021_72_5).	
-segment(seg021_302_0).
-segment(seg021_302_1).	segment(seg021_302_2).	segment(seg021_302_3).	segment(seg021_302_4).	segment(seg021_302_5).	
-segment(seg021_486_0).
-segment(seg021_486_1).	segment(seg021_486_2).	segment(seg021_486_3).	segment(seg021_486_4).	segment(seg021_486_5).	
-segment(seg020_16_0).
-segment(seg020_16_1).	segment(seg020_16_2).	segment(seg020_16_3).	segment(seg020_16_4).	segment(seg020_16_5).	
-segment(seg020_3594_0).
-segment(seg020_3594_1).	segment(seg020_3594_2).	segment(seg020_3594_3).	segment(seg020_3594_4).	segment(seg020_3594_5).	
-segment(seg021_30_0).
-segment(seg021_30_1).	segment(seg021_30_2).	segment(seg021_30_3).	segment(seg021_30_4).	segment(seg021_30_5).	
-segment(seg020_3448_0).
-segment(seg020_3448_1).	segment(seg020_3448_2).	segment(seg020_3448_3).	segment(seg020_3448_4).	segment(seg020_3448_5).	
-segment(seg020_4951_0).
-segment(seg020_4951_1).	segment(seg020_4951_2).	segment(seg020_4951_3).	segment(seg020_4951_4).	segment(seg020_4951_5).	
-segment(seg021_863_0).
-segment(seg021_863_1).	segment(seg021_863_2).	segment(seg021_863_3).	segment(seg021_863_4).	segment(seg021_863_5).	
-segment(seg021_86_0).
-segment(seg021_86_1).	segment(seg021_86_2).	segment(seg021_86_3).	segment(seg021_86_4).	segment(seg021_86_5).	
-segment(seg021_418_0).
-segment(seg021_418_1).	segment(seg021_418_2).	segment(seg021_418_3).	segment(seg021_418_4).	segment(seg021_418_5).	
-segment(seg020_4928_0).
-segment(seg020_4928_1).	segment(seg020_4928_2).	segment(seg020_4928_3).	segment(seg020_4928_4).	segment(seg020_4928_5).	
-segment(seg021_310_0).
-segment(seg021_310_1).	segment(seg021_310_2).	segment(seg021_310_3).	segment(seg021_310_4).	segment(seg021_310_5).	
-segment(seg021_521_0).
-segment(seg021_521_1).	segment(seg021_521_2).	segment(seg021_521_3).	segment(seg021_521_4).	segment(seg021_521_5).	
-segment(seg021_786_0).
-segment(seg021_786_1).	segment(seg021_786_2).	segment(seg021_786_3).	segment(seg021_786_4).	segment(seg021_786_5).	
-segment(seg020_4190_0).
-segment(seg020_4190_1).	segment(seg020_4190_2).	segment(seg020_4190_3).	segment(seg020_4190_4).	segment(seg020_4190_5).	
-segment(seg020_4340_0).
-segment(seg020_4340_1).	segment(seg020_4340_2).	segment(seg020_4340_3).	segment(seg020_4340_4).	segment(seg020_4340_5).	
-segment(seg020_3021_0).
-segment(seg020_3021_1).	segment(seg020_3021_2).	segment(seg020_3021_3).	segment(seg020_3021_4).	segment(seg020_3021_5).	
-segment(seg020_986_0).
-segment(seg020_986_1).	segment(seg020_986_2).	segment(seg020_986_3).	segment(seg020_986_4).	segment(seg020_986_5).	
-segment(seg021_595_0).
-segment(seg021_595_1).	segment(seg021_595_2).	segment(seg021_595_3).	segment(seg021_595_4).	segment(seg021_595_5).	
-segment(seg021_1008_0).
-segment(seg021_1008_1).	segment(seg021_1008_2).	segment(seg021_1008_3).	segment(seg021_1008_4).	segment(seg021_1008_5).	
-segment(seg021_472_0).
-segment(seg021_472_1).	segment(seg021_472_2).	segment(seg021_472_3).	segment(seg021_472_4).	segment(seg021_472_5).	
-segment(seg021_493_0).
-segment(seg021_493_1).	segment(seg021_493_2).	segment(seg021_493_3).	segment(seg021_493_4).	segment(seg021_493_5).	
-segment(seg020_3591_0).
-segment(seg020_3591_1).	segment(seg020_3591_2).	segment(seg020_3591_3).	segment(seg020_3591_4).	segment(seg020_3591_5).	
-segment(seg021_117_0).
-segment(seg021_117_1).	segment(seg021_117_2).	segment(seg021_117_3).	segment(seg021_117_4).	segment(seg021_117_5).	
-segment(seg020_305_0).
-segment(seg020_305_1).	segment(seg020_305_2).	segment(seg020_305_3).	segment(seg020_305_4).	segment(seg020_305_5).	
-segment(seg020_2926_0).
-segment(seg020_2926_1).	segment(seg020_2926_2).	segment(seg020_2926_3).	segment(seg020_2926_4).	segment(seg020_2926_5).	
-segment(seg020_4570_0).
-segment(seg020_4570_1).	segment(seg020_4570_2).	segment(seg020_4570_3).	segment(seg020_4570_4).	segment(seg020_4570_5).	
-segment(seg020_3159_0).
-segment(seg020_3159_1).	segment(seg020_3159_2).	segment(seg020_3159_3).	segment(seg020_3159_4).	segment(seg020_3159_5).	
-segment(seg020_3935_0).
-segment(seg020_3935_1).	segment(seg020_3935_2).	segment(seg020_3935_3).	segment(seg020_3935_4).	segment(seg020_3935_5).	
-segment(seg021_374_0).
-segment(seg021_374_1).	segment(seg021_374_2).	segment(seg021_374_3).	segment(seg021_374_4).	segment(seg021_374_5).	
-segment(seg020_2370_0).
-segment(seg020_2370_1).	segment(seg020_2370_2).	segment(seg020_2370_3).	segment(seg020_2370_4).	segment(seg020_2370_5).	
-segment(seg021_390_0).
-segment(seg021_390_1).	segment(seg021_390_2).	segment(seg021_390_3).	segment(seg021_390_4).	segment(seg021_390_5).	
-segment(seg021_599_0).
-segment(seg021_599_1).	segment(seg021_599_2).	segment(seg021_599_3).	segment(seg021_599_4).	segment(seg021_599_5).	
-segment(seg021_971_0).
-segment(seg021_971_1).	segment(seg021_971_2).	segment(seg021_971_3).	segment(seg021_971_4).	segment(seg021_971_5).	
-segment(seg020_1072_0).
-segment(seg020_1072_1).	segment(seg020_1072_2).	segment(seg020_1072_3).	segment(seg020_1072_4).	segment(seg020_1072_5).	
-segment(seg021_426_0).
-segment(seg021_426_1).	segment(seg021_426_2).	segment(seg021_426_3).	segment(seg021_426_4).	segment(seg021_426_5).	
-segment(seg020_2897_0).
-segment(seg020_2897_1).	segment(seg020_2897_2).	segment(seg020_2897_3).	segment(seg020_2897_4).	segment(seg020_2897_5).	
-segment(seg020_429_0).
-segment(seg020_429_1).	segment(seg020_429_2).	segment(seg020_429_3).	segment(seg020_429_4).	segment(seg020_429_5).	
-segment(seg020_3529_0).
-segment(seg020_3529_1).	segment(seg020_3529_2).	segment(seg020_3529_3).	segment(seg020_3529_4).	segment(seg020_3529_5).	
-segment(seg021_246_0).
-segment(seg021_246_1).	segment(seg021_246_2).	segment(seg021_246_3).	segment(seg021_246_4).	segment(seg021_246_5).	
-segment(seg020_74_0).
-segment(seg020_74_1).	segment(seg020_74_2).	segment(seg020_74_3).	segment(seg020_74_4).	segment(seg020_74_5).	
-segment(seg020_2229_0).
-segment(seg020_2229_1).	segment(seg020_2229_2).	segment(seg020_2229_3).	segment(seg020_2229_4).	segment(seg020_2229_5).	
-segment(seg020_3404_0).
-segment(seg020_3404_1).	segment(seg020_3404_2).	segment(seg020_3404_3).	segment(seg020_3404_4).	segment(seg020_3404_5).	
-segment(seg021_445_0).
-segment(seg021_445_1).	segment(seg021_445_2).	segment(seg021_445_3).	segment(seg021_445_4).	segment(seg021_445_5).	
-segment(seg021_560_0).
-segment(seg021_560_1).	segment(seg021_560_2).	segment(seg021_560_3).	segment(seg021_560_4).	segment(seg021_560_5).	
-segment(seg020_4395_0).
-segment(seg020_4395_1).	segment(seg020_4395_2).	segment(seg020_4395_3).	segment(seg020_4395_4).	segment(seg020_4395_5).	
-segment(seg020_1094_0).
-segment(seg020_1094_1).	segment(seg020_1094_2).	segment(seg020_1094_3).	segment(seg020_1094_4).	segment(seg020_1094_5).	
-segment(seg021_1064_0).
-segment(seg021_1064_1).	segment(seg021_1064_2).	segment(seg021_1064_3).	segment(seg021_1064_4).	segment(seg021_1064_5).	
-segment(seg020_654_0).
-segment(seg020_654_1).	segment(seg020_654_2).	segment(seg020_654_3).	segment(seg020_654_4).	segment(seg020_654_5).	
-segment(seg020_385_0).
-segment(seg020_385_1).	segment(seg020_385_2).	segment(seg020_385_3).	segment(seg020_385_4).	segment(seg020_385_5).	
-segment(seg021_306_0).
-segment(seg021_306_1).	segment(seg021_306_2).	segment(seg021_306_3).	segment(seg021_306_4).	segment(seg021_306_5).	
-segment(seg020_2243_0).
-segment(seg020_2243_1).	segment(seg020_2243_2).	segment(seg020_2243_3).	segment(seg020_2243_4).	segment(seg020_2243_5).	
-segment(seg021_889_0).
-segment(seg021_889_1).	segment(seg021_889_2).	segment(seg021_889_3).	segment(seg021_889_4).	segment(seg021_889_5).	
-segment(seg021_383_0).
-segment(seg021_383_1).	segment(seg021_383_2).	segment(seg021_383_3).	segment(seg021_383_4).	segment(seg021_383_5).	
-segment(seg020_4853_0).
-segment(seg020_4853_1).	segment(seg020_4853_2).	segment(seg020_4853_3).	segment(seg020_4853_4).	segment(seg020_4853_5).	
-segment(seg020_3944_0).
-segment(seg020_3944_1).	segment(seg020_3944_2).	segment(seg020_3944_3).	segment(seg020_3944_4).	segment(seg020_3944_5).	
-segment(seg020_4262_0).
-segment(seg020_4262_1).	segment(seg020_4262_2).	segment(seg020_4262_3).	segment(seg020_4262_4).	segment(seg020_4262_5).	
-segment(seg021_372_0).
-segment(seg021_372_1).	segment(seg021_372_2).	segment(seg021_372_3).	segment(seg021_372_4).	segment(seg021_372_5).	
-segment(seg020_4757_0).
-segment(seg020_4757_1).	segment(seg020_4757_2).	segment(seg020_4757_3).	segment(seg020_4757_4).	segment(seg020_4757_5).	
-segment(seg021_767_0).
-segment(seg021_767_1).	segment(seg021_767_2).	segment(seg021_767_3).	segment(seg021_767_4).	segment(seg021_767_5).	
-segment(seg021_1058_0).
-segment(seg021_1058_1).	segment(seg021_1058_2).	segment(seg021_1058_3).	segment(seg021_1058_4).	segment(seg021_1058_5).	
-segment(seg020_3427_0).
-segment(seg020_3427_1).	segment(seg020_3427_2).	segment(seg020_3427_3).	segment(seg020_3427_4).	segment(seg020_3427_5).	
-segment(seg021_247_0).
-segment(seg021_247_1).	segment(seg021_247_2).	segment(seg021_247_3).	segment(seg021_247_4).	segment(seg021_247_5).	
-segment(seg020_1149_0).
-segment(seg020_1149_1).	segment(seg020_1149_2).	segment(seg020_1149_3).	segment(seg020_1149_4).	segment(seg020_1149_5).	
-segment(seg020_3938_0).
-segment(seg020_3938_1).	segment(seg020_3938_2).	segment(seg020_3938_3).	segment(seg020_3938_4).	segment(seg020_3938_5).	
-segment(seg021_1052_0).
-segment(seg021_1052_1).	segment(seg021_1052_2).	segment(seg021_1052_3).	segment(seg021_1052_4).	segment(seg021_1052_5).	
-segment(seg021_349_0).
-segment(seg021_349_1).	segment(seg021_349_2).	segment(seg021_349_3).	segment(seg021_349_4).	segment(seg021_349_5).	
-segment(seg020_2492_0).
-segment(seg020_2492_1).	segment(seg020_2492_2).	segment(seg020_2492_3).	segment(seg020_2492_4).	segment(seg020_2492_5).	
-segment(seg021_609_0).
-segment(seg021_609_1).	segment(seg021_609_2).	segment(seg021_609_3).	segment(seg021_609_4).	segment(seg021_609_5).	
-segment(seg020_4416_0).
-segment(seg020_4416_1).	segment(seg020_4416_2).	segment(seg020_4416_3).	segment(seg020_4416_4).	segment(seg020_4416_5).	
+segment(seg020_1061_0).
+segment(seg020_1061_1).	segment(seg020_1061_2).	segment(seg020_1061_3).	segment(seg020_1061_4).	segment(seg020_1061_5).	
+segment(seg020_470_0).
+segment(seg020_470_1).	segment(seg020_470_2).	segment(seg020_470_3).	segment(seg020_470_4).	segment(seg020_470_5).	
+segment(seg021_986_0).
+segment(seg021_986_1).	segment(seg021_986_2).	segment(seg021_986_3).	segment(seg021_986_4).	segment(seg021_986_5).	
+segment(seg020_2514_0).
+segment(seg020_2514_1).	segment(seg020_2514_2).	segment(seg020_2514_3).	segment(seg020_2514_4).	segment(seg020_2514_5).	
+segment(seg021_549_0).
+segment(seg021_549_1).	segment(seg021_549_2).	segment(seg021_549_3).	segment(seg021_549_4).	segment(seg021_549_5).	
+segment(seg021_1085_0).
+segment(seg021_1085_1).	segment(seg021_1085_2).	segment(seg021_1085_3).	segment(seg021_1085_4).	segment(seg021_1085_5).	
+segment(seg021_867_0).
+segment(seg021_867_1).	segment(seg021_867_2).	segment(seg021_867_3).	segment(seg021_867_4).	segment(seg021_867_5).	
+segment(seg020_2277_0).
+segment(seg020_2277_1).	segment(seg020_2277_2).	segment(seg020_2277_3).	segment(seg020_2277_4).	segment(seg020_2277_5).	
+segment(seg021_530_0).
+segment(seg021_530_1).	segment(seg021_530_2).	segment(seg021_530_3).	segment(seg021_530_4).	segment(seg021_530_5).	
+segment(seg020_934_0).
+segment(seg020_934_1).	segment(seg020_934_2).	segment(seg020_934_3).	segment(seg020_934_4).	segment(seg020_934_5).	
+segment(seg021_484_0).
+segment(seg021_484_1).	segment(seg021_484_2).	segment(seg021_484_3).	segment(seg021_484_4).	segment(seg021_484_5).	
+segment(seg020_3905_0).
+segment(seg020_3905_1).	segment(seg020_3905_2).	segment(seg020_3905_3).	segment(seg020_3905_4).	segment(seg020_3905_5).	
+segment(seg020_4682_0).
+segment(seg020_4682_1).	segment(seg020_4682_2).	segment(seg020_4682_3).	segment(seg020_4682_4).	segment(seg020_4682_5).	
 segment(seg020_2882_0).
 segment(seg020_2882_1).	segment(seg020_2882_2).	segment(seg020_2882_3).	segment(seg020_2882_4).	segment(seg020_2882_5).	
-segment(seg021_610_0).
-segment(seg021_610_1).	segment(seg021_610_2).	segment(seg021_610_3).	segment(seg021_610_4).	segment(seg021_610_5).	
-segment(seg021_274_0).
-segment(seg021_274_1).	segment(seg021_274_2).	segment(seg021_274_3).	segment(seg021_274_4).	segment(seg021_274_5).	
-segment(seg020_2811_0).
-segment(seg020_2811_1).	segment(seg020_2811_2).	segment(seg020_2811_3).	segment(seg020_2811_4).	segment(seg020_2811_5).	
-segment(seg020_4242_0).
-segment(seg020_4242_1).	segment(seg020_4242_2).	segment(seg020_4242_3).	segment(seg020_4242_4).	segment(seg020_4242_5).	
-segment(seg021_1149_0).
-segment(seg021_1149_1).	segment(seg021_1149_2).	segment(seg021_1149_3).	segment(seg021_1149_4).	segment(seg021_1149_5).	
-segment(seg020_3238_0).
-segment(seg020_3238_1).	segment(seg020_3238_2).	segment(seg020_3238_3).	segment(seg020_3238_4).	segment(seg020_3238_5).	
-segment(seg021_601_0).
-segment(seg021_601_1).	segment(seg021_601_2).	segment(seg021_601_3).	segment(seg021_601_4).	segment(seg021_601_5).	
-segment(seg021_150_0).
-segment(seg021_150_1).	segment(seg021_150_2).	segment(seg021_150_3).	segment(seg021_150_4).	segment(seg021_150_5).	
-segment(seg021_378_0).
-segment(seg021_378_1).	segment(seg021_378_2).	segment(seg021_378_3).	segment(seg021_378_4).	segment(seg021_378_5).	
-segment(seg020_2496_0).
-segment(seg020_2496_1).	segment(seg020_2496_2).	segment(seg020_2496_3).	segment(seg020_2496_4).	segment(seg020_2496_5).	
-segment(seg021_745_0).
-segment(seg021_745_1).	segment(seg021_745_2).	segment(seg021_745_3).	segment(seg021_745_4).	segment(seg021_745_5).	
-segment(seg020_3535_0).
-segment(seg020_3535_1).	segment(seg020_3535_2).	segment(seg020_3535_3).	segment(seg020_3535_4).	segment(seg020_3535_5).	
-segment(seg020_3923_0).
-segment(seg020_3923_1).	segment(seg020_3923_2).	segment(seg020_3923_3).	segment(seg020_3923_4).	segment(seg020_3923_5).	
-segment(seg021_312_0).
-segment(seg021_312_1).	segment(seg021_312_2).	segment(seg021_312_3).	segment(seg021_312_4).	segment(seg021_312_5).	
-segment(seg021_784_0).
-segment(seg021_784_1).	segment(seg021_784_2).	segment(seg021_784_3).	segment(seg021_784_4).	segment(seg021_784_5).	
-segment(seg020_4234_0).
-segment(seg020_4234_1).	segment(seg020_4234_2).	segment(seg020_4234_3).	segment(seg020_4234_4).	segment(seg020_4234_5).	
-segment(seg020_4295_0).
-segment(seg020_4295_1).	segment(seg020_4295_2).	segment(seg020_4295_3).	segment(seg020_4295_4).	segment(seg020_4295_5).	
-segment(seg020_2565_0).
-segment(seg020_2565_1).	segment(seg020_2565_2).	segment(seg020_2565_3).	segment(seg020_2565_4).	segment(seg020_2565_5).	
-segment(seg021_380_0).
-segment(seg021_380_1).	segment(seg021_380_2).	segment(seg021_380_3).	segment(seg021_380_4).	segment(seg021_380_5).	
-segment(seg020_485_0).
-segment(seg020_485_1).	segment(seg020_485_2).	segment(seg020_485_3).	segment(seg020_485_4).	segment(seg020_485_5).	
-segment(seg020_2849_0).
-segment(seg020_2849_1).	segment(seg020_2849_2).	segment(seg020_2849_3).	segment(seg020_2849_4).	segment(seg020_2849_5).	
+segment(seg021_171_0).
+segment(seg021_171_1).	segment(seg021_171_2).	segment(seg021_171_3).	segment(seg021_171_4).	segment(seg021_171_5).	
+segment(seg021_659_0).
+segment(seg021_659_1).	segment(seg021_659_2).	segment(seg021_659_3).	segment(seg021_659_4).	segment(seg021_659_5).	
+segment(seg021_332_0).
+segment(seg021_332_1).	segment(seg021_332_2).	segment(seg021_332_3).	segment(seg021_332_4).	segment(seg021_332_5).	
+segment(seg021_404_0).
+segment(seg021_404_1).	segment(seg021_404_2).	segment(seg021_404_3).	segment(seg021_404_4).	segment(seg021_404_5).	
+segment(seg020_4153_0).
+segment(seg020_4153_1).	segment(seg020_4153_2).	segment(seg020_4153_3).	segment(seg020_4153_4).	segment(seg020_4153_5).	
+segment(seg021_1077_0).
+segment(seg021_1077_1).	segment(seg021_1077_2).	segment(seg021_1077_3).	segment(seg021_1077_4).	segment(seg021_1077_5).	
+segment(seg020_2556_0).
+segment(seg020_2556_1).	segment(seg020_2556_2).	segment(seg020_2556_3).	segment(seg020_2556_4).	segment(seg020_2556_5).	
+segment(seg020_3355_0).
+segment(seg020_3355_1).	segment(seg020_3355_2).	segment(seg020_3355_3).	segment(seg020_3355_4).	segment(seg020_3355_5).	
+segment(seg020_4819_0).
+segment(seg020_4819_1).	segment(seg020_4819_2).	segment(seg020_4819_3).	segment(seg020_4819_4).	segment(seg020_4819_5).	
+segment(seg021_293_0).
+segment(seg021_293_1).	segment(seg021_293_2).	segment(seg021_293_3).	segment(seg021_293_4).	segment(seg021_293_5).	
+segment(seg021_496_0).
+segment(seg021_496_1).	segment(seg021_496_2).	segment(seg021_496_3).	segment(seg021_496_4).	segment(seg021_496_5).	
+segment(seg020_3776_0).
+segment(seg020_3776_1).	segment(seg020_3776_2).	segment(seg020_3776_3).	segment(seg020_3776_4).	segment(seg020_3776_5).	
+segment(seg020_2281_0).
+segment(seg020_2281_1).	segment(seg020_2281_2).	segment(seg020_2281_3).	segment(seg020_2281_4).	segment(seg020_2281_5).	
+segment(seg021_905_0).
+segment(seg021_905_1).	segment(seg021_905_2).	segment(seg021_905_3).	segment(seg021_905_4).	segment(seg021_905_5).	
+segment(seg020_2332_0).
+segment(seg020_2332_1).	segment(seg020_2332_2).	segment(seg020_2332_3).	segment(seg020_2332_4).	segment(seg020_2332_5).	
+segment(seg020_2462_0).
+segment(seg020_2462_1).	segment(seg020_2462_2).	segment(seg020_2462_3).	segment(seg020_2462_4).	segment(seg020_2462_5).	
+segment(seg021_789_0).
+segment(seg021_789_1).	segment(seg021_789_2).	segment(seg021_789_3).	segment(seg021_789_4).	segment(seg021_789_5).	
+segment(seg020_919_0).
+segment(seg020_919_1).	segment(seg020_919_2).	segment(seg020_919_3).	segment(seg020_919_4).	segment(seg020_919_5).	
+segment(seg021_478_0).
+segment(seg021_478_1).	segment(seg021_478_2).	segment(seg021_478_3).	segment(seg021_478_4).	segment(seg021_478_5).	
+segment(seg021_592_0).
+segment(seg021_592_1).	segment(seg021_592_2).	segment(seg021_592_3).	segment(seg021_592_4).	segment(seg021_592_5).	
+segment(seg020_86_0).
+segment(seg020_86_1).	segment(seg020_86_2).	segment(seg020_86_3).	segment(seg020_86_4).	segment(seg020_86_5).	
+segment(seg021_29_0).
+segment(seg021_29_1).	segment(seg021_29_2).	segment(seg021_29_3).	segment(seg021_29_4).	segment(seg021_29_5).	
 segment(seg021_515_0).
 segment(seg021_515_1).	segment(seg021_515_2).	segment(seg021_515_3).	segment(seg021_515_4).	segment(seg021_515_5).	
-segment(seg021_872_0).
-segment(seg021_872_1).	segment(seg021_872_2).	segment(seg021_872_3).	segment(seg021_872_4).	segment(seg021_872_5).	
+segment(seg020_3392_0).
+segment(seg020_3392_1).	segment(seg020_3392_2).	segment(seg020_3392_3).	segment(seg020_3392_4).	segment(seg020_3392_5).	
+segment(seg020_4236_0).
+segment(seg020_4236_1).	segment(seg020_4236_2).	segment(seg020_4236_3).	segment(seg020_4236_4).	segment(seg020_4236_5).	
+segment(seg021_909_0).
+segment(seg021_909_1).	segment(seg021_909_2).	segment(seg021_909_3).	segment(seg021_909_4).	segment(seg021_909_5).	
+segment(seg021_944_0).
+segment(seg021_944_1).	segment(seg021_944_2).	segment(seg021_944_3).	segment(seg021_944_4).	segment(seg021_944_5).	
+segment(seg021_455_0).
+segment(seg021_455_1).	segment(seg021_455_2).	segment(seg021_455_3).	segment(seg021_455_4).	segment(seg021_455_5).	
+segment(seg021_471_0).
+segment(seg021_471_1).	segment(seg021_471_2).	segment(seg021_471_3).	segment(seg021_471_4).	segment(seg021_471_5).	
+segment(seg021_1066_0).
+segment(seg021_1066_1).	segment(seg021_1066_2).	segment(seg021_1066_3).	segment(seg021_1066_4).	segment(seg021_1066_5).	
+segment(seg020_907_0).
+segment(seg020_907_1).	segment(seg020_907_2).	segment(seg020_907_3).	segment(seg020_907_4).	segment(seg020_907_5).	
+segment(seg021_454_0).
+segment(seg021_454_1).	segment(seg021_454_2).	segment(seg021_454_3).	segment(seg021_454_4).	segment(seg021_454_5).	
+segment(seg021_472_0).
+segment(seg021_472_1).	segment(seg021_472_2).	segment(seg021_472_3).	segment(seg021_472_4).	segment(seg021_472_5).	
+segment(seg021_557_0).
+segment(seg021_557_1).	segment(seg021_557_2).	segment(seg021_557_3).	segment(seg021_557_4).	segment(seg021_557_5).	
+segment(seg021_1125_0).
+segment(seg021_1125_1).	segment(seg021_1125_2).	segment(seg021_1125_3).	segment(seg021_1125_4).	segment(seg021_1125_5).	
+segment(seg021_386_0).
+segment(seg021_386_1).	segment(seg021_386_2).	segment(seg021_386_3).	segment(seg021_386_4).	segment(seg021_386_5).	
+segment(seg020_2016_0).
+segment(seg020_2016_1).	segment(seg020_2016_2).	segment(seg020_2016_3).	segment(seg020_2016_4).	segment(seg020_2016_5).	
+segment(seg020_2924_0).
+segment(seg020_2924_1).	segment(seg020_2924_2).	segment(seg020_2924_3).	segment(seg020_2924_4).	segment(seg020_2924_5).	
+segment(seg021_309_0).
+segment(seg021_309_1).	segment(seg021_309_2).	segment(seg021_309_3).	segment(seg021_309_4).	segment(seg021_309_5).	
+segment(seg021_265_0).
+segment(seg021_265_1).	segment(seg021_265_2).	segment(seg021_265_3).	segment(seg021_265_4).	segment(seg021_265_5).	
+segment(seg020_4931_0).
+segment(seg020_4931_1).	segment(seg020_4931_2).	segment(seg020_4931_3).	segment(seg020_4931_4).	segment(seg020_4931_5).	
+segment(seg020_3528_0).
+segment(seg020_3528_1).	segment(seg020_3528_2).	segment(seg020_3528_3).	segment(seg020_3528_4).	segment(seg020_3528_5).	
+segment(seg020_4424_0).
+segment(seg020_4424_1).	segment(seg020_4424_2).	segment(seg020_4424_3).	segment(seg020_4424_4).	segment(seg020_4424_5).	
+segment(seg021_562_0).
+segment(seg021_562_1).	segment(seg021_562_2).	segment(seg021_562_3).	segment(seg021_562_4).	segment(seg021_562_5).	
+segment(seg020_4467_0).
+segment(seg020_4467_1).	segment(seg020_4467_2).	segment(seg020_4467_3).	segment(seg020_4467_4).	segment(seg020_4467_5).	
+segment(seg020_4534_0).
+segment(seg020_4534_1).	segment(seg020_4534_2).	segment(seg020_4534_3).	segment(seg020_4534_4).	segment(seg020_4534_5).	
+segment(seg020_2499_0).
+segment(seg020_2499_1).	segment(seg020_2499_2).	segment(seg020_2499_3).	segment(seg020_2499_4).	segment(seg020_2499_5).	
+segment(seg020_3180_0).
+segment(seg020_3180_1).	segment(seg020_3180_2).	segment(seg020_3180_3).	segment(seg020_3180_4).	segment(seg020_3180_5).	
+segment(seg021_589_0).
+segment(seg021_589_1).	segment(seg021_589_2).	segment(seg021_589_3).	segment(seg021_589_4).	segment(seg021_589_5).	
+segment(seg020_3083_0).
+segment(seg020_3083_1).	segment(seg020_3083_2).	segment(seg020_3083_3).	segment(seg020_3083_4).	segment(seg020_3083_5).	
+segment(seg021_485_0).
+segment(seg021_485_1).	segment(seg021_485_2).	segment(seg021_485_3).	segment(seg021_485_4).	segment(seg021_485_5).	
+segment(seg021_521_0).
+segment(seg021_521_1).	segment(seg021_521_2).	segment(seg021_521_3).	segment(seg021_521_4).	segment(seg021_521_5).	
+segment(seg020_2633_0).
+segment(seg020_2633_1).	segment(seg020_2633_2).	segment(seg020_2633_3).	segment(seg020_2633_4).	segment(seg020_2633_5).	
+segment(seg020_4602_0).
+segment(seg020_4602_1).	segment(seg020_4602_2).	segment(seg020_4602_3).	segment(seg020_4602_4).	segment(seg020_4602_5).	
+segment(seg021_224_0).
+segment(seg021_224_1).	segment(seg021_224_2).	segment(seg021_224_3).	segment(seg021_224_4).	segment(seg021_224_5).	
+segment(seg020_2172_0).
+segment(seg020_2172_1).	segment(seg020_2172_2).	segment(seg020_2172_3).	segment(seg020_2172_4).	segment(seg020_2172_5).	
+segment(seg020_4535_0).
+segment(seg020_4535_1).	segment(seg020_4535_2).	segment(seg020_4535_3).	segment(seg020_4535_4).	segment(seg020_4535_5).	
+segment(seg021_1089_0).
+segment(seg021_1089_1).	segment(seg021_1089_2).	segment(seg021_1089_3).	segment(seg021_1089_4).	segment(seg021_1089_5).	
+segment(seg020_2995_0).
+segment(seg020_2995_1).	segment(seg020_2995_2).	segment(seg020_2995_3).	segment(seg020_2995_4).	segment(seg020_2995_5).	
+segment(seg021_416_0).
+segment(seg021_416_1).	segment(seg021_416_2).	segment(seg021_416_3).	segment(seg021_416_4).	segment(seg021_416_5).	
+segment(seg021_67_0).
+segment(seg021_67_1).	segment(seg021_67_2).	segment(seg021_67_3).	segment(seg021_67_4).	segment(seg021_67_5).	
+segment(seg021_1020_0).
+segment(seg021_1020_1).	segment(seg021_1020_2).	segment(seg021_1020_3).	segment(seg021_1020_4).	segment(seg021_1020_5).	
+segment(seg021_279_0).
+segment(seg021_279_1).	segment(seg021_279_2).	segment(seg021_279_3).	segment(seg021_279_4).	segment(seg021_279_5).	
+segment(seg020_4009_0).
+segment(seg020_4009_1).	segment(seg020_4009_2).	segment(seg020_4009_3).	segment(seg020_4009_4).	segment(seg020_4009_5).	
+segment(seg020_363_0).
+segment(seg020_363_1).	segment(seg020_363_2).	segment(seg020_363_3).	segment(seg020_363_4).	segment(seg020_363_5).	
+segment(seg021_1145_0).
+segment(seg021_1145_1).	segment(seg021_1145_2).	segment(seg021_1145_3).	segment(seg021_1145_4).	segment(seg021_1145_5).	
+segment(seg020_2838_0).
+segment(seg020_2838_1).	segment(seg020_2838_2).	segment(seg020_2838_3).	segment(seg020_2838_4).	segment(seg020_2838_5).	
+segment(seg020_587_0).
+segment(seg020_587_1).	segment(seg020_587_2).	segment(seg020_587_3).	segment(seg020_587_4).	segment(seg020_587_5).	
+segment(seg021_308_0).
+segment(seg021_308_1).	segment(seg021_308_2).	segment(seg021_308_3).	segment(seg021_308_4).	segment(seg021_308_5).	
+segment(seg021_691_0).
+segment(seg021_691_1).	segment(seg021_691_2).	segment(seg021_691_3).	segment(seg021_691_4).	segment(seg021_691_5).	
+segment(seg020_2559_0).
+segment(seg020_2559_1).	segment(seg020_2559_2).	segment(seg020_2559_3).	segment(seg020_2559_4).	segment(seg020_2559_5).	
+segment(seg021_800_0).
+segment(seg021_800_1).	segment(seg021_800_2).	segment(seg021_800_3).	segment(seg021_800_4).	segment(seg021_800_5).	
+segment(seg020_4193_0).
+segment(seg020_4193_1).	segment(seg020_4193_2).	segment(seg020_4193_3).	segment(seg020_4193_4).	segment(seg020_4193_5).	
+segment(seg020_2673_0).
+segment(seg020_2673_1).	segment(seg020_2673_2).	segment(seg020_2673_3).	segment(seg020_2673_4).	segment(seg020_2673_5).	
+segment(seg021_1027_0).
+segment(seg021_1027_1).	segment(seg021_1027_2).	segment(seg021_1027_3).	segment(seg021_1027_4).	segment(seg021_1027_5).	
+segment(seg020_4439_0).
+segment(seg020_4439_1).	segment(seg020_4439_2).	segment(seg020_4439_3).	segment(seg020_4439_4).	segment(seg020_4439_5).	
+segment(seg020_589_0).
+segment(seg020_589_1).	segment(seg020_589_2).	segment(seg020_589_3).	segment(seg020_589_4).	segment(seg020_589_5).	
+segment(seg021_971_0).
+segment(seg021_971_1).	segment(seg021_971_2).	segment(seg021_971_3).	segment(seg021_971_4).	segment(seg021_971_5).	
+segment(seg021_1025_0).
+segment(seg021_1025_1).	segment(seg021_1025_2).	segment(seg021_1025_3).	segment(seg021_1025_4).	segment(seg021_1025_5).	
+segment(seg020_1168_0).
+segment(seg020_1168_1).	segment(seg020_1168_2).	segment(seg020_1168_3).	segment(seg020_1168_4).	segment(seg020_1168_5).	
+segment(seg021_864_0).
+segment(seg021_864_1).	segment(seg021_864_2).	segment(seg021_864_3).	segment(seg021_864_4).	segment(seg021_864_5).	
+segment(seg020_966_0).
+segment(seg020_966_1).	segment(seg020_966_2).	segment(seg020_966_3).	segment(seg020_966_4).	segment(seg020_966_5).	
+segment(seg021_651_0).
+segment(seg021_651_1).	segment(seg021_651_2).	segment(seg021_651_3).	segment(seg021_651_4).	segment(seg021_651_5).	
+segment(seg020_2147_0).
+segment(seg020_2147_1).	segment(seg020_2147_2).	segment(seg020_2147_3).	segment(seg020_2147_4).	segment(seg020_2147_5).	
+segment(seg020_577_0).
+segment(seg020_577_1).	segment(seg020_577_2).	segment(seg020_577_3).	segment(seg020_577_4).	segment(seg020_577_5).	
+segment(seg021_1048_0).
+segment(seg021_1048_1).	segment(seg021_1048_2).	segment(seg021_1048_3).	segment(seg021_1048_4).	segment(seg021_1048_5).	
+segment(seg021_768_0).
+segment(seg021_768_1).	segment(seg021_768_2).	segment(seg021_768_3).	segment(seg021_768_4).	segment(seg021_768_5).	
 segment(seg020_4977_0).
 segment(seg020_4977_1).	segment(seg020_4977_2).	segment(seg020_4977_3).	segment(seg020_4977_4).	segment(seg020_4977_5).	
-segment(seg020_1269_0).
-segment(seg020_1269_1).	segment(seg020_1269_2).	segment(seg020_1269_3).	segment(seg020_1269_4).	segment(seg020_1269_5).	
-segment(seg021_350_0).
-segment(seg021_350_1).	segment(seg021_350_2).	segment(seg021_350_3).	segment(seg021_350_4).	segment(seg021_350_5).	
-segment(seg021_125_0).
-segment(seg021_125_1).	segment(seg021_125_2).	segment(seg021_125_3).	segment(seg021_125_4).	segment(seg021_125_5).	
-segment(seg021_138_0).
-segment(seg021_138_1).	segment(seg021_138_2).	segment(seg021_138_3).	segment(seg021_138_4).	segment(seg021_138_5).	
-segment(seg020_595_0).
-segment(seg020_595_1).	segment(seg020_595_2).	segment(seg020_595_3).	segment(seg020_595_4).	segment(seg020_595_5).	
-segment(seg021_579_0).
-segment(seg021_579_1).	segment(seg021_579_2).	segment(seg021_579_3).	segment(seg021_579_4).	segment(seg021_579_5).	
+segment(seg021_1036_0).
+segment(seg021_1036_1).	segment(seg021_1036_2).	segment(seg021_1036_3).	segment(seg021_1036_4).	segment(seg021_1036_5).	
+segment(seg020_685_0).
+segment(seg020_685_1).	segment(seg020_685_2).	segment(seg020_685_3).	segment(seg020_685_4).	segment(seg020_685_5).	
+segment(seg020_1071_0).
+segment(seg020_1071_1).	segment(seg020_1071_2).	segment(seg020_1071_3).	segment(seg020_1071_4).	segment(seg020_1071_5).	
+segment(seg021_1152_0).
+segment(seg021_1152_1).	segment(seg021_1152_2).	segment(seg021_1152_3).	segment(seg021_1152_4).	segment(seg021_1152_5).	
+segment(seg021_1097_0).
+segment(seg021_1097_1).	segment(seg021_1097_2).	segment(seg021_1097_3).	segment(seg021_1097_4).	segment(seg021_1097_5).	
+segment(seg020_1169_0).
+segment(seg020_1169_1).	segment(seg020_1169_2).	segment(seg020_1169_3).	segment(seg020_1169_4).	segment(seg020_1169_5).	
+segment(seg020_1130_0).
+segment(seg020_1130_1).	segment(seg020_1130_2).	segment(seg020_1130_3).	segment(seg020_1130_4).	segment(seg020_1130_5).	
+segment(seg021_774_0).
+segment(seg021_774_1).	segment(seg021_774_2).	segment(seg021_774_3).	segment(seg021_774_4).	segment(seg021_774_5).	
+segment(seg021_606_0).
+segment(seg021_606_1).	segment(seg021_606_2).	segment(seg021_606_3).	segment(seg021_606_4).	segment(seg021_606_5).	
+segment(seg021_1148_0).
+segment(seg021_1148_1).	segment(seg021_1148_2).	segment(seg021_1148_3).	segment(seg021_1148_4).	segment(seg021_1148_5).	
+segment(seg021_654_0).
+segment(seg021_654_1).	segment(seg021_654_2).	segment(seg021_654_3).	segment(seg021_654_4).	segment(seg021_654_5).	
+segment(seg021_775_0).
+segment(seg021_775_1).	segment(seg021_775_2).	segment(seg021_775_3).	segment(seg021_775_4).	segment(seg021_775_5).	
+segment(seg021_765_0).
+segment(seg021_765_1).	segment(seg021_765_2).	segment(seg021_765_3).	segment(seg021_765_4).	segment(seg021_765_5).	
+segment(seg021_1034_0).
+segment(seg021_1034_1).	segment(seg021_1034_2).	segment(seg021_1034_3).	segment(seg021_1034_4).	segment(seg021_1034_5).	
+segment(seg020_779_0).
+segment(seg020_779_1).	segment(seg020_779_2).	segment(seg020_779_3).	segment(seg020_779_4).	segment(seg020_779_5).	
+segment(seg021_1154_0).
+segment(seg021_1154_1).	segment(seg021_1154_2).	segment(seg021_1154_3).	segment(seg021_1154_4).	segment(seg021_1154_5).	
+segment(seg020_1149_0).
+segment(seg020_1149_1).	segment(seg020_1149_2).	segment(seg020_1149_3).	segment(seg020_1149_4).	segment(seg020_1149_5).	
+segment(seg021_970_0).
+segment(seg021_970_1).	segment(seg021_970_2).	segment(seg021_970_3).	segment(seg021_970_4).	segment(seg021_970_5).	
+segment(seg021_1029_0).
+segment(seg021_1029_1).	segment(seg021_1029_2).	segment(seg021_1029_3).	segment(seg021_1029_4).	segment(seg021_1029_5).	
+segment(seg021_594_0).
+segment(seg021_594_1).	segment(seg021_594_2).	segment(seg021_594_3).	segment(seg021_594_4).	segment(seg021_594_5).	
+segment(seg020_838_0).
+segment(seg020_838_1).	segment(seg020_838_2).	segment(seg020_838_3).	segment(seg020_838_4).	segment(seg020_838_5).	
+segment(seg021_1046_0).
+segment(seg021_1046_1).	segment(seg021_1046_2).	segment(seg021_1046_3).	segment(seg021_1046_4).	segment(seg021_1046_5).	
+segment(seg021_582_0).
+segment(seg021_582_1).	segment(seg021_582_2).	segment(seg021_582_3).	segment(seg021_582_4).	segment(seg021_582_5).	
+segment(seg021_1058_0).
+segment(seg021_1058_1).	segment(seg021_1058_2).	segment(seg021_1058_3).	segment(seg021_1058_4).	segment(seg021_1058_5).	
+segment(seg020_776_0).
+segment(seg020_776_1).	segment(seg020_776_2).	segment(seg020_776_3).	segment(seg020_776_4).	segment(seg020_776_5).	
+segment(seg021_1081_0).
+segment(seg021_1081_1).	segment(seg021_1081_2).	segment(seg021_1081_3).	segment(seg021_1081_4).	segment(seg021_1081_5).	
+segment(seg020_1076_0).
+segment(seg020_1076_1).	segment(seg020_1076_2).	segment(seg020_1076_3).	segment(seg020_1076_4).	segment(seg020_1076_5).	
+segment(seg020_4242_0).
+segment(seg020_4242_1).	segment(seg020_4242_2).	segment(seg020_4242_3).	segment(seg020_4242_4).	segment(seg020_4242_5).	
+segment(seg021_785_0).
+segment(seg021_785_1).	segment(seg021_785_2).	segment(seg021_785_3).	segment(seg021_785_4).	segment(seg021_785_5).	
+segment(seg021_1147_0).
+segment(seg021_1147_1).	segment(seg021_1147_2).	segment(seg021_1147_3).	segment(seg021_1147_4).	segment(seg021_1147_5).	
+segment(seg021_777_0).
+segment(seg021_777_1).	segment(seg021_777_2).	segment(seg021_777_3).	segment(seg021_777_4).	segment(seg021_777_5).	
+segment(seg020_965_0).
+segment(seg020_965_1).	segment(seg020_965_2).	segment(seg020_965_3).	segment(seg020_965_4).	segment(seg020_965_5).	
+segment(seg021_613_0).
+segment(seg021_613_1).	segment(seg021_613_2).	segment(seg021_613_3).	segment(seg021_613_4).	segment(seg021_613_5).	
+segment(seg021_581_0).
+segment(seg021_581_1).	segment(seg021_581_2).	segment(seg021_581_3).	segment(seg021_581_4).	segment(seg021_581_5).	
+segment(seg021_1110_0).
+segment(seg021_1110_1).	segment(seg021_1110_2).	segment(seg021_1110_3).	segment(seg021_1110_4).	segment(seg021_1110_5).	
+segment(seg021_760_0).
+segment(seg021_760_1).	segment(seg021_760_2).	segment(seg021_760_3).	segment(seg021_760_4).	segment(seg021_760_5).	
+segment(seg021_1038_0).
+segment(seg021_1038_1).	segment(seg021_1038_2).	segment(seg021_1038_3).	segment(seg021_1038_4).	segment(seg021_1038_5).	
+segment(seg021_1019_0).
+segment(seg021_1019_1).	segment(seg021_1019_2).	segment(seg021_1019_3).	segment(seg021_1019_4).	segment(seg021_1019_5).	
+segment(seg020_698_0).
+segment(seg020_698_1).	segment(seg020_698_2).	segment(seg020_698_3).	segment(seg020_698_4).	segment(seg020_698_5).	
+segment(seg021_1052_0).
+segment(seg021_1052_1).	segment(seg021_1052_2).	segment(seg021_1052_3).	segment(seg021_1052_4).	segment(seg021_1052_5).	
+segment(seg020_1148_0).
+segment(seg020_1148_1).	segment(seg020_1148_2).	segment(seg020_1148_3).	segment(seg020_1148_4).	segment(seg020_1148_5).	
+segment(seg020_43_0).
+segment(seg020_43_1).	segment(seg020_43_2).	segment(seg020_43_3).	segment(seg020_43_4).	segment(seg020_43_5).	
+segment(seg021_1057_0).
+segment(seg021_1057_1).	segment(seg021_1057_2).	segment(seg021_1057_3).	segment(seg021_1057_4).	segment(seg021_1057_5).	
+segment(seg021_878_0).
+segment(seg021_878_1).	segment(seg021_878_2).	segment(seg021_878_3).	segment(seg021_878_4).	segment(seg021_878_5).	
+segment(seg021_1030_0).
+segment(seg021_1030_1).	segment(seg021_1030_2).	segment(seg021_1030_3).	segment(seg021_1030_4).	segment(seg021_1030_5).	
+segment(seg021_874_0).
+segment(seg021_874_1).	segment(seg021_874_2).	segment(seg021_874_3).	segment(seg021_874_4).	segment(seg021_874_5).	
+segment(seg021_781_0).
+segment(seg021_781_1).	segment(seg021_781_2).	segment(seg021_781_3).	segment(seg021_781_4).	segment(seg021_781_5).	
+segment(seg021_1039_0).
+segment(seg021_1039_1).	segment(seg021_1039_2).	segment(seg021_1039_3).	segment(seg021_1039_4).	segment(seg021_1039_5).	
+segment(seg021_1115_0).
+segment(seg021_1115_1).	segment(seg021_1115_2).	segment(seg021_1115_3).	segment(seg021_1115_4).	segment(seg021_1115_5).	
+segment(seg020_978_0).
+segment(seg020_978_1).	segment(seg020_978_2).	segment(seg020_978_3).	segment(seg020_978_4).	segment(seg020_978_5).	
+segment(seg021_762_0).
+segment(seg021_762_1).	segment(seg021_762_2).	segment(seg021_762_3).	segment(seg021_762_4).	segment(seg021_762_5).	
 segment(seg021_600_0).
 segment(seg021_600_1).	segment(seg021_600_2).	segment(seg021_600_3).	segment(seg021_600_4).	segment(seg021_600_5).	
-segment(seg020_2156_0).
-segment(seg020_2156_1).	segment(seg020_2156_2).	segment(seg020_2156_3).	segment(seg020_2156_4).	segment(seg020_2156_5).	
-segment(seg021_766_0).
-segment(seg021_766_1).	segment(seg021_766_2).	segment(seg021_766_3).	segment(seg021_766_4).	segment(seg021_766_5).	
-segment(seg020_889_0).
-segment(seg020_889_1).	segment(seg020_889_2).	segment(seg020_889_3).	segment(seg020_889_4).	segment(seg020_889_5).	
-segment(seg020_2101_0).
-segment(seg020_2101_1).	segment(seg020_2101_2).	segment(seg020_2101_3).	segment(seg020_2101_4).	segment(seg020_2101_5).	
-segment(seg020_1069_0).
-segment(seg020_1069_1).	segment(seg020_1069_2).	segment(seg020_1069_3).	segment(seg020_1069_4).	segment(seg020_1069_5).	
-segment(seg021_587_0).
-segment(seg021_587_1).	segment(seg021_587_2).	segment(seg021_587_3).	segment(seg021_587_4).	segment(seg021_587_5).	
-segment(seg020_2152_0).
-segment(seg020_2152_1).	segment(seg020_2152_2).	segment(seg020_2152_3).	segment(seg020_2152_4).	segment(seg020_2152_5).	
-segment(seg020_559_0).
-segment(seg020_559_1).	segment(seg020_559_2).	segment(seg020_559_3).	segment(seg020_559_4).	segment(seg020_559_5).	
-segment(seg020_808_0).
-segment(seg020_808_1).	segment(seg020_808_2).	segment(seg020_808_3).	segment(seg020_808_4).	segment(seg020_808_5).	
-segment(seg020_625_0).
-segment(seg020_625_1).	segment(seg020_625_2).	segment(seg020_625_3).	segment(seg020_625_4).	segment(seg020_625_5).	
-segment(seg021_1142_0).
-segment(seg021_1142_1).	segment(seg021_1142_2).	segment(seg021_1142_3).	segment(seg021_1142_4).	segment(seg021_1142_5).	
-segment(seg020_857_0).
-segment(seg020_857_1).	segment(seg020_857_2).	segment(seg020_857_3).	segment(seg020_857_4).	segment(seg020_857_5).	
-segment(seg020_93_0).
-segment(seg020_93_1).	segment(seg020_93_2).	segment(seg020_93_3).	segment(seg020_93_4).	segment(seg020_93_5).	
-segment(seg020_2300_0).
-segment(seg020_2300_1).	segment(seg020_2300_2).	segment(seg020_2300_3).	segment(seg020_2300_4).	segment(seg020_2300_5).	
-segment(seg020_421_0).
-segment(seg020_421_1).	segment(seg020_421_2).	segment(seg020_421_3).	segment(seg020_421_4).	segment(seg020_421_5).	
-segment(seg020_1012_0).
-segment(seg020_1012_1).	segment(seg020_1012_2).	segment(seg020_1012_3).	segment(seg020_1012_4).	segment(seg020_1012_5).	
-segment(seg020_267_0).
-segment(seg020_267_1).	segment(seg020_267_2).	segment(seg020_267_3).	segment(seg020_267_4).	segment(seg020_267_5).	
-segment(seg020_1207_0).
-segment(seg020_1207_1).	segment(seg020_1207_2).	segment(seg020_1207_3).	segment(seg020_1207_4).	segment(seg020_1207_5).	
-segment(seg020_2184_0).
-segment(seg020_2184_1).	segment(seg020_2184_2).	segment(seg020_2184_3).	segment(seg020_2184_4).	segment(seg020_2184_5).	
-segment(seg020_678_0).
-segment(seg020_678_1).	segment(seg020_678_2).	segment(seg020_678_3).	segment(seg020_678_4).	segment(seg020_678_5).	
-segment(seg020_2313_0).
-segment(seg020_2313_1).	segment(seg020_2313_2).	segment(seg020_2313_3).	segment(seg020_2313_4).	segment(seg020_2313_5).	
-segment(seg020_869_0).
-segment(seg020_869_1).	segment(seg020_869_2).	segment(seg020_869_3).	segment(seg020_869_4).	segment(seg020_869_5).	
-segment(seg020_2245_0).
-segment(seg020_2245_1).	segment(seg020_2245_2).	segment(seg020_2245_3).	segment(seg020_2245_4).	segment(seg020_2245_5).	
-segment(seg020_2288_0).
-segment(seg020_2288_1).	segment(seg020_2288_2).	segment(seg020_2288_3).	segment(seg020_2288_4).	segment(seg020_2288_5).	
-segment(seg020_658_0).
-segment(seg020_658_1).	segment(seg020_658_2).	segment(seg020_658_3).	segment(seg020_658_4).	segment(seg020_658_5).	
-segment(seg020_737_0).
-segment(seg020_737_1).	segment(seg020_737_2).	segment(seg020_737_3).	segment(seg020_737_4).	segment(seg020_737_5).	
-segment(seg020_1055_0).
-segment(seg020_1055_1).	segment(seg020_1055_2).	segment(seg020_1055_3).	segment(seg020_1055_4).	segment(seg020_1055_5).	
-segment(seg020_517_0).
-segment(seg020_517_1).	segment(seg020_517_2).	segment(seg020_517_3).	segment(seg020_517_4).	segment(seg020_517_5).	
-segment(seg020_758_0).
-segment(seg020_758_1).	segment(seg020_758_2).	segment(seg020_758_3).	segment(seg020_758_4).	segment(seg020_758_5).	
-segment(seg020_1902_0).
-segment(seg020_1902_1).	segment(seg020_1902_2).	segment(seg020_1902_3).	segment(seg020_1902_4).	segment(seg020_1902_5).	
-segment(seg020_2299_0).
-segment(seg020_2299_1).	segment(seg020_2299_2).	segment(seg020_2299_3).	segment(seg020_2299_4).	segment(seg020_2299_5).	
-segment(seg020_444_0).
-segment(seg020_444_1).	segment(seg020_444_2).	segment(seg020_444_3).	segment(seg020_444_4).	segment(seg020_444_5).	
-segment(seg020_954_0).
-segment(seg020_954_1).	segment(seg020_954_2).	segment(seg020_954_3).	segment(seg020_954_4).	segment(seg020_954_5).	
-segment(seg020_2234_0).
-segment(seg020_2234_1).	segment(seg020_2234_2).	segment(seg020_2234_3).	segment(seg020_2234_4).	segment(seg020_2234_5).	
-segment(seg020_1195_0).
-segment(seg020_1195_1).	segment(seg020_1195_2).	segment(seg020_1195_3).	segment(seg020_1195_4).	segment(seg020_1195_5).	
-segment(seg020_673_0).
-segment(seg020_673_1).	segment(seg020_673_2).	segment(seg020_673_3).	segment(seg020_673_4).	segment(seg020_673_5).	
-segment(seg020_2316_0).
-segment(seg020_2316_1).	segment(seg020_2316_2).	segment(seg020_2316_3).	segment(seg020_2316_4).	segment(seg020_2316_5).	
-segment(seg020_2074_0).
-segment(seg020_2074_1).	segment(seg020_2074_2).	segment(seg020_2074_3).	segment(seg020_2074_4).	segment(seg020_2074_5).	
-segment(seg020_1031_0).
-segment(seg020_1031_1).	segment(seg020_1031_2).	segment(seg020_1031_3).	segment(seg020_1031_4).	segment(seg020_1031_5).	
-segment(seg020_2248_0).
-segment(seg020_2248_1).	segment(seg020_2248_2).	segment(seg020_2248_3).	segment(seg020_2248_4).	segment(seg020_2248_5).	
-segment(seg020_70_0).
-segment(seg020_70_1).	segment(seg020_70_2).	segment(seg020_70_3).	segment(seg020_70_4).	segment(seg020_70_5).	
-segment(seg020_1015_0).
-segment(seg020_1015_1).	segment(seg020_1015_2).	segment(seg020_1015_3).	segment(seg020_1015_4).	segment(seg020_1015_5).	
-segment(seg020_1053_0).
-segment(seg020_1053_1).	segment(seg020_1053_2).	segment(seg020_1053_3).	segment(seg020_1053_4).	segment(seg020_1053_5).	
-segment(seg020_209_0).
-segment(seg020_209_1).	segment(seg020_209_2).	segment(seg020_209_3).	segment(seg020_209_4).	segment(seg020_209_5).	
-segment(seg020_233_0).
-segment(seg020_233_1).	segment(seg020_233_2).	segment(seg020_233_3).	segment(seg020_233_4).	segment(seg020_233_5).	
-segment(seg020_2190_0).
-segment(seg020_2190_1).	segment(seg020_2190_2).	segment(seg020_2190_3).	segment(seg020_2190_4).	segment(seg020_2190_5).	
-segment(seg020_435_0).
-segment(seg020_435_1).	segment(seg020_435_2).	segment(seg020_435_3).	segment(seg020_435_4).	segment(seg020_435_5).	
+segment(seg020_2125_0).
+segment(seg020_2125_1).	segment(seg020_2125_2).	segment(seg020_2125_3).	segment(seg020_2125_4).	segment(seg020_2125_5).	
+segment(seg020_2343_0).
+segment(seg020_2343_1).	segment(seg020_2343_2).	segment(seg020_2343_3).	segment(seg020_2343_4).	segment(seg020_2343_5).	
+segment(seg020_2119_0).
+segment(seg020_2119_1).	segment(seg020_2119_2).	segment(seg020_2119_3).	segment(seg020_2119_4).	segment(seg020_2119_5).	
+segment(seg021_1099_0).
+segment(seg021_1099_1).	segment(seg021_1099_2).	segment(seg021_1099_3).	segment(seg021_1099_4).	segment(seg021_1099_5).	
+segment(seg021_615_0).
+segment(seg021_615_1).	segment(seg021_615_2).	segment(seg021_615_3).	segment(seg021_615_4).	segment(seg021_615_5).	
+segment(seg021_590_0).
+segment(seg021_590_1).	segment(seg021_590_2).	segment(seg021_590_3).	segment(seg021_590_4).	segment(seg021_590_5).	
+segment(seg020_4237_0).
+segment(seg020_4237_1).	segment(seg020_4237_2).	segment(seg020_4237_3).	segment(seg020_4237_4).	segment(seg020_4237_5).	
+segment(seg021_596_0).
+segment(seg021_596_1).	segment(seg021_596_2).	segment(seg021_596_3).	segment(seg021_596_4).	segment(seg021_596_5).	
+segment(seg020_914_0).
+segment(seg020_914_1).	segment(seg020_914_2).	segment(seg020_914_3).	segment(seg020_914_4).	segment(seg020_914_5).	
 
 % | FEATURES
-velocity(seg020_2470_0,slow).
-velocity(seg020_3157_0,above_medium).
-velocity(seg021_952_0,very_fast).
-velocity(seg021_981_0,very_fast).
-velocity(seg020_3098_0,above_medium).
-velocity(seg020_3258_0,above_medium).
-velocity(seg020_3504_0,medium).
-velocity(seg021_447_0,slow).
-velocity(seg021_154_0,very_fast).
-velocity(seg021_586_0,slow).
-velocity(seg020_4253_0,medium).
-velocity(seg021_996_0,very_fast).
-velocity(seg020_4109_0,very_fast).
-velocity(seg020_2150_0,below_medium).
-velocity(seg020_3810_0,slow).
-velocity(seg020_1157_0,above_medium).
-velocity(seg020_3598_0,above_medium).
-velocity(seg020_2940_0,above_medium).
-velocity(seg021_454_0,very_slow).
-velocity(seg021_558_0,very_fast).
-velocity(seg021_613_0,very_slow).
-velocity(seg020_3178_0,above_medium).
-velocity(seg021_517_0,very_fast).
-velocity(seg020_3006_0,fast).
-velocity(seg020_951_0,very_fast).
-velocity(seg020_4889_0,above_medium).
-velocity(seg021_780_0,below_medium).
-velocity(seg021_556_0,very_fast).
-velocity(seg020_1166_0,very_fast).
-velocity(seg020_288_0,below_medium).
-velocity(seg020_790_0,slow).
-velocity(seg020_463_0,below_medium).
-velocity(seg021_455_0,very_fast).
-velocity(seg021_772_0,slow).
+velocity(seg021_550_0,very_fast).
+velocity(seg021_205_0,very_fast).
+velocity(seg021_158_0,very_fast).
+velocity(seg021_985_0,very_fast).
+velocity(seg021_213_0,very_fast).
+velocity(seg020_2831_0,medium).
+velocity(seg021_982_0,very_fast).
+velocity(seg020_563_0,very_fast).
+velocity(seg021_298_0,very_fast).
+velocity(seg020_58_0,medium).
+velocity(seg021_551_0,very_fast).
+velocity(seg021_354_0,very_fast).
+velocity(seg021_605_0,slow).
+velocity(seg021_736_0,very_fast).
+velocity(seg020_4068_0,medium).
+velocity(seg021_359_0,very_fast).
+velocity(seg020_2426_0,above_medium).
+velocity(seg020_110_0,below_medium).
+velocity(seg021_9_0,very_fast).
+velocity(seg020_2967_0,medium).
+velocity(seg020_3651_0,above_medium).
+velocity(seg020_542_0,below_medium).
+velocity(seg021_500_0,medium).
+velocity(seg021_675_0,very_fast).
+velocity(seg021_84_0,very_fast).
+velocity(seg021_196_0,very_fast).
+velocity(seg020_4167_0,above_medium).
+velocity(seg021_770_0,slow).
+velocity(seg020_2104_0,below_medium).
+velocity(seg021_591_0,slow).
+velocity(seg021_497_0,very_fast).
+velocity(seg021_75_0,very_fast).
+velocity(seg020_989_0,fast).
+velocity(seg021_169_0,fast).
+velocity(seg021_271_0,very_fast).
+velocity(seg021_882_0,fast).
 velocity(seg020_3757_0,below_medium).
-velocity(seg020_828_0,below_medium).
-velocity(seg021_611_0,very_slow).
-velocity(seg021_469_0,very_fast).
-velocity(seg021_656_0,below_medium).
-velocity(seg020_2363_0,very_fast).
-velocity(seg021_676_0,very_fast).
-velocity(seg021_47_0,very_fast).
-velocity(seg020_4129_0,above_medium).
-velocity(seg020_338_0,below_medium).
-velocity(seg020_2934_0,above_medium).
-velocity(seg021_1150_0,below_medium).
-velocity(seg020_4369_0,above_medium).
-velocity(seg021_467_0,very_fast).
-velocity(seg020_2338_0,fast).
-velocity(seg021_703_0,very_fast).
-velocity(seg021_72_0,very_fast).
-velocity(seg021_302_0,very_fast).
-velocity(seg021_486_0,fast).
-velocity(seg020_16_0,fast).
-velocity(seg020_3594_0,fast).
-velocity(seg021_30_0,very_fast).
-velocity(seg020_3448_0,fast).
-velocity(seg020_4951_0,medium).
-velocity(seg021_863_0,above_medium).
-velocity(seg021_86_0,very_fast).
-velocity(seg021_418_0,fast).
-velocity(seg020_4928_0,fast).
-velocity(seg021_310_0,very_fast).
-velocity(seg021_521_0,very_fast).
-velocity(seg021_786_0,medium).
-velocity(seg020_4190_0,very_fast).
-velocity(seg020_4340_0,above_medium).
-velocity(seg020_3021_0,above_medium).
-velocity(seg020_986_0,very_slow).
-velocity(seg021_595_0,slow).
-velocity(seg021_1008_0,very_fast).
-velocity(seg021_472_0,very_fast).
-velocity(seg021_493_0,very_fast).
-velocity(seg020_3591_0,above_medium).
-velocity(seg021_117_0,very_fast).
-velocity(seg020_305_0,very_fast).
-velocity(seg020_2926_0,below_medium).
-velocity(seg020_4570_0,below_medium).
-velocity(seg020_3159_0,above_medium).
-velocity(seg020_3935_0,above_medium).
-velocity(seg021_374_0,fast).
-velocity(seg020_2370_0,fast).
-velocity(seg021_390_0,very_fast).
-velocity(seg021_599_0,slow).
-velocity(seg021_971_0,above_medium).
-velocity(seg020_1072_0,medium).
-velocity(seg021_426_0,medium).
-velocity(seg020_2897_0,above_medium).
-velocity(seg020_429_0,slow).
-velocity(seg020_3529_0,above_medium).
-velocity(seg021_246_0,very_fast).
-velocity(seg020_74_0,slow).
-velocity(seg020_2229_0,below_medium).
-velocity(seg020_3404_0,medium).
-velocity(seg021_445_0,very_fast).
-velocity(seg021_560_0,very_fast).
-velocity(seg020_4395_0,above_medium).
-velocity(seg020_1094_0,below_medium).
-velocity(seg021_1064_0,medium).
-velocity(seg020_654_0,above_medium).
-velocity(seg020_385_0,fast).
-velocity(seg021_306_0,very_fast).
-velocity(seg020_2243_0,fast).
-velocity(seg021_889_0,fast).
-velocity(seg021_383_0,very_fast).
-velocity(seg020_4853_0,medium).
-velocity(seg020_3944_0,above_medium).
-velocity(seg020_4262_0,medium).
-velocity(seg021_372_0,medium).
-velocity(seg020_4757_0,slow).
-velocity(seg021_767_0,medium).
-velocity(seg021_1058_0,very_slow).
-velocity(seg020_3427_0,very_slow).
-velocity(seg021_247_0,very_fast).
-velocity(seg020_1149_0,very_fast).
-velocity(seg020_3938_0,above_medium).
-velocity(seg021_1052_0,slow).
-velocity(seg021_349_0,very_fast).
-velocity(seg020_2492_0,above_medium).
-velocity(seg021_609_0,slow).
-velocity(seg020_4416_0,medium).
+velocity(seg020_1061_0,slow).
+velocity(seg020_470_0,below_medium).
+velocity(seg021_986_0,very_fast).
+velocity(seg020_2514_0,above_medium).
+velocity(seg021_549_0,very_fast).
+velocity(seg021_1085_0,very_slow).
+velocity(seg021_867_0,medium).
+velocity(seg020_2277_0,very_fast).
+velocity(seg021_530_0,very_fast).
+velocity(seg020_934_0,fast).
+velocity(seg021_484_0,very_fast).
+velocity(seg020_3905_0,medium).
+velocity(seg020_4682_0,above_medium).
 velocity(seg020_2882_0,above_medium).
-velocity(seg021_610_0,very_slow).
-velocity(seg021_274_0,very_fast).
-velocity(seg020_2811_0,very_fast).
-velocity(seg020_4242_0,slow).
-velocity(seg021_1149_0,slow).
-velocity(seg020_3238_0,medium).
-velocity(seg021_601_0,slow).
-velocity(seg021_150_0,very_fast).
-velocity(seg021_378_0,very_fast).
-velocity(seg020_2496_0,fast).
-velocity(seg021_745_0,above_medium).
-velocity(seg020_3535_0,above_medium).
-velocity(seg020_3923_0,above_medium).
-velocity(seg021_312_0,very_fast).
-velocity(seg021_784_0,very_fast).
-velocity(seg020_4234_0,below_medium).
-velocity(seg020_4295_0,above_medium).
-velocity(seg020_2565_0,above_medium).
-velocity(seg021_380_0,very_fast).
-velocity(seg020_485_0,below_medium).
-velocity(seg020_2849_0,very_fast).
+velocity(seg021_171_0,very_slow).
+velocity(seg021_659_0,very_fast).
+velocity(seg021_332_0,very_fast).
+velocity(seg021_404_0,very_fast).
+velocity(seg020_4153_0,medium).
+velocity(seg021_1077_0,slow).
+velocity(seg020_2556_0,above_medium).
+velocity(seg020_3355_0,medium).
+velocity(seg020_4819_0,above_medium).
+velocity(seg021_293_0,very_fast).
+velocity(seg021_496_0,very_fast).
+velocity(seg020_3776_0,above_medium).
+velocity(seg020_2281_0,medium).
+velocity(seg021_905_0,very_fast).
+velocity(seg020_2332_0,very_fast).
+velocity(seg020_2462_0,slow).
+velocity(seg021_789_0,slow).
+velocity(seg020_919_0,slow).
+velocity(seg021_478_0,very_fast).
+velocity(seg021_592_0,slow).
+velocity(seg020_86_0,above_medium).
+velocity(seg021_29_0,very_fast).
 velocity(seg021_515_0,very_fast).
-velocity(seg021_872_0,slow).
+velocity(seg020_3392_0,below_medium).
+velocity(seg020_4236_0,medium).
+velocity(seg021_909_0,very_fast).
+velocity(seg021_944_0,very_fast).
+velocity(seg021_455_0,very_fast).
+velocity(seg021_471_0,very_fast).
+velocity(seg021_1066_0,very_fast).
+velocity(seg020_907_0,below_medium).
+velocity(seg021_454_0,very_slow).
+velocity(seg021_472_0,very_fast).
+velocity(seg021_557_0,very_fast).
+velocity(seg021_1125_0,slow).
+velocity(seg021_386_0,very_fast).
+velocity(seg020_2016_0,very_slow).
+velocity(seg020_2924_0,above_medium).
+velocity(seg021_309_0,very_fast).
+velocity(seg021_265_0,very_fast).
+velocity(seg020_4931_0,medium).
+velocity(seg020_3528_0,above_medium).
+velocity(seg020_4424_0,medium).
+velocity(seg021_562_0,medium).
+velocity(seg020_4467_0,below_medium).
+velocity(seg020_4534_0,fast).
+velocity(seg020_2499_0,slow).
+velocity(seg020_3180_0,above_medium).
+velocity(seg021_589_0,very_slow).
+velocity(seg020_3083_0,above_medium).
+velocity(seg021_485_0,very_fast).
+velocity(seg021_521_0,very_fast).
+velocity(seg020_2633_0,above_medium).
+velocity(seg020_4602_0,above_medium).
+velocity(seg021_224_0,very_fast).
+velocity(seg020_2172_0,below_medium).
+velocity(seg020_4535_0,above_medium).
+velocity(seg021_1089_0,slow).
+velocity(seg020_2995_0,above_medium).
+velocity(seg021_416_0,above_medium).
+velocity(seg021_67_0,very_fast).
+velocity(seg021_1020_0,slow).
+velocity(seg021_279_0,very_fast).
+velocity(seg020_4009_0,above_medium).
+velocity(seg020_363_0,above_medium).
+velocity(seg021_1145_0,slow).
+velocity(seg020_2838_0,fast).
+velocity(seg020_587_0,above_medium).
+velocity(seg021_308_0,very_fast).
+velocity(seg021_691_0,very_fast).
+velocity(seg020_2559_0,above_medium).
+velocity(seg021_800_0,fast).
+velocity(seg020_4193_0,above_medium).
+velocity(seg020_2673_0,fast).
+velocity(seg021_1027_0,very_slow).
+velocity(seg020_4439_0,medium).
+velocity(seg020_589_0,slow).
+velocity(seg021_971_0,above_medium).
+velocity(seg021_1025_0,slow).
+velocity(seg020_1168_0,fast).
+velocity(seg021_864_0,very_slow).
+velocity(seg020_966_0,slow).
+velocity(seg021_651_0,slow).
+velocity(seg020_2147_0,below_medium).
+velocity(seg020_577_0,above_medium).
+velocity(seg021_1048_0,slow).
+velocity(seg021_768_0,above_medium).
 velocity(seg020_4977_0,above_medium).
-velocity(seg020_1269_0,very_fast).
-velocity(seg021_350_0,very_fast).
-velocity(seg021_125_0,fast).
-velocity(seg021_138_0,very_fast).
-velocity(seg020_595_0,very_fast).
-velocity(seg021_579_0,very_slow).
+velocity(seg021_1036_0,slow).
+velocity(seg020_685_0,slow).
+velocity(seg020_1071_0,medium).
+velocity(seg021_1152_0,slow).
+velocity(seg021_1097_0,slow).
+velocity(seg020_1169_0,medium).
+velocity(seg020_1130_0,below_medium).
+velocity(seg021_774_0,slow).
+velocity(seg021_606_0,slow).
+velocity(seg021_1148_0,slow).
+velocity(seg021_654_0,medium).
+velocity(seg021_775_0,very_slow).
+velocity(seg021_765_0,slow).
+velocity(seg021_1034_0,below_medium).
+velocity(seg020_779_0,above_medium).
+velocity(seg021_1154_0,below_medium).
+velocity(seg020_1149_0,very_fast).
+velocity(seg021_970_0,slow).
+velocity(seg021_1029_0,very_slow).
+velocity(seg021_594_0,very_slow).
+velocity(seg020_838_0,below_medium).
+velocity(seg021_1046_0,slow).
+velocity(seg021_582_0,slow).
+velocity(seg021_1058_0,very_slow).
+velocity(seg020_776_0,slow).
+velocity(seg021_1081_0,slow).
+velocity(seg020_1076_0,medium).
+velocity(seg020_4242_0,slow).
+velocity(seg021_785_0,medium).
+velocity(seg021_1147_0,slow).
+velocity(seg021_777_0,very_slow).
+velocity(seg020_965_0,slow).
+velocity(seg021_613_0,very_slow).
+velocity(seg021_581_0,slow).
+velocity(seg021_1110_0,very_slow).
+velocity(seg021_760_0,below_medium).
+velocity(seg021_1038_0,very_slow).
+velocity(seg021_1019_0,very_slow).
+velocity(seg020_698_0,medium).
+velocity(seg021_1052_0,slow).
+velocity(seg020_1148_0,slow).
+velocity(seg020_43_0,below_medium).
+velocity(seg021_1057_0,very_slow).
+velocity(seg021_878_0,slow).
+velocity(seg021_1030_0,very_slow).
+velocity(seg021_874_0,very_slow).
+velocity(seg021_781_0,slow).
+velocity(seg021_1039_0,below_medium).
+velocity(seg021_1115_0,slow).
+velocity(seg020_978_0,very_fast).
+velocity(seg021_762_0,slow).
 velocity(seg021_600_0,slow).
-velocity(seg020_2156_0,below_medium).
-velocity(seg021_766_0,slow).
-velocity(seg020_889_0,slow).
-velocity(seg020_2101_0,slow).
-velocity(seg020_1069_0,medium).
-velocity(seg021_587_0,slow).
-velocity(seg020_2152_0,below_medium).
-velocity(seg020_559_0,very_fast).
-velocity(seg020_808_0,below_medium).
-velocity(seg020_625_0,below_medium).
-velocity(seg021_1142_0,slow).
-velocity(seg020_857_0,fast).
-velocity(seg020_93_0,fast).
-velocity(seg020_2300_0,very_fast).
-velocity(seg020_421_0,very_fast).
-velocity(seg020_1012_0,very_fast).
-velocity(seg020_267_0,very_fast).
-velocity(seg020_1207_0,slow).
-velocity(seg020_2184_0,above_medium).
-velocity(seg020_678_0,very_fast).
-velocity(seg020_2313_0,very_fast).
-velocity(seg020_869_0,very_fast).
-velocity(seg020_2245_0,very_fast).
-velocity(seg020_2288_0,very_fast).
-velocity(seg020_658_0,very_fast).
-velocity(seg020_737_0,medium).
-velocity(seg020_1055_0,below_medium).
-velocity(seg020_517_0,below_medium).
-velocity(seg020_758_0,medium).
-velocity(seg020_1902_0,very_fast).
-velocity(seg020_2299_0,below_medium).
-velocity(seg020_444_0,very_fast).
-velocity(seg020_954_0,fast).
-velocity(seg020_2234_0,very_fast).
-velocity(seg020_1195_0,very_fast).
-velocity(seg020_673_0,above_medium).
-velocity(seg020_2316_0,very_fast).
-velocity(seg020_2074_0,above_medium).
-velocity(seg020_1031_0,very_fast).
-velocity(seg020_2248_0,very_fast).
-velocity(seg020_70_0,very_fast).
-velocity(seg020_1015_0,slow).
-velocity(seg020_1053_0,above_medium).
-velocity(seg020_209_0,fast).
-velocity(seg020_233_0,very_fast).
-velocity(seg020_2190_0,very_fast).
-velocity(seg020_435_0,fast).
+velocity(seg020_2125_0,slow).
+velocity(seg020_2343_0,below_medium).
+velocity(seg020_2119_0,below_medium).
+velocity(seg021_1099_0,slow).
+velocity(seg021_615_0,very_slow).
+velocity(seg021_590_0,slow).
+velocity(seg020_4237_0,slow).
+velocity(seg021_596_0,slow).
+velocity(seg020_914_0,below_medium).
 
-acceleration(seg020_2470_0,slow).
-acceleration(seg020_3157_0,above_medium).
-acceleration(seg021_952_0,very_fast).
-acceleration(seg021_981_0,very_fast).
-acceleration(seg020_3098_0,above_medium).
-acceleration(seg020_3258_0,above_medium).
-acceleration(seg020_3504_0,medium).
-acceleration(seg021_447_0,slow).
-acceleration(seg021_154_0,very_fast).
-acceleration(seg021_586_0,slow).
-acceleration(seg020_4253_0,medium).
-acceleration(seg021_996_0,very_fast).
-acceleration(seg020_4109_0,very_fast).
-acceleration(seg020_2150_0,below_medium).
-acceleration(seg020_3810_0,slow).
-acceleration(seg020_1157_0,above_medium).
-acceleration(seg020_3598_0,above_medium).
-acceleration(seg020_2940_0,above_medium).
-acceleration(seg021_454_0,very_slow).
-acceleration(seg021_558_0,very_fast).
-acceleration(seg021_613_0,very_slow).
-acceleration(seg020_3178_0,above_medium).
-acceleration(seg021_517_0,very_fast).
-acceleration(seg020_3006_0,fast).
-acceleration(seg020_951_0,very_fast).
-acceleration(seg020_4889_0,above_medium).
-acceleration(seg021_780_0,below_medium).
-acceleration(seg021_556_0,very_fast).
-acceleration(seg020_1166_0,very_fast).
-acceleration(seg020_288_0,below_medium).
-acceleration(seg020_790_0,slow).
-acceleration(seg020_463_0,below_medium).
-acceleration(seg021_455_0,very_fast).
-acceleration(seg021_772_0,slow).
+acceleration(seg021_550_0,very_fast).
+acceleration(seg021_205_0,very_fast).
+acceleration(seg021_158_0,very_fast).
+acceleration(seg021_985_0,very_fast).
+acceleration(seg021_213_0,very_fast).
+acceleration(seg020_2831_0,medium).
+acceleration(seg021_982_0,very_fast).
+acceleration(seg020_563_0,very_fast).
+acceleration(seg021_298_0,very_fast).
+acceleration(seg020_58_0,medium).
+acceleration(seg021_551_0,very_fast).
+acceleration(seg021_354_0,very_fast).
+acceleration(seg021_605_0,slow).
+acceleration(seg021_736_0,very_fast).
+acceleration(seg020_4068_0,medium).
+acceleration(seg021_359_0,very_fast).
+acceleration(seg020_2426_0,above_medium).
+acceleration(seg020_110_0,below_medium).
+acceleration(seg021_9_0,very_fast).
+acceleration(seg020_2967_0,medium).
+acceleration(seg020_3651_0,above_medium).
+acceleration(seg020_542_0,below_medium).
+acceleration(seg021_500_0,medium).
+acceleration(seg021_675_0,very_fast).
+acceleration(seg021_84_0,very_fast).
+acceleration(seg021_196_0,very_fast).
+acceleration(seg020_4167_0,above_medium).
+acceleration(seg021_770_0,slow).
+acceleration(seg020_2104_0,below_medium).
+acceleration(seg021_591_0,slow).
+acceleration(seg021_497_0,very_fast).
+acceleration(seg021_75_0,very_fast).
+acceleration(seg020_989_0,fast).
+acceleration(seg021_169_0,fast).
+acceleration(seg021_271_0,very_fast).
+acceleration(seg021_882_0,fast).
 acceleration(seg020_3757_0,below_medium).
-acceleration(seg020_828_0,below_medium).
-acceleration(seg021_611_0,very_slow).
-acceleration(seg021_469_0,very_fast).
-acceleration(seg021_656_0,below_medium).
-acceleration(seg020_2363_0,very_fast).
-acceleration(seg021_676_0,very_fast).
-acceleration(seg021_47_0,very_fast).
-acceleration(seg020_4129_0,above_medium).
-acceleration(seg020_338_0,below_medium).
-acceleration(seg020_2934_0,above_medium).
-acceleration(seg021_1150_0,below_medium).
-acceleration(seg020_4369_0,above_medium).
-acceleration(seg021_467_0,very_fast).
-acceleration(seg020_2338_0,fast).
-acceleration(seg021_703_0,very_fast).
-acceleration(seg021_72_0,very_fast).
-acceleration(seg021_302_0,very_fast).
-acceleration(seg021_486_0,fast).
-acceleration(seg020_16_0,fast).
-acceleration(seg020_3594_0,fast).
-acceleration(seg021_30_0,very_fast).
-acceleration(seg020_3448_0,fast).
-acceleration(seg020_4951_0,medium).
-acceleration(seg021_863_0,above_medium).
-acceleration(seg021_86_0,very_fast).
-acceleration(seg021_418_0,fast).
-acceleration(seg020_4928_0,fast).
-acceleration(seg021_310_0,very_fast).
-acceleration(seg021_521_0,very_fast).
-acceleration(seg021_786_0,medium).
-acceleration(seg020_4190_0,very_fast).
-acceleration(seg020_4340_0,above_medium).
-acceleration(seg020_3021_0,above_medium).
-acceleration(seg020_986_0,very_slow).
-acceleration(seg021_595_0,slow).
-acceleration(seg021_1008_0,very_fast).
-acceleration(seg021_472_0,very_fast).
-acceleration(seg021_493_0,very_fast).
-acceleration(seg020_3591_0,above_medium).
-acceleration(seg021_117_0,very_fast).
-acceleration(seg020_305_0,very_fast).
-acceleration(seg020_2926_0,below_medium).
-acceleration(seg020_4570_0,below_medium).
-acceleration(seg020_3159_0,above_medium).
-acceleration(seg020_3935_0,above_medium).
-acceleration(seg021_374_0,fast).
-acceleration(seg020_2370_0,fast).
-acceleration(seg021_390_0,very_fast).
-acceleration(seg021_599_0,slow).
-acceleration(seg021_971_0,above_medium).
-acceleration(seg020_1072_0,medium).
-acceleration(seg021_426_0,medium).
-acceleration(seg020_2897_0,above_medium).
-acceleration(seg020_429_0,slow).
-acceleration(seg020_3529_0,above_medium).
-acceleration(seg021_246_0,very_fast).
-acceleration(seg020_74_0,slow).
-acceleration(seg020_2229_0,below_medium).
-acceleration(seg020_3404_0,medium).
-acceleration(seg021_445_0,very_fast).
-acceleration(seg021_560_0,very_fast).
-acceleration(seg020_4395_0,above_medium).
-acceleration(seg020_1094_0,below_medium).
-acceleration(seg021_1064_0,medium).
-acceleration(seg020_654_0,above_medium).
-acceleration(seg020_385_0,fast).
-acceleration(seg021_306_0,very_fast).
-acceleration(seg020_2243_0,fast).
-acceleration(seg021_889_0,fast).
-acceleration(seg021_383_0,very_fast).
-acceleration(seg020_4853_0,medium).
-acceleration(seg020_3944_0,above_medium).
-acceleration(seg020_4262_0,medium).
-acceleration(seg021_372_0,medium).
-acceleration(seg020_4757_0,slow).
-acceleration(seg021_767_0,medium).
-acceleration(seg021_1058_0,very_slow).
-acceleration(seg020_3427_0,very_slow).
-acceleration(seg021_247_0,very_fast).
-acceleration(seg020_1149_0,very_fast).
-acceleration(seg020_3938_0,above_medium).
-acceleration(seg021_1052_0,slow).
-acceleration(seg021_349_0,very_fast).
-acceleration(seg020_2492_0,above_medium).
-acceleration(seg021_609_0,slow).
-acceleration(seg020_4416_0,medium).
+acceleration(seg020_1061_0,slow).
+acceleration(seg020_470_0,below_medium).
+acceleration(seg021_986_0,very_fast).
+acceleration(seg020_2514_0,above_medium).
+acceleration(seg021_549_0,very_fast).
+acceleration(seg021_1085_0,very_slow).
+acceleration(seg021_867_0,medium).
+acceleration(seg020_2277_0,very_fast).
+acceleration(seg021_530_0,very_fast).
+acceleration(seg020_934_0,fast).
+acceleration(seg021_484_0,very_fast).
+acceleration(seg020_3905_0,medium).
+acceleration(seg020_4682_0,above_medium).
 acceleration(seg020_2882_0,above_medium).
-acceleration(seg021_610_0,very_slow).
-acceleration(seg021_274_0,very_fast).
-acceleration(seg020_2811_0,very_fast).
-acceleration(seg020_4242_0,slow).
-acceleration(seg021_1149_0,slow).
-acceleration(seg020_3238_0,medium).
-acceleration(seg021_601_0,slow).
-acceleration(seg021_150_0,very_fast).
-acceleration(seg021_378_0,very_fast).
-acceleration(seg020_2496_0,fast).
-acceleration(seg021_745_0,above_medium).
-acceleration(seg020_3535_0,above_medium).
-acceleration(seg020_3923_0,above_medium).
-acceleration(seg021_312_0,very_fast).
-acceleration(seg021_784_0,very_fast).
-acceleration(seg020_4234_0,below_medium).
-acceleration(seg020_4295_0,above_medium).
-acceleration(seg020_2565_0,above_medium).
-acceleration(seg021_380_0,very_fast).
-acceleration(seg020_485_0,below_medium).
-acceleration(seg020_2849_0,very_fast).
+acceleration(seg021_171_0,very_slow).
+acceleration(seg021_659_0,very_fast).
+acceleration(seg021_332_0,very_fast).
+acceleration(seg021_404_0,very_fast).
+acceleration(seg020_4153_0,medium).
+acceleration(seg021_1077_0,slow).
+acceleration(seg020_2556_0,above_medium).
+acceleration(seg020_3355_0,medium).
+acceleration(seg020_4819_0,above_medium).
+acceleration(seg021_293_0,very_fast).
+acceleration(seg021_496_0,very_fast).
+acceleration(seg020_3776_0,above_medium).
+acceleration(seg020_2281_0,medium).
+acceleration(seg021_905_0,very_fast).
+acceleration(seg020_2332_0,very_fast).
+acceleration(seg020_2462_0,slow).
+acceleration(seg021_789_0,slow).
+acceleration(seg020_919_0,slow).
+acceleration(seg021_478_0,very_fast).
+acceleration(seg021_592_0,slow).
+acceleration(seg020_86_0,above_medium).
+acceleration(seg021_29_0,very_fast).
 acceleration(seg021_515_0,very_fast).
-acceleration(seg021_872_0,slow).
+acceleration(seg020_3392_0,below_medium).
+acceleration(seg020_4236_0,medium).
+acceleration(seg021_909_0,very_fast).
+acceleration(seg021_944_0,very_fast).
+acceleration(seg021_455_0,very_fast).
+acceleration(seg021_471_0,very_fast).
+acceleration(seg021_1066_0,very_fast).
+acceleration(seg020_907_0,below_medium).
+acceleration(seg021_454_0,very_slow).
+acceleration(seg021_472_0,very_fast).
+acceleration(seg021_557_0,very_fast).
+acceleration(seg021_1125_0,slow).
+acceleration(seg021_386_0,very_fast).
+acceleration(seg020_2016_0,very_slow).
+acceleration(seg020_2924_0,above_medium).
+acceleration(seg021_309_0,very_fast).
+acceleration(seg021_265_0,very_fast).
+acceleration(seg020_4931_0,medium).
+acceleration(seg020_3528_0,above_medium).
+acceleration(seg020_4424_0,medium).
+acceleration(seg021_562_0,medium).
+acceleration(seg020_4467_0,below_medium).
+acceleration(seg020_4534_0,fast).
+acceleration(seg020_2499_0,slow).
+acceleration(seg020_3180_0,above_medium).
+acceleration(seg021_589_0,very_slow).
+acceleration(seg020_3083_0,above_medium).
+acceleration(seg021_485_0,very_fast).
+acceleration(seg021_521_0,very_fast).
+acceleration(seg020_2633_0,above_medium).
+acceleration(seg020_4602_0,above_medium).
+acceleration(seg021_224_0,very_fast).
+acceleration(seg020_2172_0,below_medium).
+acceleration(seg020_4535_0,above_medium).
+acceleration(seg021_1089_0,slow).
+acceleration(seg020_2995_0,above_medium).
+acceleration(seg021_416_0,above_medium).
+acceleration(seg021_67_0,very_fast).
+acceleration(seg021_1020_0,slow).
+acceleration(seg021_279_0,very_fast).
+acceleration(seg020_4009_0,above_medium).
+acceleration(seg020_363_0,above_medium).
+acceleration(seg021_1145_0,slow).
+acceleration(seg020_2838_0,fast).
+acceleration(seg020_587_0,above_medium).
+acceleration(seg021_308_0,very_fast).
+acceleration(seg021_691_0,very_fast).
+acceleration(seg020_2559_0,above_medium).
+acceleration(seg021_800_0,fast).
+acceleration(seg020_4193_0,above_medium).
+acceleration(seg020_2673_0,fast).
+acceleration(seg021_1027_0,very_slow).
+acceleration(seg020_4439_0,medium).
+acceleration(seg020_589_0,slow).
+acceleration(seg021_971_0,above_medium).
+acceleration(seg021_1025_0,slow).
+acceleration(seg020_1168_0,fast).
+acceleration(seg021_864_0,very_slow).
+acceleration(seg020_966_0,slow).
+acceleration(seg021_651_0,slow).
+acceleration(seg020_2147_0,below_medium).
+acceleration(seg020_577_0,above_medium).
+acceleration(seg021_1048_0,slow).
+acceleration(seg021_768_0,above_medium).
 acceleration(seg020_4977_0,above_medium).
-acceleration(seg020_1269_0,very_fast).
-acceleration(seg021_350_0,very_fast).
-acceleration(seg021_125_0,fast).
-acceleration(seg021_138_0,very_fast).
-acceleration(seg020_595_0,very_fast).
-acceleration(seg021_579_0,very_slow).
+acceleration(seg021_1036_0,slow).
+acceleration(seg020_685_0,slow).
+acceleration(seg020_1071_0,medium).
+acceleration(seg021_1152_0,slow).
+acceleration(seg021_1097_0,slow).
+acceleration(seg020_1169_0,medium).
+acceleration(seg020_1130_0,below_medium).
+acceleration(seg021_774_0,slow).
+acceleration(seg021_606_0,slow).
+acceleration(seg021_1148_0,slow).
+acceleration(seg021_654_0,medium).
+acceleration(seg021_775_0,very_slow).
+acceleration(seg021_765_0,slow).
+acceleration(seg021_1034_0,below_medium).
+acceleration(seg020_779_0,above_medium).
+acceleration(seg021_1154_0,below_medium).
+acceleration(seg020_1149_0,very_fast).
+acceleration(seg021_970_0,slow).
+acceleration(seg021_1029_0,very_slow).
+acceleration(seg021_594_0,very_slow).
+acceleration(seg020_838_0,below_medium).
+acceleration(seg021_1046_0,slow).
+acceleration(seg021_582_0,slow).
+acceleration(seg021_1058_0,very_slow).
+acceleration(seg020_776_0,slow).
+acceleration(seg021_1081_0,slow).
+acceleration(seg020_1076_0,medium).
+acceleration(seg020_4242_0,slow).
+acceleration(seg021_785_0,medium).
+acceleration(seg021_1147_0,slow).
+acceleration(seg021_777_0,very_slow).
+acceleration(seg020_965_0,slow).
+acceleration(seg021_613_0,very_slow).
+acceleration(seg021_581_0,slow).
+acceleration(seg021_1110_0,very_slow).
+acceleration(seg021_760_0,below_medium).
+acceleration(seg021_1038_0,very_slow).
+acceleration(seg021_1019_0,very_slow).
+acceleration(seg020_698_0,medium).
+acceleration(seg021_1052_0,slow).
+acceleration(seg020_1148_0,slow).
+acceleration(seg020_43_0,below_medium).
+acceleration(seg021_1057_0,very_slow).
+acceleration(seg021_878_0,slow).
+acceleration(seg021_1030_0,very_slow).
+acceleration(seg021_874_0,very_slow).
+acceleration(seg021_781_0,slow).
+acceleration(seg021_1039_0,below_medium).
+acceleration(seg021_1115_0,slow).
+acceleration(seg020_978_0,very_fast).
+acceleration(seg021_762_0,slow).
 acceleration(seg021_600_0,slow).
-acceleration(seg020_2156_0,below_medium).
-acceleration(seg021_766_0,slow).
-acceleration(seg020_889_0,slow).
-acceleration(seg020_2101_0,slow).
-acceleration(seg020_1069_0,medium).
-acceleration(seg021_587_0,slow).
-acceleration(seg020_2152_0,below_medium).
-acceleration(seg020_559_0,very_fast).
-acceleration(seg020_808_0,below_medium).
-acceleration(seg020_625_0,below_medium).
-acceleration(seg021_1142_0,slow).
-acceleration(seg020_857_0,fast).
-acceleration(seg020_93_0,fast).
-acceleration(seg020_2300_0,very_fast).
-acceleration(seg020_421_0,very_fast).
-acceleration(seg020_1012_0,very_fast).
-acceleration(seg020_267_0,very_fast).
-acceleration(seg020_1207_0,slow).
-acceleration(seg020_2184_0,above_medium).
-acceleration(seg020_678_0,very_fast).
-acceleration(seg020_2313_0,very_fast).
-acceleration(seg020_869_0,very_fast).
-acceleration(seg020_2245_0,very_fast).
-acceleration(seg020_2288_0,very_fast).
-acceleration(seg020_658_0,very_fast).
-acceleration(seg020_737_0,medium).
-acceleration(seg020_1055_0,below_medium).
-acceleration(seg020_517_0,below_medium).
-acceleration(seg020_758_0,medium).
-acceleration(seg020_1902_0,very_fast).
-acceleration(seg020_2299_0,below_medium).
-acceleration(seg020_444_0,very_fast).
-acceleration(seg020_954_0,fast).
-acceleration(seg020_2234_0,very_fast).
-acceleration(seg020_1195_0,very_fast).
-acceleration(seg020_673_0,above_medium).
-acceleration(seg020_2316_0,very_fast).
-acceleration(seg020_2074_0,above_medium).
-acceleration(seg020_1031_0,very_fast).
-acceleration(seg020_2248_0,very_fast).
-acceleration(seg020_70_0,very_fast).
-acceleration(seg020_1015_0,slow).
-acceleration(seg020_1053_0,above_medium).
-acceleration(seg020_209_0,fast).
-acceleration(seg020_233_0,very_fast).
-acceleration(seg020_2190_0,very_fast).
-acceleration(seg020_435_0,fast).
+acceleration(seg020_2125_0,slow).
+acceleration(seg020_2343_0,below_medium).
+acceleration(seg020_2119_0,below_medium).
+acceleration(seg021_1099_0,slow).
+acceleration(seg021_615_0,very_slow).
+acceleration(seg021_590_0,slow).
+acceleration(seg020_4237_0,slow).
+acceleration(seg021_596_0,slow).
+acceleration(seg020_914_0,below_medium).
 
-prevHasTransportModes(seg020_2470_1,bike).	prevHasTransportModes(seg020_2470_2,bike).	prevHasTransportModes(seg020_2470_3,bike).	prevHasTransportModes(seg020_2470_4,bike).	prevHasTransportModes(seg020_2470_5,bike).	
-prevHasTransportModes(seg020_3157_1,bike).	prevHasTransportModes(seg020_3157_2,bike).	prevHasTransportModes(seg020_3157_3,bike).	prevHasTransportModes(seg020_3157_4,bike).	prevHasTransportModes(seg020_3157_5,bike).	
-prevHasTransportModes(seg021_952_1,car).	prevHasTransportModes(seg021_952_2,car).	prevHasTransportModes(seg021_952_3,car).	prevHasTransportModes(seg021_952_4,car).	prevHasTransportModes(seg021_952_5,car).	
-prevHasTransportModes(seg021_981_1,car).	prevHasTransportModes(seg021_981_2,car).	prevHasTransportModes(seg021_981_3,car).	prevHasTransportModes(seg021_981_4,car).	prevHasTransportModes(seg021_981_5,car).	
-prevHasTransportModes(seg020_3098_1,bike).	prevHasTransportModes(seg020_3098_2,bike).	prevHasTransportModes(seg020_3098_3,bike).	prevHasTransportModes(seg020_3098_4,bike).	prevHasTransportModes(seg020_3098_5,bike).	
-prevHasTransportModes(seg020_3258_1,bike).	prevHasTransportModes(seg020_3258_2,bike).	prevHasTransportModes(seg020_3258_3,bike).	prevHasTransportModes(seg020_3258_4,bike).	prevHasTransportModes(seg020_3258_5,bike).	
-prevHasTransportModes(seg020_3504_1,bike).	prevHasTransportModes(seg020_3504_2,bike).	prevHasTransportModes(seg020_3504_3,bike).	prevHasTransportModes(seg020_3504_4,bike).	prevHasTransportModes(seg020_3504_5,bike).	
-prevHasTransportModes(seg021_447_1,car).	prevHasTransportModes(seg021_447_2,car).	prevHasTransportModes(seg021_447_3,car).	prevHasTransportModes(seg021_447_4,car).	prevHasTransportModes(seg021_447_5,car).	
-prevHasTransportModes(seg021_154_1,car).	prevHasTransportModes(seg021_154_2,car).	prevHasTransportModes(seg021_154_3,car).	prevHasTransportModes(seg021_154_4,car).	prevHasTransportModes(seg021_154_5,car).	
-prevHasTransportModes(seg021_586_1,walk).	prevHasTransportModes(seg021_586_2,walk).	prevHasTransportModes(seg021_586_3,walk).	prevHasTransportModes(seg021_586_4,walk).	prevHasTransportModes(seg021_586_5,walk).	
-prevHasTransportModes(seg020_4253_1,bike).	prevHasTransportModes(seg020_4253_2,bike).	prevHasTransportModes(seg020_4253_3,bike).	prevHasTransportModes(seg020_4253_4,bike).	prevHasTransportModes(seg020_4253_5,bike).	
-prevHasTransportModes(seg021_996_1,car).	prevHasTransportModes(seg021_996_2,car).	prevHasTransportModes(seg021_996_3,car).	prevHasTransportModes(seg021_996_4,car).	prevHasTransportModes(seg021_996_5,car).	
-prevHasTransportModes(seg020_4109_1,bike).	prevHasTransportModes(seg020_4109_2,bike).	prevHasTransportModes(seg020_4109_3,bike).	prevHasTransportModes(seg020_4109_4,bike).	prevHasTransportModes(seg020_4109_5,bike).	
-prevHasTransportModes(seg020_2150_1,walk).	prevHasTransportModes(seg020_2150_2,walk).	prevHasTransportModes(seg020_2150_3,walk).	prevHasTransportModes(seg020_2150_4,walk).	prevHasTransportModes(seg020_2150_5,walk).	
-prevHasTransportModes(seg020_3810_1,bike).	prevHasTransportModes(seg020_3810_2,bike).	prevHasTransportModes(seg020_3810_3,bike).	prevHasTransportModes(seg020_3810_4,bike).	prevHasTransportModes(seg020_3810_5,bike).	
-prevHasTransportModes(seg020_1157_1,walk).	prevHasTransportModes(seg020_1157_2,walk).	prevHasTransportModes(seg020_1157_3,walk).	prevHasTransportModes(seg020_1157_4,walk).	prevHasTransportModes(seg020_1157_5,walk).	
-prevHasTransportModes(seg020_3598_1,bike).	prevHasTransportModes(seg020_3598_2,bike).	prevHasTransportModes(seg020_3598_3,bike).	prevHasTransportModes(seg020_3598_4,bike).	prevHasTransportModes(seg020_3598_5,bike).	
-prevHasTransportModes(seg020_2940_1,bike).	prevHasTransportModes(seg020_2940_2,bike).	prevHasTransportModes(seg020_2940_3,bike).	prevHasTransportModes(seg020_2940_4,bike).	prevHasTransportModes(seg020_2940_5,bike).	
-prevHasTransportModes(seg021_454_1,car).	prevHasTransportModes(seg021_454_2,car).	prevHasTransportModes(seg021_454_3,car).	prevHasTransportModes(seg021_454_4,car).	prevHasTransportModes(seg021_454_5,car).	
-prevHasTransportModes(seg021_558_1,car).	prevHasTransportModes(seg021_558_2,car).	prevHasTransportModes(seg021_558_3,car).	prevHasTransportModes(seg021_558_4,car).	prevHasTransportModes(seg021_558_5,car).	
-prevHasTransportModes(seg021_613_1,walk).	prevHasTransportModes(seg021_613_2,walk).	prevHasTransportModes(seg021_613_3,walk).	prevHasTransportModes(seg021_613_4,walk).	prevHasTransportModes(seg021_613_5,walk).	
-prevHasTransportModes(seg020_3178_1,bike).	prevHasTransportModes(seg020_3178_2,bike).	prevHasTransportModes(seg020_3178_3,bike).	prevHasTransportModes(seg020_3178_4,bike).	prevHasTransportModes(seg020_3178_5,bike).	
-prevHasTransportModes(seg021_517_1,car).	prevHasTransportModes(seg021_517_2,car).	prevHasTransportModes(seg021_517_3,car).	prevHasTransportModes(seg021_517_4,car).	prevHasTransportModes(seg021_517_5,car).	
-prevHasTransportModes(seg020_3006_1,bike).	prevHasTransportModes(seg020_3006_2,bike).	prevHasTransportModes(seg020_3006_3,bike).	prevHasTransportModes(seg020_3006_4,bike).	prevHasTransportModes(seg020_3006_5,bike).	
-prevHasTransportModes(seg020_951_1,bus).	prevHasTransportModes(seg020_951_2,bus).	prevHasTransportModes(seg020_951_3,bus).	prevHasTransportModes(seg020_951_4,bus).	prevHasTransportModes(seg020_951_5,bus).	
-prevHasTransportModes(seg020_4889_1,bike).	prevHasTransportModes(seg020_4889_2,bike).	prevHasTransportModes(seg020_4889_3,bike).	prevHasTransportModes(seg020_4889_4,bike).	prevHasTransportModes(seg020_4889_5,bike).	
-prevHasTransportModes(seg021_780_1,walk).	prevHasTransportModes(seg021_780_2,walk).	prevHasTransportModes(seg021_780_3,walk).	prevHasTransportModes(seg021_780_4,walk).	prevHasTransportModes(seg021_780_5,walk).	
-prevHasTransportModes(seg021_556_1,car).	prevHasTransportModes(seg021_556_2,car).	prevHasTransportModes(seg021_556_3,car).	prevHasTransportModes(seg021_556_4,car).	prevHasTransportModes(seg021_556_5,car).	
-prevHasTransportModes(seg020_1166_1,walk).	prevHasTransportModes(seg020_1166_2,walk).	prevHasTransportModes(seg020_1166_3,walk).	prevHasTransportModes(seg020_1166_4,walk).	prevHasTransportModes(seg020_1166_5,walk).	
-prevHasTransportModes(seg020_288_1,walk).	prevHasTransportModes(seg020_288_2,walk).	prevHasTransportModes(seg020_288_3,walk).	prevHasTransportModes(seg020_288_4,walk).	prevHasTransportModes(seg020_288_5,walk).	
-prevHasTransportModes(seg020_790_1,walk).	prevHasTransportModes(seg020_790_2,walk).	prevHasTransportModes(seg020_790_3,walk).	prevHasTransportModes(seg020_790_4,walk).	prevHasTransportModes(seg020_790_5,walk).	
-prevHasTransportModes(seg020_463_1,walk).	prevHasTransportModes(seg020_463_2,walk).	prevHasTransportModes(seg020_463_3,walk).	prevHasTransportModes(seg020_463_4,walk).	prevHasTransportModes(seg020_463_5,walk).	
-prevHasTransportModes(seg021_455_1,car).	prevHasTransportModes(seg021_455_2,car).	prevHasTransportModes(seg021_455_3,car).	prevHasTransportModes(seg021_455_4,car).	prevHasTransportModes(seg021_455_5,car).	
-prevHasTransportModes(seg021_772_1,walk).	prevHasTransportModes(seg021_772_2,walk).	prevHasTransportModes(seg021_772_3,walk).	prevHasTransportModes(seg021_772_4,walk).	prevHasTransportModes(seg021_772_5,walk).	
+prevHasTransportModes(seg021_550_1,car).	prevHasTransportModes(seg021_550_2,car).	prevHasTransportModes(seg021_550_3,car).	prevHasTransportModes(seg021_550_4,car).	prevHasTransportModes(seg021_550_5,car).	
+prevHasTransportModes(seg021_205_1,car).	prevHasTransportModes(seg021_205_2,car).	prevHasTransportModes(seg021_205_3,car).	prevHasTransportModes(seg021_205_4,car).	prevHasTransportModes(seg021_205_5,car).	
+prevHasTransportModes(seg021_158_1,car).	prevHasTransportModes(seg021_158_2,car).	prevHasTransportModes(seg021_158_3,car).	prevHasTransportModes(seg021_158_4,car).	prevHasTransportModes(seg021_158_5,car).	
+prevHasTransportModes(seg021_985_1,car).	prevHasTransportModes(seg021_985_2,car).	prevHasTransportModes(seg021_985_3,car).	prevHasTransportModes(seg021_985_4,car).	prevHasTransportModes(seg021_985_5,car).	
+prevHasTransportModes(seg021_213_1,car).	prevHasTransportModes(seg021_213_2,car).	prevHasTransportModes(seg021_213_3,car).	prevHasTransportModes(seg021_213_4,car).	prevHasTransportModes(seg021_213_5,car).	
+prevHasTransportModes(seg020_2831_1,bike).	prevHasTransportModes(seg020_2831_2,bike).	prevHasTransportModes(seg020_2831_3,bike).	prevHasTransportModes(seg020_2831_4,bike).	prevHasTransportModes(seg020_2831_5,bike).	
+prevHasTransportModes(seg021_982_1,car).	prevHasTransportModes(seg021_982_2,car).	prevHasTransportModes(seg021_982_3,car).	prevHasTransportModes(seg021_982_4,car).	prevHasTransportModes(seg021_982_5,car).	
+prevHasTransportModes(seg020_563_1,bus).	prevHasTransportModes(seg020_563_2,bus).	prevHasTransportModes(seg020_563_3,bus).	prevHasTransportModes(seg020_563_4,bus).	prevHasTransportModes(seg020_563_5,bus).	
+prevHasTransportModes(seg021_298_1,car).	prevHasTransportModes(seg021_298_2,car).	prevHasTransportModes(seg021_298_3,car).	prevHasTransportModes(seg021_298_4,car).	prevHasTransportModes(seg021_298_5,car).	
+prevHasTransportModes(seg020_58_1,walk).	prevHasTransportModes(seg020_58_2,walk).	prevHasTransportModes(seg020_58_3,walk).	prevHasTransportModes(seg020_58_4,walk).	prevHasTransportModes(seg020_58_5,walk).	
+prevHasTransportModes(seg021_551_1,car).	prevHasTransportModes(seg021_551_2,car).	prevHasTransportModes(seg021_551_3,car).	prevHasTransportModes(seg021_551_4,car).	prevHasTransportModes(seg021_551_5,car).	
+prevHasTransportModes(seg021_354_1,car).	prevHasTransportModes(seg021_354_2,car).	prevHasTransportModes(seg021_354_3,car).	prevHasTransportModes(seg021_354_4,car).	prevHasTransportModes(seg021_354_5,car).	
+prevHasTransportModes(seg021_605_1,walk).	prevHasTransportModes(seg021_605_2,walk).	prevHasTransportModes(seg021_605_3,walk).	prevHasTransportModes(seg021_605_4,walk).	prevHasTransportModes(seg021_605_5,walk).	
+prevHasTransportModes(seg021_736_1,car).	prevHasTransportModes(seg021_736_2,car).	prevHasTransportModes(seg021_736_3,car).	prevHasTransportModes(seg021_736_4,car).	prevHasTransportModes(seg021_736_5,car).	
+prevHasTransportModes(seg020_4068_1,bike).	prevHasTransportModes(seg020_4068_2,bike).	prevHasTransportModes(seg020_4068_3,bike).	prevHasTransportModes(seg020_4068_4,bike).	prevHasTransportModes(seg020_4068_5,bike).	
+prevHasTransportModes(seg021_359_1,car).	prevHasTransportModes(seg021_359_2,car).	prevHasTransportModes(seg021_359_3,car).	prevHasTransportModes(seg021_359_4,car).	prevHasTransportModes(seg021_359_5,car).	
+prevHasTransportModes(seg020_2426_1,bike).	prevHasTransportModes(seg020_2426_2,bike).	prevHasTransportModes(seg020_2426_3,bike).	prevHasTransportModes(seg020_2426_4,bike).	prevHasTransportModes(seg020_2426_5,bike).	
+prevHasTransportModes(seg020_110_1,walk).	prevHasTransportModes(seg020_110_2,walk).	prevHasTransportModes(seg020_110_3,walk).	prevHasTransportModes(seg020_110_4,walk).	prevHasTransportModes(seg020_110_5,walk).	
+prevHasTransportModes(seg021_9_1,car).	prevHasTransportModes(seg021_9_2,car).	prevHasTransportModes(seg021_9_3,car).	prevHasTransportModes(seg021_9_4,car).	prevHasTransportModes(seg021_9_5,car).	
+prevHasTransportModes(seg020_2967_1,bike).	prevHasTransportModes(seg020_2967_2,bike).	prevHasTransportModes(seg020_2967_3,bike).	prevHasTransportModes(seg020_2967_4,bike).	prevHasTransportModes(seg020_2967_5,bike).	
+prevHasTransportModes(seg020_3651_1,bike).	prevHasTransportModes(seg020_3651_2,bike).	prevHasTransportModes(seg020_3651_3,bike).	prevHasTransportModes(seg020_3651_4,bike).	prevHasTransportModes(seg020_3651_5,bike).	
+prevHasTransportModes(seg020_542_1,bus).	prevHasTransportModes(seg020_542_2,walk).	prevHasTransportModes(seg020_542_3,walk).	prevHasTransportModes(seg020_542_4,walk).	prevHasTransportModes(seg020_542_5,walk).	
+prevHasTransportModes(seg021_500_1,car).	prevHasTransportModes(seg021_500_2,car).	prevHasTransportModes(seg021_500_3,car).	prevHasTransportModes(seg021_500_4,car).	prevHasTransportModes(seg021_500_5,car).	
+prevHasTransportModes(seg021_675_1,car).	prevHasTransportModes(seg021_675_2,car).	prevHasTransportModes(seg021_675_3,car).	prevHasTransportModes(seg021_675_4,car).	prevHasTransportModes(seg021_675_5,car).	
+prevHasTransportModes(seg021_84_1,car).	prevHasTransportModes(seg021_84_2,car).	prevHasTransportModes(seg021_84_3,car).	prevHasTransportModes(seg021_84_4,car).	prevHasTransportModes(seg021_84_5,car).	
+prevHasTransportModes(seg021_196_1,car).	prevHasTransportModes(seg021_196_2,car).	prevHasTransportModes(seg021_196_3,car).	prevHasTransportModes(seg021_196_4,car).	prevHasTransportModes(seg021_196_5,car).	
+prevHasTransportModes(seg020_4167_1,bike).	prevHasTransportModes(seg020_4167_2,bike).	prevHasTransportModes(seg020_4167_3,bike).	prevHasTransportModes(seg020_4167_4,bike).	prevHasTransportModes(seg020_4167_5,bike).	
+prevHasTransportModes(seg021_770_1,walk).	prevHasTransportModes(seg021_770_2,walk).	prevHasTransportModes(seg021_770_3,walk).	prevHasTransportModes(seg021_770_4,walk).	prevHasTransportModes(seg021_770_5,walk).	
+prevHasTransportModes(seg020_2104_1,walk).	prevHasTransportModes(seg020_2104_2,walk).	prevHasTransportModes(seg020_2104_3,walk).	prevHasTransportModes(seg020_2104_4,walk).	prevHasTransportModes(seg020_2104_5,walk).	
+prevHasTransportModes(seg021_591_1,walk).	prevHasTransportModes(seg021_591_2,walk).	prevHasTransportModes(seg021_591_3,walk).	prevHasTransportModes(seg021_591_4,walk).	prevHasTransportModes(seg021_591_5,walk).	
+prevHasTransportModes(seg021_497_1,car).	prevHasTransportModes(seg021_497_2,car).	prevHasTransportModes(seg021_497_3,car).	prevHasTransportModes(seg021_497_4,car).	prevHasTransportModes(seg021_497_5,car).	
+prevHasTransportModes(seg021_75_1,car).	prevHasTransportModes(seg021_75_2,car).	prevHasTransportModes(seg021_75_3,car).	prevHasTransportModes(seg021_75_4,car).	prevHasTransportModes(seg021_75_5,car).	
+prevHasTransportModes(seg020_989_1,bus).	prevHasTransportModes(seg020_989_2,walk).	prevHasTransportModes(seg020_989_3,walk).	prevHasTransportModes(seg020_989_4,walk).	prevHasTransportModes(seg020_989_5,walk).	
+prevHasTransportModes(seg021_169_1,car).	prevHasTransportModes(seg021_169_2,car).	prevHasTransportModes(seg021_169_3,car).	prevHasTransportModes(seg021_169_4,car).	prevHasTransportModes(seg021_169_5,car).	
+prevHasTransportModes(seg021_271_1,car).	prevHasTransportModes(seg021_271_2,car).	prevHasTransportModes(seg021_271_3,car).	prevHasTransportModes(seg021_271_4,car).	prevHasTransportModes(seg021_271_5,car).	
+prevHasTransportModes(seg021_882_1,walk).	prevHasTransportModes(seg021_882_2,walk).	prevHasTransportModes(seg021_882_3,walk).	prevHasTransportModes(seg021_882_4,walk).	prevHasTransportModes(seg021_882_5,walk).	
 prevHasTransportModes(seg020_3757_1,bike).	prevHasTransportModes(seg020_3757_2,bike).	prevHasTransportModes(seg020_3757_3,bike).	prevHasTransportModes(seg020_3757_4,bike).	prevHasTransportModes(seg020_3757_5,bike).	
-prevHasTransportModes(seg020_828_1,walk).	prevHasTransportModes(seg020_828_2,walk).	prevHasTransportModes(seg020_828_3,walk).	prevHasTransportModes(seg020_828_4,walk).	prevHasTransportModes(seg020_828_5,walk).	
-prevHasTransportModes(seg021_611_1,walk).	prevHasTransportModes(seg021_611_2,walk).	prevHasTransportModes(seg021_611_3,walk).	prevHasTransportModes(seg021_611_4,walk).	prevHasTransportModes(seg021_611_5,walk).	
-prevHasTransportModes(seg021_469_1,car).	prevHasTransportModes(seg021_469_2,car).	prevHasTransportModes(seg021_469_3,car).	prevHasTransportModes(seg021_469_4,car).	prevHasTransportModes(seg021_469_5,car).	
-prevHasTransportModes(seg021_656_1,walk).	prevHasTransportModes(seg021_656_2,walk).	prevHasTransportModes(seg021_656_3,walk).	prevHasTransportModes(seg021_656_4,walk).	prevHasTransportModes(seg021_656_5,walk).	
-prevHasTransportModes(seg020_2363_1,bus).	prevHasTransportModes(seg020_2363_2,bus).	prevHasTransportModes(seg020_2363_3,bus).	prevHasTransportModes(seg020_2363_4,bus).	prevHasTransportModes(seg020_2363_5,bus).	
-prevHasTransportModes(seg021_676_1,car).	prevHasTransportModes(seg021_676_2,car).	prevHasTransportModes(seg021_676_3,car).	prevHasTransportModes(seg021_676_4,car).	prevHasTransportModes(seg021_676_5,car).	
-prevHasTransportModes(seg021_47_1,car).	prevHasTransportModes(seg021_47_2,car).	prevHasTransportModes(seg021_47_3,car).	prevHasTransportModes(seg021_47_4,car).	prevHasTransportModes(seg021_47_5,car).	
-prevHasTransportModes(seg020_4129_1,bike).	prevHasTransportModes(seg020_4129_2,bike).	prevHasTransportModes(seg020_4129_3,bike).	prevHasTransportModes(seg020_4129_4,bike).	prevHasTransportModes(seg020_4129_5,bike).	
-prevHasTransportModes(seg020_338_1,walk).	prevHasTransportModes(seg020_338_2,bus).	prevHasTransportModes(seg020_338_3,bus).	prevHasTransportModes(seg020_338_4,bus).	prevHasTransportModes(seg020_338_5,bus).	
-prevHasTransportModes(seg020_2934_1,bike).	prevHasTransportModes(seg020_2934_2,bike).	prevHasTransportModes(seg020_2934_3,bike).	prevHasTransportModes(seg020_2934_4,bike).	prevHasTransportModes(seg020_2934_5,bike).	
-prevHasTransportModes(seg021_1150_1,walk).	prevHasTransportModes(seg021_1150_2,walk).	prevHasTransportModes(seg021_1150_3,walk).	prevHasTransportModes(seg021_1150_4,walk).	prevHasTransportModes(seg021_1150_5,walk).	
-prevHasTransportModes(seg020_4369_1,bike).	prevHasTransportModes(seg020_4369_2,bike).	prevHasTransportModes(seg020_4369_3,bike).	prevHasTransportModes(seg020_4369_4,bike).	prevHasTransportModes(seg020_4369_5,bike).	
-prevHasTransportModes(seg021_467_1,car).	prevHasTransportModes(seg021_467_2,car).	prevHasTransportModes(seg021_467_3,car).	prevHasTransportModes(seg021_467_4,car).	prevHasTransportModes(seg021_467_5,car).	
-prevHasTransportModes(seg020_2338_1,bus).	prevHasTransportModes(seg020_2338_2,bus).	prevHasTransportModes(seg020_2338_3,bus).	prevHasTransportModes(seg020_2338_4,bus).	prevHasTransportModes(seg020_2338_5,bus).	
-prevHasTransportModes(seg021_703_1,car).	prevHasTransportModes(seg021_703_2,car).	prevHasTransportModes(seg021_703_3,car).	prevHasTransportModes(seg021_703_4,car).	prevHasTransportModes(seg021_703_5,car).	
-prevHasTransportModes(seg021_72_1,car).	prevHasTransportModes(seg021_72_2,car).	prevHasTransportModes(seg021_72_3,car).	prevHasTransportModes(seg021_72_4,car).	prevHasTransportModes(seg021_72_5,car).	
-prevHasTransportModes(seg021_302_1,car).	prevHasTransportModes(seg021_302_2,car).	prevHasTransportModes(seg021_302_3,car).	prevHasTransportModes(seg021_302_4,car).	prevHasTransportModes(seg021_302_5,car).	
-prevHasTransportModes(seg021_486_1,car).	prevHasTransportModes(seg021_486_2,car).	prevHasTransportModes(seg021_486_3,car).	prevHasTransportModes(seg021_486_4,car).	prevHasTransportModes(seg021_486_5,car).	
-prevHasTransportModes(seg020_16_1,walk).	prevHasTransportModes(seg020_16_2,walk).	prevHasTransportModes(seg020_16_3,walk).	prevHasTransportModes(seg020_16_4,walk).	prevHasTransportModes(seg020_16_5,walk).	
-prevHasTransportModes(seg020_3594_1,bike).	prevHasTransportModes(seg020_3594_2,bike).	prevHasTransportModes(seg020_3594_3,bike).	prevHasTransportModes(seg020_3594_4,bike).	prevHasTransportModes(seg020_3594_5,bike).	
-prevHasTransportModes(seg021_30_1,car).	prevHasTransportModes(seg021_30_2,car).	prevHasTransportModes(seg021_30_3,car).	prevHasTransportModes(seg021_30_4,car).	prevHasTransportModes(seg021_30_5,car).	
-prevHasTransportModes(seg020_3448_1,bike).	prevHasTransportModes(seg020_3448_2,bike).	prevHasTransportModes(seg020_3448_3,bike).	prevHasTransportModes(seg020_3448_4,bike).	prevHasTransportModes(seg020_3448_5,bike).	
-prevHasTransportModes(seg020_4951_1,bike).	prevHasTransportModes(seg020_4951_2,bike).	prevHasTransportModes(seg020_4951_3,bike).	prevHasTransportModes(seg020_4951_4,bike).	prevHasTransportModes(seg020_4951_5,bike).	
-prevHasTransportModes(seg021_863_1,car).	prevHasTransportModes(seg021_863_2,car).	prevHasTransportModes(seg021_863_3,car).	prevHasTransportModes(seg021_863_4,car).	prevHasTransportModes(seg021_863_5,car).	
-prevHasTransportModes(seg021_86_1,car).	prevHasTransportModes(seg021_86_2,car).	prevHasTransportModes(seg021_86_3,car).	prevHasTransportModes(seg021_86_4,car).	prevHasTransportModes(seg021_86_5,car).	
-prevHasTransportModes(seg021_418_1,car).	prevHasTransportModes(seg021_418_2,car).	prevHasTransportModes(seg021_418_3,car).	prevHasTransportModes(seg021_418_4,car).	prevHasTransportModes(seg021_418_5,car).	
-prevHasTransportModes(seg020_4928_1,bike).	prevHasTransportModes(seg020_4928_2,bike).	prevHasTransportModes(seg020_4928_3,bike).	prevHasTransportModes(seg020_4928_4,bike).	prevHasTransportModes(seg020_4928_5,bike).	
-prevHasTransportModes(seg021_310_1,car).	prevHasTransportModes(seg021_310_2,car).	prevHasTransportModes(seg021_310_3,car).	prevHasTransportModes(seg021_310_4,car).	prevHasTransportModes(seg021_310_5,car).	
-prevHasTransportModes(seg021_521_1,car).	prevHasTransportModes(seg021_521_2,car).	prevHasTransportModes(seg021_521_3,car).	prevHasTransportModes(seg021_521_4,car).	prevHasTransportModes(seg021_521_5,car).	
-prevHasTransportModes(seg021_786_1,walk).	prevHasTransportModes(seg021_786_2,walk).	prevHasTransportModes(seg021_786_3,walk).	prevHasTransportModes(seg021_786_4,walk).	prevHasTransportModes(seg021_786_5,walk).	
-prevHasTransportModes(seg020_4190_1,bike).	prevHasTransportModes(seg020_4190_2,bike).	prevHasTransportModes(seg020_4190_3,bike).	prevHasTransportModes(seg020_4190_4,bike).	prevHasTransportModes(seg020_4190_5,bike).	
-prevHasTransportModes(seg020_4340_1,bike).	prevHasTransportModes(seg020_4340_2,bike).	prevHasTransportModes(seg020_4340_3,bike).	prevHasTransportModes(seg020_4340_4,bike).	prevHasTransportModes(seg020_4340_5,bike).	
-prevHasTransportModes(seg020_3021_1,bike).	prevHasTransportModes(seg020_3021_2,bike).	prevHasTransportModes(seg020_3021_3,bike).	prevHasTransportModes(seg020_3021_4,bike).	prevHasTransportModes(seg020_3021_5,bike).	
-prevHasTransportModes(seg020_986_1,walk).	prevHasTransportModes(seg020_986_2,walk).	prevHasTransportModes(seg020_986_3,walk).	prevHasTransportModes(seg020_986_4,walk).	prevHasTransportModes(seg020_986_5,walk).	
-prevHasTransportModes(seg021_595_1,walk).	prevHasTransportModes(seg021_595_2,walk).	prevHasTransportModes(seg021_595_3,walk).	prevHasTransportModes(seg021_595_4,walk).	prevHasTransportModes(seg021_595_5,walk).	
-prevHasTransportModes(seg021_1008_1,car).	prevHasTransportModes(seg021_1008_2,car).	prevHasTransportModes(seg021_1008_3,car).	prevHasTransportModes(seg021_1008_4,car).	prevHasTransportModes(seg021_1008_5,car).	
-prevHasTransportModes(seg021_472_1,car).	prevHasTransportModes(seg021_472_2,car).	prevHasTransportModes(seg021_472_3,car).	prevHasTransportModes(seg021_472_4,car).	prevHasTransportModes(seg021_472_5,car).	
-prevHasTransportModes(seg021_493_1,car).	prevHasTransportModes(seg021_493_2,car).	prevHasTransportModes(seg021_493_3,car).	prevHasTransportModes(seg021_493_4,car).	prevHasTransportModes(seg021_493_5,car).	
-prevHasTransportModes(seg020_3591_1,bike).	prevHasTransportModes(seg020_3591_2,bike).	prevHasTransportModes(seg020_3591_3,bike).	prevHasTransportModes(seg020_3591_4,bike).	prevHasTransportModes(seg020_3591_5,bike).	
-prevHasTransportModes(seg021_117_1,car).	prevHasTransportModes(seg021_117_2,car).	prevHasTransportModes(seg021_117_3,car).	prevHasTransportModes(seg021_117_4,car).	prevHasTransportModes(seg021_117_5,car).	
-prevHasTransportModes(seg020_305_1,bus).	prevHasTransportModes(seg020_305_2,bus).	prevHasTransportModes(seg020_305_3,bus).	prevHasTransportModes(seg020_305_4,walk).	prevHasTransportModes(seg020_305_5,walk).	
-prevHasTransportModes(seg020_2926_1,bike).	prevHasTransportModes(seg020_2926_2,bike).	prevHasTransportModes(seg020_2926_3,bike).	prevHasTransportModes(seg020_2926_4,bike).	prevHasTransportModes(seg020_2926_5,bike).	
-prevHasTransportModes(seg020_4570_1,bike).	prevHasTransportModes(seg020_4570_2,bike).	prevHasTransportModes(seg020_4570_3,bike).	prevHasTransportModes(seg020_4570_4,bike).	prevHasTransportModes(seg020_4570_5,bike).	
-prevHasTransportModes(seg020_3159_1,bike).	prevHasTransportModes(seg020_3159_2,bike).	prevHasTransportModes(seg020_3159_3,bike).	prevHasTransportModes(seg020_3159_4,bike).	prevHasTransportModes(seg020_3159_5,bike).	
-prevHasTransportModes(seg020_3935_1,bike).	prevHasTransportModes(seg020_3935_2,bike).	prevHasTransportModes(seg020_3935_3,bike).	prevHasTransportModes(seg020_3935_4,bike).	prevHasTransportModes(seg020_3935_5,bike).	
-prevHasTransportModes(seg021_374_1,car).	prevHasTransportModes(seg021_374_2,car).	prevHasTransportModes(seg021_374_3,car).	prevHasTransportModes(seg021_374_4,car).	prevHasTransportModes(seg021_374_5,car).	
-prevHasTransportModes(seg020_2370_1,bus).	prevHasTransportModes(seg020_2370_2,bus).	prevHasTransportModes(seg020_2370_3,bus).	prevHasTransportModes(seg020_2370_4,bus).	prevHasTransportModes(seg020_2370_5,bus).	
-prevHasTransportModes(seg021_390_1,car).	prevHasTransportModes(seg021_390_2,car).	prevHasTransportModes(seg021_390_3,car).	prevHasTransportModes(seg021_390_4,car).	prevHasTransportModes(seg021_390_5,car).	
-prevHasTransportModes(seg021_599_1,walk).	prevHasTransportModes(seg021_599_2,walk).	prevHasTransportModes(seg021_599_3,walk).	prevHasTransportModes(seg021_599_4,walk).	prevHasTransportModes(seg021_599_5,walk).	
-prevHasTransportModes(seg021_971_1,walk).	prevHasTransportModes(seg021_971_2,car).	prevHasTransportModes(seg021_971_3,car).	prevHasTransportModes(seg021_971_4,car).	prevHasTransportModes(seg021_971_5,car).	
-prevHasTransportModes(seg020_1072_1,walk).	prevHasTransportModes(seg020_1072_2,walk).	prevHasTransportModes(seg020_1072_3,walk).	prevHasTransportModes(seg020_1072_4,walk).	prevHasTransportModes(seg020_1072_5,walk).	
-prevHasTransportModes(seg021_426_1,car).	prevHasTransportModes(seg021_426_2,car).	prevHasTransportModes(seg021_426_3,car).	prevHasTransportModes(seg021_426_4,car).	prevHasTransportModes(seg021_426_5,car).	
-prevHasTransportModes(seg020_2897_1,bike).	prevHasTransportModes(seg020_2897_2,bike).	prevHasTransportModes(seg020_2897_3,bike).	prevHasTransportModes(seg020_2897_4,bike).	prevHasTransportModes(seg020_2897_5,bike).	
-prevHasTransportModes(seg020_429_1,bus).	prevHasTransportModes(seg020_429_2,bus).	prevHasTransportModes(seg020_429_3,bus).	prevHasTransportModes(seg020_429_4,bus).	prevHasTransportModes(seg020_429_5,bus).	
-prevHasTransportModes(seg020_3529_1,bike).	prevHasTransportModes(seg020_3529_2,bike).	prevHasTransportModes(seg020_3529_3,bike).	prevHasTransportModes(seg020_3529_4,bike).	prevHasTransportModes(seg020_3529_5,bike).	
-prevHasTransportModes(seg021_246_1,car).	prevHasTransportModes(seg021_246_2,car).	prevHasTransportModes(seg021_246_3,car).	prevHasTransportModes(seg021_246_4,car).	prevHasTransportModes(seg021_246_5,car).	
-prevHasTransportModes(seg020_74_1,bus).	prevHasTransportModes(seg020_74_2,bus).	prevHasTransportModes(seg020_74_3,bus).	prevHasTransportModes(seg020_74_4,bus).	prevHasTransportModes(seg020_74_5,bus).	
-prevHasTransportModes(seg020_2229_1,bus).	prevHasTransportModes(seg020_2229_2,walk).	prevHasTransportModes(seg020_2229_3,walk).	prevHasTransportModes(seg020_2229_4,walk).	prevHasTransportModes(seg020_2229_5,walk).	
-prevHasTransportModes(seg020_3404_1,bike).	prevHasTransportModes(seg020_3404_2,bike).	prevHasTransportModes(seg020_3404_3,bike).	prevHasTransportModes(seg020_3404_4,bike).	prevHasTransportModes(seg020_3404_5,bike).	
-prevHasTransportModes(seg021_445_1,car).	prevHasTransportModes(seg021_445_2,car).	prevHasTransportModes(seg021_445_3,car).	prevHasTransportModes(seg021_445_4,car).	prevHasTransportModes(seg021_445_5,car).	
-prevHasTransportModes(seg021_560_1,car).	prevHasTransportModes(seg021_560_2,car).	prevHasTransportModes(seg021_560_3,car).	prevHasTransportModes(seg021_560_4,car).	prevHasTransportModes(seg021_560_5,car).	
-prevHasTransportModes(seg020_4395_1,bike).	prevHasTransportModes(seg020_4395_2,bike).	prevHasTransportModes(seg020_4395_3,bike).	prevHasTransportModes(seg020_4395_4,bike).	prevHasTransportModes(seg020_4395_5,bike).	
-prevHasTransportModes(seg020_1094_1,walk).	prevHasTransportModes(seg020_1094_2,walk).	prevHasTransportModes(seg020_1094_3,walk).	prevHasTransportModes(seg020_1094_4,walk).	prevHasTransportModes(seg020_1094_5,walk).	
-prevHasTransportModes(seg021_1064_1,walk).	prevHasTransportModes(seg021_1064_2,walk).	prevHasTransportModes(seg021_1064_3,walk).	prevHasTransportModes(seg021_1064_4,walk).	prevHasTransportModes(seg021_1064_5,walk).	
-prevHasTransportModes(seg020_654_1,bus).	prevHasTransportModes(seg020_654_2,bus).	prevHasTransportModes(seg020_654_3,bus).	prevHasTransportModes(seg020_654_4,bus).	prevHasTransportModes(seg020_654_5,walk).	
-prevHasTransportModes(seg020_385_1,bus).	prevHasTransportModes(seg020_385_2,bus).	prevHasTransportModes(seg020_385_3,bus).	prevHasTransportModes(seg020_385_4,bus).	prevHasTransportModes(seg020_385_5,bus).	
-prevHasTransportModes(seg021_306_1,car).	prevHasTransportModes(seg021_306_2,car).	prevHasTransportModes(seg021_306_3,car).	prevHasTransportModes(seg021_306_4,car).	prevHasTransportModes(seg021_306_5,car).	
-prevHasTransportModes(seg020_2243_1,bus).	prevHasTransportModes(seg020_2243_2,bus).	prevHasTransportModes(seg020_2243_3,bus).	prevHasTransportModes(seg020_2243_4,bus).	prevHasTransportModes(seg020_2243_5,bus).	
-prevHasTransportModes(seg021_889_1,car).	prevHasTransportModes(seg021_889_2,walk).	prevHasTransportModes(seg021_889_3,walk).	prevHasTransportModes(seg021_889_4,walk).	prevHasTransportModes(seg021_889_5,walk).	
-prevHasTransportModes(seg021_383_1,car).	prevHasTransportModes(seg021_383_2,car).	prevHasTransportModes(seg021_383_3,car).	prevHasTransportModes(seg021_383_4,car).	prevHasTransportModes(seg021_383_5,car).	
-prevHasTransportModes(seg020_4853_1,bike).	prevHasTransportModes(seg020_4853_2,bike).	prevHasTransportModes(seg020_4853_3,bike).	prevHasTransportModes(seg020_4853_4,bike).	prevHasTransportModes(seg020_4853_5,bike).	
-prevHasTransportModes(seg020_3944_1,bike).	prevHasTransportModes(seg020_3944_2,bike).	prevHasTransportModes(seg020_3944_3,bike).	prevHasTransportModes(seg020_3944_4,bike).	prevHasTransportModes(seg020_3944_5,bike).	
-prevHasTransportModes(seg020_4262_1,bike).	prevHasTransportModes(seg020_4262_2,bike).	prevHasTransportModes(seg020_4262_3,bike).	prevHasTransportModes(seg020_4262_4,bike).	prevHasTransportModes(seg020_4262_5,bike).	
-prevHasTransportModes(seg021_372_1,car).	prevHasTransportModes(seg021_372_2,car).	prevHasTransportModes(seg021_372_3,car).	prevHasTransportModes(seg021_372_4,car).	prevHasTransportModes(seg021_372_5,car).	
-prevHasTransportModes(seg020_4757_1,bike).	prevHasTransportModes(seg020_4757_2,bike).	prevHasTransportModes(seg020_4757_3,bike).	prevHasTransportModes(seg020_4757_4,bike).	prevHasTransportModes(seg020_4757_5,bike).	
-prevHasTransportModes(seg021_767_1,walk).	prevHasTransportModes(seg021_767_2,walk).	prevHasTransportModes(seg021_767_3,walk).	prevHasTransportModes(seg021_767_4,walk).	prevHasTransportModes(seg021_767_5,walk).	
-prevHasTransportModes(seg021_1058_1,walk).	prevHasTransportModes(seg021_1058_2,walk).	prevHasTransportModes(seg021_1058_3,walk).	prevHasTransportModes(seg021_1058_4,walk).	prevHasTransportModes(seg021_1058_5,walk).	
-prevHasTransportModes(seg020_3427_1,bike).	prevHasTransportModes(seg020_3427_2,bike).	prevHasTransportModes(seg020_3427_3,bike).	prevHasTransportModes(seg020_3427_4,bike).	prevHasTransportModes(seg020_3427_5,bike).	
-prevHasTransportModes(seg021_247_1,car).	prevHasTransportModes(seg021_247_2,car).	prevHasTransportModes(seg021_247_3,car).	prevHasTransportModes(seg021_247_4,car).	prevHasTransportModes(seg021_247_5,car).	
-prevHasTransportModes(seg020_1149_1,walk).	prevHasTransportModes(seg020_1149_2,walk).	prevHasTransportModes(seg020_1149_3,walk).	prevHasTransportModes(seg020_1149_4,walk).	prevHasTransportModes(seg020_1149_5,walk).	
-prevHasTransportModes(seg020_3938_1,bike).	prevHasTransportModes(seg020_3938_2,bike).	prevHasTransportModes(seg020_3938_3,bike).	prevHasTransportModes(seg020_3938_4,bike).	prevHasTransportModes(seg020_3938_5,bike).	
-prevHasTransportModes(seg021_1052_1,walk).	prevHasTransportModes(seg021_1052_2,walk).	prevHasTransportModes(seg021_1052_3,walk).	prevHasTransportModes(seg021_1052_4,walk).	prevHasTransportModes(seg021_1052_5,walk).	
-prevHasTransportModes(seg021_349_1,car).	prevHasTransportModes(seg021_349_2,car).	prevHasTransportModes(seg021_349_3,car).	prevHasTransportModes(seg021_349_4,car).	prevHasTransportModes(seg021_349_5,car).	
-prevHasTransportModes(seg020_2492_1,bike).	prevHasTransportModes(seg020_2492_2,bike).	prevHasTransportModes(seg020_2492_3,bike).	prevHasTransportModes(seg020_2492_4,bike).	prevHasTransportModes(seg020_2492_5,bike).	
-prevHasTransportModes(seg021_609_1,walk).	prevHasTransportModes(seg021_609_2,walk).	prevHasTransportModes(seg021_609_3,walk).	prevHasTransportModes(seg021_609_4,walk).	prevHasTransportModes(seg021_609_5,walk).	
-prevHasTransportModes(seg020_4416_1,bike).	prevHasTransportModes(seg020_4416_2,bike).	prevHasTransportModes(seg020_4416_3,bike).	prevHasTransportModes(seg020_4416_4,bike).	prevHasTransportModes(seg020_4416_5,bike).	
+prevHasTransportModes(seg020_1061_1,walk).	prevHasTransportModes(seg020_1061_2,bus).	prevHasTransportModes(seg020_1061_3,bus).	prevHasTransportModes(seg020_1061_4,bus).	prevHasTransportModes(seg020_1061_5,bus).	
+prevHasTransportModes(seg020_470_1,walk).	prevHasTransportModes(seg020_470_2,walk).	prevHasTransportModes(seg020_470_3,walk).	prevHasTransportModes(seg020_470_4,walk).	prevHasTransportModes(seg020_470_5,walk).	
+prevHasTransportModes(seg021_986_1,car).	prevHasTransportModes(seg021_986_2,car).	prevHasTransportModes(seg021_986_3,car).	prevHasTransportModes(seg021_986_4,car).	prevHasTransportModes(seg021_986_5,car).	
+prevHasTransportModes(seg020_2514_1,bike).	prevHasTransportModes(seg020_2514_2,bike).	prevHasTransportModes(seg020_2514_3,bike).	prevHasTransportModes(seg020_2514_4,bike).	prevHasTransportModes(seg020_2514_5,bike).	
+prevHasTransportModes(seg021_549_1,car).	prevHasTransportModes(seg021_549_2,car).	prevHasTransportModes(seg021_549_3,car).	prevHasTransportModes(seg021_549_4,car).	prevHasTransportModes(seg021_549_5,car).	
+prevHasTransportModes(seg021_1085_1,walk).	prevHasTransportModes(seg021_1085_2,walk).	prevHasTransportModes(seg021_1085_3,walk).	prevHasTransportModes(seg021_1085_4,walk).	prevHasTransportModes(seg021_1085_5,walk).	
+prevHasTransportModes(seg021_867_1,walk).	prevHasTransportModes(seg021_867_2,car).	prevHasTransportModes(seg021_867_3,car).	prevHasTransportModes(seg021_867_4,car).	prevHasTransportModes(seg021_867_5,car).	
+prevHasTransportModes(seg020_2277_1,bus).	prevHasTransportModes(seg020_2277_2,bus).	prevHasTransportModes(seg020_2277_3,bus).	prevHasTransportModes(seg020_2277_4,bus).	prevHasTransportModes(seg020_2277_5,bus).	
+prevHasTransportModes(seg021_530_1,car).	prevHasTransportModes(seg021_530_2,car).	prevHasTransportModes(seg021_530_3,car).	prevHasTransportModes(seg021_530_4,car).	prevHasTransportModes(seg021_530_5,car).	
+prevHasTransportModes(seg020_934_1,bus).	prevHasTransportModes(seg020_934_2,walk).	prevHasTransportModes(seg020_934_3,walk).	prevHasTransportModes(seg020_934_4,walk).	prevHasTransportModes(seg020_934_5,walk).	
+prevHasTransportModes(seg021_484_1,car).	prevHasTransportModes(seg021_484_2,car).	prevHasTransportModes(seg021_484_3,car).	prevHasTransportModes(seg021_484_4,car).	prevHasTransportModes(seg021_484_5,car).	
+prevHasTransportModes(seg020_3905_1,bike).	prevHasTransportModes(seg020_3905_2,bike).	prevHasTransportModes(seg020_3905_3,bike).	prevHasTransportModes(seg020_3905_4,bike).	prevHasTransportModes(seg020_3905_5,bike).	
+prevHasTransportModes(seg020_4682_1,bike).	prevHasTransportModes(seg020_4682_2,bike).	prevHasTransportModes(seg020_4682_3,bike).	prevHasTransportModes(seg020_4682_4,bike).	prevHasTransportModes(seg020_4682_5,bike).	
 prevHasTransportModes(seg020_2882_1,bike).	prevHasTransportModes(seg020_2882_2,bike).	prevHasTransportModes(seg020_2882_3,bike).	prevHasTransportModes(seg020_2882_4,bike).	prevHasTransportModes(seg020_2882_5,bike).	
-prevHasTransportModes(seg021_610_1,walk).	prevHasTransportModes(seg021_610_2,walk).	prevHasTransportModes(seg021_610_3,walk).	prevHasTransportModes(seg021_610_4,walk).	prevHasTransportModes(seg021_610_5,walk).	
-prevHasTransportModes(seg021_274_1,car).	prevHasTransportModes(seg021_274_2,car).	prevHasTransportModes(seg021_274_3,car).	prevHasTransportModes(seg021_274_4,car).	prevHasTransportModes(seg021_274_5,car).	
-prevHasTransportModes(seg020_2811_1,bike).	prevHasTransportModes(seg020_2811_2,bike).	prevHasTransportModes(seg020_2811_3,bike).	prevHasTransportModes(seg020_2811_4,bike).	prevHasTransportModes(seg020_2811_5,bike).	
-prevHasTransportModes(seg020_4242_1,walk).	prevHasTransportModes(seg020_4242_2,walk).	prevHasTransportModes(seg020_4242_3,walk).	prevHasTransportModes(seg020_4242_4,walk).	prevHasTransportModes(seg020_4242_5,walk).	
-prevHasTransportModes(seg021_1149_1,walk).	prevHasTransportModes(seg021_1149_2,walk).	prevHasTransportModes(seg021_1149_3,walk).	prevHasTransportModes(seg021_1149_4,walk).	prevHasTransportModes(seg021_1149_5,walk).	
-prevHasTransportModes(seg020_3238_1,bike).	prevHasTransportModes(seg020_3238_2,bike).	prevHasTransportModes(seg020_3238_3,bike).	prevHasTransportModes(seg020_3238_4,bike).	prevHasTransportModes(seg020_3238_5,bike).	
-prevHasTransportModes(seg021_601_1,walk).	prevHasTransportModes(seg021_601_2,walk).	prevHasTransportModes(seg021_601_3,walk).	prevHasTransportModes(seg021_601_4,walk).	prevHasTransportModes(seg021_601_5,walk).	
-prevHasTransportModes(seg021_150_1,car).	prevHasTransportModes(seg021_150_2,car).	prevHasTransportModes(seg021_150_3,car).	prevHasTransportModes(seg021_150_4,car).	prevHasTransportModes(seg021_150_5,car).	
-prevHasTransportModes(seg021_378_1,car).	prevHasTransportModes(seg021_378_2,car).	prevHasTransportModes(seg021_378_3,car).	prevHasTransportModes(seg021_378_4,car).	prevHasTransportModes(seg021_378_5,car).	
-prevHasTransportModes(seg020_2496_1,bike).	prevHasTransportModes(seg020_2496_2,bike).	prevHasTransportModes(seg020_2496_3,bike).	prevHasTransportModes(seg020_2496_4,bike).	prevHasTransportModes(seg020_2496_5,bike).	
-prevHasTransportModes(seg021_745_1,car).	prevHasTransportModes(seg021_745_2,car).	prevHasTransportModes(seg021_745_3,car).	prevHasTransportModes(seg021_745_4,car).	prevHasTransportModes(seg021_745_5,car).	
-prevHasTransportModes(seg020_3535_1,bike).	prevHasTransportModes(seg020_3535_2,bike).	prevHasTransportModes(seg020_3535_3,bike).	prevHasTransportModes(seg020_3535_4,bike).	prevHasTransportModes(seg020_3535_5,bike).	
-prevHasTransportModes(seg020_3923_1,bike).	prevHasTransportModes(seg020_3923_2,bike).	prevHasTransportModes(seg020_3923_3,bike).	prevHasTransportModes(seg020_3923_4,bike).	prevHasTransportModes(seg020_3923_5,bike).	
-prevHasTransportModes(seg021_312_1,car).	prevHasTransportModes(seg021_312_2,car).	prevHasTransportModes(seg021_312_3,car).	prevHasTransportModes(seg021_312_4,car).	prevHasTransportModes(seg021_312_5,car).	
-prevHasTransportModes(seg021_784_1,walk).	prevHasTransportModes(seg021_784_2,walk).	prevHasTransportModes(seg021_784_3,walk).	prevHasTransportModes(seg021_784_4,walk).	prevHasTransportModes(seg021_784_5,walk).	
-prevHasTransportModes(seg020_4234_1,walk).	prevHasTransportModes(seg020_4234_2,walk).	prevHasTransportModes(seg020_4234_3,walk).	prevHasTransportModes(seg020_4234_4,walk).	prevHasTransportModes(seg020_4234_5,walk).	
-prevHasTransportModes(seg020_4295_1,bike).	prevHasTransportModes(seg020_4295_2,bike).	prevHasTransportModes(seg020_4295_3,bike).	prevHasTransportModes(seg020_4295_4,bike).	prevHasTransportModes(seg020_4295_5,bike).	
-prevHasTransportModes(seg020_2565_1,bike).	prevHasTransportModes(seg020_2565_2,bike).	prevHasTransportModes(seg020_2565_3,bike).	prevHasTransportModes(seg020_2565_4,bike).	prevHasTransportModes(seg020_2565_5,bike).	
-prevHasTransportModes(seg021_380_1,car).	prevHasTransportModes(seg021_380_2,car).	prevHasTransportModes(seg021_380_3,car).	prevHasTransportModes(seg021_380_4,car).	prevHasTransportModes(seg021_380_5,car).	
-prevHasTransportModes(seg020_485_1,walk).	prevHasTransportModes(seg020_485_2,walk).	prevHasTransportModes(seg020_485_3,walk).	prevHasTransportModes(seg020_485_4,walk).	prevHasTransportModes(seg020_485_5,walk).	
-prevHasTransportModes(seg020_2849_1,bike).	prevHasTransportModes(seg020_2849_2,bike).	prevHasTransportModes(seg020_2849_3,bike).	prevHasTransportModes(seg020_2849_4,bike).	prevHasTransportModes(seg020_2849_5,bike).	
+prevHasTransportModes(seg021_171_1,car).	prevHasTransportModes(seg021_171_2,car).	prevHasTransportModes(seg021_171_3,car).	prevHasTransportModes(seg021_171_4,car).	prevHasTransportModes(seg021_171_5,car).	
+prevHasTransportModes(seg021_659_1,car).	prevHasTransportModes(seg021_659_2,walk).	prevHasTransportModes(seg021_659_3,walk).	prevHasTransportModes(seg021_659_4,walk).	prevHasTransportModes(seg021_659_5,walk).	
+prevHasTransportModes(seg021_332_1,car).	prevHasTransportModes(seg021_332_2,car).	prevHasTransportModes(seg021_332_3,car).	prevHasTransportModes(seg021_332_4,car).	prevHasTransportModes(seg021_332_5,car).	
+prevHasTransportModes(seg021_404_1,car).	prevHasTransportModes(seg021_404_2,car).	prevHasTransportModes(seg021_404_3,car).	prevHasTransportModes(seg021_404_4,car).	prevHasTransportModes(seg021_404_5,car).	
+prevHasTransportModes(seg020_4153_1,bike).	prevHasTransportModes(seg020_4153_2,bike).	prevHasTransportModes(seg020_4153_3,bike).	prevHasTransportModes(seg020_4153_4,bike).	prevHasTransportModes(seg020_4153_5,bike).	
+prevHasTransportModes(seg021_1077_1,walk).	prevHasTransportModes(seg021_1077_2,walk).	prevHasTransportModes(seg021_1077_3,walk).	prevHasTransportModes(seg021_1077_4,walk).	prevHasTransportModes(seg021_1077_5,walk).	
+prevHasTransportModes(seg020_2556_1,bike).	prevHasTransportModes(seg020_2556_2,bike).	prevHasTransportModes(seg020_2556_3,bike).	prevHasTransportModes(seg020_2556_4,bike).	prevHasTransportModes(seg020_2556_5,bike).	
+prevHasTransportModes(seg020_3355_1,bike).	prevHasTransportModes(seg020_3355_2,bike).	prevHasTransportModes(seg020_3355_3,bike).	prevHasTransportModes(seg020_3355_4,bike).	prevHasTransportModes(seg020_3355_5,bike).	
+prevHasTransportModes(seg020_4819_1,bike).	prevHasTransportModes(seg020_4819_2,bike).	prevHasTransportModes(seg020_4819_3,bike).	prevHasTransportModes(seg020_4819_4,bike).	prevHasTransportModes(seg020_4819_5,bike).	
+prevHasTransportModes(seg021_293_1,car).	prevHasTransportModes(seg021_293_2,car).	prevHasTransportModes(seg021_293_3,car).	prevHasTransportModes(seg021_293_4,car).	prevHasTransportModes(seg021_293_5,car).	
+prevHasTransportModes(seg021_496_1,car).	prevHasTransportModes(seg021_496_2,car).	prevHasTransportModes(seg021_496_3,car).	prevHasTransportModes(seg021_496_4,car).	prevHasTransportModes(seg021_496_5,car).	
+prevHasTransportModes(seg020_3776_1,bike).	prevHasTransportModes(seg020_3776_2,bike).	prevHasTransportModes(seg020_3776_3,bike).	prevHasTransportModes(seg020_3776_4,bike).	prevHasTransportModes(seg020_3776_5,bike).	
+prevHasTransportModes(seg020_2281_1,bus).	prevHasTransportModes(seg020_2281_2,bus).	prevHasTransportModes(seg020_2281_3,bus).	prevHasTransportModes(seg020_2281_4,bus).	prevHasTransportModes(seg020_2281_5,bus).	
+prevHasTransportModes(seg021_905_1,car).	prevHasTransportModes(seg021_905_2,car).	prevHasTransportModes(seg021_905_3,car).	prevHasTransportModes(seg021_905_4,car).	prevHasTransportModes(seg021_905_5,car).	
+prevHasTransportModes(seg020_2332_1,bus).	prevHasTransportModes(seg020_2332_2,bus).	prevHasTransportModes(seg020_2332_3,bus).	prevHasTransportModes(seg020_2332_4,bus).	prevHasTransportModes(seg020_2332_5,bus).	
+prevHasTransportModes(seg020_2462_1,bike).	prevHasTransportModes(seg020_2462_2,bike).	prevHasTransportModes(seg020_2462_3,bike).	prevHasTransportModes(seg020_2462_4,bike).	prevHasTransportModes(seg020_2462_5,bike).	
+prevHasTransportModes(seg021_789_1,walk).	prevHasTransportModes(seg021_789_2,walk).	prevHasTransportModes(seg021_789_3,walk).	prevHasTransportModes(seg021_789_4,walk).	prevHasTransportModes(seg021_789_5,walk).	
+prevHasTransportModes(seg020_919_1,walk).	prevHasTransportModes(seg020_919_2,walk).	prevHasTransportModes(seg020_919_3,walk).	prevHasTransportModes(seg020_919_4,walk).	prevHasTransportModes(seg020_919_5,walk).	
+prevHasTransportModes(seg021_478_1,car).	prevHasTransportModes(seg021_478_2,car).	prevHasTransportModes(seg021_478_3,car).	prevHasTransportModes(seg021_478_4,car).	prevHasTransportModes(seg021_478_5,car).	
+prevHasTransportModes(seg021_592_1,walk).	prevHasTransportModes(seg021_592_2,walk).	prevHasTransportModes(seg021_592_3,walk).	prevHasTransportModes(seg021_592_4,walk).	prevHasTransportModes(seg021_592_5,walk).	
+prevHasTransportModes(seg020_86_1,bus).	prevHasTransportModes(seg020_86_2,bus).	prevHasTransportModes(seg020_86_3,bus).	prevHasTransportModes(seg020_86_4,bus).	prevHasTransportModes(seg020_86_5,bus).	
+prevHasTransportModes(seg021_29_1,car).	prevHasTransportModes(seg021_29_2,car).	prevHasTransportModes(seg021_29_3,car).	prevHasTransportModes(seg021_29_4,car).	prevHasTransportModes(seg021_29_5,car).	
 prevHasTransportModes(seg021_515_1,car).	prevHasTransportModes(seg021_515_2,car).	prevHasTransportModes(seg021_515_3,car).	prevHasTransportModes(seg021_515_4,car).	prevHasTransportModes(seg021_515_5,car).	
-prevHasTransportModes(seg021_872_1,walk).	prevHasTransportModes(seg021_872_2,walk).	prevHasTransportModes(seg021_872_3,walk).	prevHasTransportModes(seg021_872_4,walk).	prevHasTransportModes(seg021_872_5,car).	
+prevHasTransportModes(seg020_3392_1,bike).	prevHasTransportModes(seg020_3392_2,bike).	prevHasTransportModes(seg020_3392_3,bike).	prevHasTransportModes(seg020_3392_4,bike).	prevHasTransportModes(seg020_3392_5,bike).	
+prevHasTransportModes(seg020_4236_1,walk).	prevHasTransportModes(seg020_4236_2,walk).	prevHasTransportModes(seg020_4236_3,walk).	prevHasTransportModes(seg020_4236_4,walk).	prevHasTransportModes(seg020_4236_5,walk).	
+prevHasTransportModes(seg021_909_1,car).	prevHasTransportModes(seg021_909_2,car).	prevHasTransportModes(seg021_909_3,car).	prevHasTransportModes(seg021_909_4,car).	prevHasTransportModes(seg021_909_5,car).	
+prevHasTransportModes(seg021_944_1,car).	prevHasTransportModes(seg021_944_2,car).	prevHasTransportModes(seg021_944_3,car).	prevHasTransportModes(seg021_944_4,car).	prevHasTransportModes(seg021_944_5,car).	
+prevHasTransportModes(seg021_455_1,car).	prevHasTransportModes(seg021_455_2,car).	prevHasTransportModes(seg021_455_3,car).	prevHasTransportModes(seg021_455_4,car).	prevHasTransportModes(seg021_455_5,car).	
+prevHasTransportModes(seg021_471_1,car).	prevHasTransportModes(seg021_471_2,car).	prevHasTransportModes(seg021_471_3,car).	prevHasTransportModes(seg021_471_4,car).	prevHasTransportModes(seg021_471_5,car).	
+prevHasTransportModes(seg021_1066_1,walk).	prevHasTransportModes(seg021_1066_2,walk).	prevHasTransportModes(seg021_1066_3,walk).	prevHasTransportModes(seg021_1066_4,walk).	prevHasTransportModes(seg021_1066_5,walk).	
+prevHasTransportModes(seg020_907_1,walk).	prevHasTransportModes(seg020_907_2,walk).	prevHasTransportModes(seg020_907_3,walk).	prevHasTransportModes(seg020_907_4,walk).	prevHasTransportModes(seg020_907_5,walk).	
+prevHasTransportModes(seg021_454_1,car).	prevHasTransportModes(seg021_454_2,car).	prevHasTransportModes(seg021_454_3,car).	prevHasTransportModes(seg021_454_4,car).	prevHasTransportModes(seg021_454_5,car).	
+prevHasTransportModes(seg021_472_1,car).	prevHasTransportModes(seg021_472_2,car).	prevHasTransportModes(seg021_472_3,car).	prevHasTransportModes(seg021_472_4,car).	prevHasTransportModes(seg021_472_5,car).	
+prevHasTransportModes(seg021_557_1,car).	prevHasTransportModes(seg021_557_2,car).	prevHasTransportModes(seg021_557_3,car).	prevHasTransportModes(seg021_557_4,car).	prevHasTransportModes(seg021_557_5,car).	
+prevHasTransportModes(seg021_1125_1,walk).	prevHasTransportModes(seg021_1125_2,walk).	prevHasTransportModes(seg021_1125_3,walk).	prevHasTransportModes(seg021_1125_4,walk).	prevHasTransportModes(seg021_1125_5,walk).	
+prevHasTransportModes(seg021_386_1,car).	prevHasTransportModes(seg021_386_2,car).	prevHasTransportModes(seg021_386_3,car).	prevHasTransportModes(seg021_386_4,car).	prevHasTransportModes(seg021_386_5,car).	
+prevHasTransportModes(seg020_2016_1,walk).	prevHasTransportModes(seg020_2016_2,walk).	prevHasTransportModes(seg020_2016_3,walk).	prevHasTransportModes(seg020_2016_4,walk).	prevHasTransportModes(seg020_2016_5,walk).	
+prevHasTransportModes(seg020_2924_1,bike).	prevHasTransportModes(seg020_2924_2,bike).	prevHasTransportModes(seg020_2924_3,bike).	prevHasTransportModes(seg020_2924_4,bike).	prevHasTransportModes(seg020_2924_5,bike).	
+prevHasTransportModes(seg021_309_1,car).	prevHasTransportModes(seg021_309_2,car).	prevHasTransportModes(seg021_309_3,car).	prevHasTransportModes(seg021_309_4,car).	prevHasTransportModes(seg021_309_5,car).	
+prevHasTransportModes(seg021_265_1,car).	prevHasTransportModes(seg021_265_2,car).	prevHasTransportModes(seg021_265_3,car).	prevHasTransportModes(seg021_265_4,car).	prevHasTransportModes(seg021_265_5,car).	
+prevHasTransportModes(seg020_4931_1,bike).	prevHasTransportModes(seg020_4931_2,bike).	prevHasTransportModes(seg020_4931_3,bike).	prevHasTransportModes(seg020_4931_4,bike).	prevHasTransportModes(seg020_4931_5,bike).	
+prevHasTransportModes(seg020_3528_1,bike).	prevHasTransportModes(seg020_3528_2,bike).	prevHasTransportModes(seg020_3528_3,bike).	prevHasTransportModes(seg020_3528_4,bike).	prevHasTransportModes(seg020_3528_5,bike).	
+prevHasTransportModes(seg020_4424_1,bike).	prevHasTransportModes(seg020_4424_2,bike).	prevHasTransportModes(seg020_4424_3,bike).	prevHasTransportModes(seg020_4424_4,bike).	prevHasTransportModes(seg020_4424_5,bike).	
+prevHasTransportModes(seg021_562_1,car).	prevHasTransportModes(seg021_562_2,car).	prevHasTransportModes(seg021_562_3,car).	prevHasTransportModes(seg021_562_4,car).	prevHasTransportModes(seg021_562_5,car).	
+prevHasTransportModes(seg020_4467_1,bike).	prevHasTransportModes(seg020_4467_2,bike).	prevHasTransportModes(seg020_4467_3,bike).	prevHasTransportModes(seg020_4467_4,bike).	prevHasTransportModes(seg020_4467_5,bike).	
+prevHasTransportModes(seg020_4534_1,bike).	prevHasTransportModes(seg020_4534_2,bike).	prevHasTransportModes(seg020_4534_3,bike).	prevHasTransportModes(seg020_4534_4,bike).	prevHasTransportModes(seg020_4534_5,bike).	
+prevHasTransportModes(seg020_2499_1,bike).	prevHasTransportModes(seg020_2499_2,bike).	prevHasTransportModes(seg020_2499_3,bike).	prevHasTransportModes(seg020_2499_4,bike).	prevHasTransportModes(seg020_2499_5,bike).	
+prevHasTransportModes(seg020_3180_1,bike).	prevHasTransportModes(seg020_3180_2,bike).	prevHasTransportModes(seg020_3180_3,bike).	prevHasTransportModes(seg020_3180_4,bike).	prevHasTransportModes(seg020_3180_5,bike).	
+prevHasTransportModes(seg021_589_1,walk).	prevHasTransportModes(seg021_589_2,walk).	prevHasTransportModes(seg021_589_3,walk).	prevHasTransportModes(seg021_589_4,walk).	prevHasTransportModes(seg021_589_5,walk).	
+prevHasTransportModes(seg020_3083_1,bike).	prevHasTransportModes(seg020_3083_2,bike).	prevHasTransportModes(seg020_3083_3,bike).	prevHasTransportModes(seg020_3083_4,bike).	prevHasTransportModes(seg020_3083_5,bike).	
+prevHasTransportModes(seg021_485_1,car).	prevHasTransportModes(seg021_485_2,car).	prevHasTransportModes(seg021_485_3,car).	prevHasTransportModes(seg021_485_4,car).	prevHasTransportModes(seg021_485_5,car).	
+prevHasTransportModes(seg021_521_1,car).	prevHasTransportModes(seg021_521_2,car).	prevHasTransportModes(seg021_521_3,car).	prevHasTransportModes(seg021_521_4,car).	prevHasTransportModes(seg021_521_5,car).	
+prevHasTransportModes(seg020_2633_1,bike).	prevHasTransportModes(seg020_2633_2,bike).	prevHasTransportModes(seg020_2633_3,bike).	prevHasTransportModes(seg020_2633_4,bike).	prevHasTransportModes(seg020_2633_5,bike).	
+prevHasTransportModes(seg020_4602_1,bike).	prevHasTransportModes(seg020_4602_2,bike).	prevHasTransportModes(seg020_4602_3,bike).	prevHasTransportModes(seg020_4602_4,bike).	prevHasTransportModes(seg020_4602_5,bike).	
+prevHasTransportModes(seg021_224_1,car).	prevHasTransportModes(seg021_224_2,car).	prevHasTransportModes(seg021_224_3,car).	prevHasTransportModes(seg021_224_4,car).	prevHasTransportModes(seg021_224_5,car).	
+prevHasTransportModes(seg020_2172_1,walk).	prevHasTransportModes(seg020_2172_2,walk).	prevHasTransportModes(seg020_2172_3,walk).	prevHasTransportModes(seg020_2172_4,walk).	prevHasTransportModes(seg020_2172_5,walk).	
+prevHasTransportModes(seg020_4535_1,bike).	prevHasTransportModes(seg020_4535_2,bike).	prevHasTransportModes(seg020_4535_3,bike).	prevHasTransportModes(seg020_4535_4,bike).	prevHasTransportModes(seg020_4535_5,bike).	
+prevHasTransportModes(seg021_1089_1,walk).	prevHasTransportModes(seg021_1089_2,walk).	prevHasTransportModes(seg021_1089_3,walk).	prevHasTransportModes(seg021_1089_4,walk).	prevHasTransportModes(seg021_1089_5,walk).	
+prevHasTransportModes(seg020_2995_1,bike).	prevHasTransportModes(seg020_2995_2,bike).	prevHasTransportModes(seg020_2995_3,bike).	prevHasTransportModes(seg020_2995_4,bike).	prevHasTransportModes(seg020_2995_5,bike).	
+prevHasTransportModes(seg021_416_1,car).	prevHasTransportModes(seg021_416_2,car).	prevHasTransportModes(seg021_416_3,car).	prevHasTransportModes(seg021_416_4,car).	prevHasTransportModes(seg021_416_5,car).	
+prevHasTransportModes(seg021_67_1,car).	prevHasTransportModes(seg021_67_2,car).	prevHasTransportModes(seg021_67_3,car).	prevHasTransportModes(seg021_67_4,car).	prevHasTransportModes(seg021_67_5,car).	
+prevHasTransportModes(seg021_1020_1,walk).	prevHasTransportModes(seg021_1020_2,walk).	prevHasTransportModes(seg021_1020_3,walk).	prevHasTransportModes(seg021_1020_4,walk).	prevHasTransportModes(seg021_1020_5,walk).	
+prevHasTransportModes(seg021_279_1,car).	prevHasTransportModes(seg021_279_2,car).	prevHasTransportModes(seg021_279_3,car).	prevHasTransportModes(seg021_279_4,car).	prevHasTransportModes(seg021_279_5,car).	
+prevHasTransportModes(seg020_4009_1,bike).	prevHasTransportModes(seg020_4009_2,bike).	prevHasTransportModes(seg020_4009_3,bike).	prevHasTransportModes(seg020_4009_4,bike).	prevHasTransportModes(seg020_4009_5,bike).	
+prevHasTransportModes(seg020_363_1,bus).	prevHasTransportModes(seg020_363_2,bus).	prevHasTransportModes(seg020_363_3,bus).	prevHasTransportModes(seg020_363_4,bus).	prevHasTransportModes(seg020_363_5,bus).	
+prevHasTransportModes(seg021_1145_1,walk).	prevHasTransportModes(seg021_1145_2,walk).	prevHasTransportModes(seg021_1145_3,walk).	prevHasTransportModes(seg021_1145_4,walk).	prevHasTransportModes(seg021_1145_5,walk).	
+prevHasTransportModes(seg020_2838_1,bike).	prevHasTransportModes(seg020_2838_2,bike).	prevHasTransportModes(seg020_2838_3,bike).	prevHasTransportModes(seg020_2838_4,bike).	prevHasTransportModes(seg020_2838_5,bike).	
+prevHasTransportModes(seg020_587_1,walk).	prevHasTransportModes(seg020_587_2,walk).	prevHasTransportModes(seg020_587_3,walk).	prevHasTransportModes(seg020_587_4,walk).	prevHasTransportModes(seg020_587_5,walk).	
+prevHasTransportModes(seg021_308_1,car).	prevHasTransportModes(seg021_308_2,car).	prevHasTransportModes(seg021_308_3,car).	prevHasTransportModes(seg021_308_4,car).	prevHasTransportModes(seg021_308_5,car).	
+prevHasTransportModes(seg021_691_1,car).	prevHasTransportModes(seg021_691_2,car).	prevHasTransportModes(seg021_691_3,car).	prevHasTransportModes(seg021_691_4,car).	prevHasTransportModes(seg021_691_5,car).	
+prevHasTransportModes(seg020_2559_1,bike).	prevHasTransportModes(seg020_2559_2,bike).	prevHasTransportModes(seg020_2559_3,bike).	prevHasTransportModes(seg020_2559_4,bike).	prevHasTransportModes(seg020_2559_5,bike).	
+prevHasTransportModes(seg021_800_1,car).	prevHasTransportModes(seg021_800_2,car).	prevHasTransportModes(seg021_800_3,car).	prevHasTransportModes(seg021_800_4,car).	prevHasTransportModes(seg021_800_5,walk).	
+prevHasTransportModes(seg020_4193_1,bike).	prevHasTransportModes(seg020_4193_2,bike).	prevHasTransportModes(seg020_4193_3,bike).	prevHasTransportModes(seg020_4193_4,bike).	prevHasTransportModes(seg020_4193_5,bike).	
+prevHasTransportModes(seg020_2673_1,bike).	prevHasTransportModes(seg020_2673_2,bike).	prevHasTransportModes(seg020_2673_3,bike).	prevHasTransportModes(seg020_2673_4,bike).	prevHasTransportModes(seg020_2673_5,bike).	
+prevHasTransportModes(seg021_1027_1,walk).	prevHasTransportModes(seg021_1027_2,walk).	prevHasTransportModes(seg021_1027_3,walk).	prevHasTransportModes(seg021_1027_4,walk).	prevHasTransportModes(seg021_1027_5,walk).	
+prevHasTransportModes(seg020_4439_1,bike).	prevHasTransportModes(seg020_4439_2,bike).	prevHasTransportModes(seg020_4439_3,bike).	prevHasTransportModes(seg020_4439_4,bike).	prevHasTransportModes(seg020_4439_5,bike).	
+prevHasTransportModes(seg020_589_1,walk).	prevHasTransportModes(seg020_589_2,walk).	prevHasTransportModes(seg020_589_3,walk).	prevHasTransportModes(seg020_589_4,walk).	prevHasTransportModes(seg020_589_5,walk).	
+prevHasTransportModes(seg021_971_1,walk).	prevHasTransportModes(seg021_971_2,car).	prevHasTransportModes(seg021_971_3,car).	prevHasTransportModes(seg021_971_4,car).	prevHasTransportModes(seg021_971_5,car).	
+prevHasTransportModes(seg021_1025_1,walk).	prevHasTransportModes(seg021_1025_2,walk).	prevHasTransportModes(seg021_1025_3,walk).	prevHasTransportModes(seg021_1025_4,walk).	prevHasTransportModes(seg021_1025_5,walk).	
+prevHasTransportModes(seg020_1168_1,walk).	prevHasTransportModes(seg020_1168_2,walk).	prevHasTransportModes(seg020_1168_3,walk).	prevHasTransportModes(seg020_1168_4,walk).	prevHasTransportModes(seg020_1168_5,walk).	
+prevHasTransportModes(seg021_864_1,car).	prevHasTransportModes(seg021_864_2,car).	prevHasTransportModes(seg021_864_3,car).	prevHasTransportModes(seg021_864_4,car).	prevHasTransportModes(seg021_864_5,car).	
+prevHasTransportModes(seg020_966_1,walk).	prevHasTransportModes(seg020_966_2,bus).	prevHasTransportModes(seg020_966_3,bus).	prevHasTransportModes(seg020_966_4,bus).	prevHasTransportModes(seg020_966_5,bus).	
+prevHasTransportModes(seg021_651_1,walk).	prevHasTransportModes(seg021_651_2,walk).	prevHasTransportModes(seg021_651_3,walk).	prevHasTransportModes(seg021_651_4,walk).	prevHasTransportModes(seg021_651_5,walk).	
+prevHasTransportModes(seg020_2147_1,walk).	prevHasTransportModes(seg020_2147_2,walk).	prevHasTransportModes(seg020_2147_3,walk).	prevHasTransportModes(seg020_2147_4,walk).	prevHasTransportModes(seg020_2147_5,walk).	
+prevHasTransportModes(seg020_577_1,walk).	prevHasTransportModes(seg020_577_2,bus).	prevHasTransportModes(seg020_577_3,bus).	prevHasTransportModes(seg020_577_4,bus).	prevHasTransportModes(seg020_577_5,bus).	
+prevHasTransportModes(seg021_1048_1,walk).	prevHasTransportModes(seg021_1048_2,walk).	prevHasTransportModes(seg021_1048_3,walk).	prevHasTransportModes(seg021_1048_4,walk).	prevHasTransportModes(seg021_1048_5,walk).	
+prevHasTransportModes(seg021_768_1,walk).	prevHasTransportModes(seg021_768_2,walk).	prevHasTransportModes(seg021_768_3,walk).	prevHasTransportModes(seg021_768_4,walk).	prevHasTransportModes(seg021_768_5,walk).	
 prevHasTransportModes(seg020_4977_1,walk).	prevHasTransportModes(seg020_4977_2,walk).	prevHasTransportModes(seg020_4977_3,walk).	prevHasTransportModes(seg020_4977_4,walk).	prevHasTransportModes(seg020_4977_5,walk).	
-prevHasTransportModes(seg020_1269_1,walk).	prevHasTransportModes(seg020_1269_2,walk).	prevHasTransportModes(seg020_1269_3,walk).	prevHasTransportModes(seg020_1269_4,walk).	prevHasTransportModes(seg020_1269_5,walk).	
-prevHasTransportModes(seg021_350_1,car).	prevHasTransportModes(seg021_350_2,car).	prevHasTransportModes(seg021_350_3,car).	prevHasTransportModes(seg021_350_4,car).	prevHasTransportModes(seg021_350_5,car).	
-prevHasTransportModes(seg021_125_1,car).	prevHasTransportModes(seg021_125_2,car).	prevHasTransportModes(seg021_125_3,car).	prevHasTransportModes(seg021_125_4,car).	prevHasTransportModes(seg021_125_5,car).	
-prevHasTransportModes(seg021_138_1,car).	prevHasTransportModes(seg021_138_2,car).	prevHasTransportModes(seg021_138_3,car).	prevHasTransportModes(seg021_138_4,car).	prevHasTransportModes(seg021_138_5,car).	
-prevHasTransportModes(seg020_595_1,bus).	prevHasTransportModes(seg020_595_2,walk).	prevHasTransportModes(seg020_595_3,walk).	prevHasTransportModes(seg020_595_4,walk).	prevHasTransportModes(seg020_595_5,walk).	
-prevHasTransportModes(seg021_579_1,walk).	prevHasTransportModes(seg021_579_2,walk).	prevHasTransportModes(seg021_579_3,car).	prevHasTransportModes(seg021_579_4,car).	prevHasTransportModes(seg021_579_5,car).	
+prevHasTransportModes(seg021_1036_1,walk).	prevHasTransportModes(seg021_1036_2,walk).	prevHasTransportModes(seg021_1036_3,walk).	prevHasTransportModes(seg021_1036_4,walk).	prevHasTransportModes(seg021_1036_5,walk).	
+prevHasTransportModes(seg020_685_1,walk).	prevHasTransportModes(seg020_685_2,bus).	prevHasTransportModes(seg020_685_3,bus).	prevHasTransportModes(seg020_685_4,bus).	prevHasTransportModes(seg020_685_5,bus).	
+prevHasTransportModes(seg020_1071_1,walk).	prevHasTransportModes(seg020_1071_2,walk).	prevHasTransportModes(seg020_1071_3,walk).	prevHasTransportModes(seg020_1071_4,walk).	prevHasTransportModes(seg020_1071_5,walk).	
+prevHasTransportModes(seg021_1152_1,walk).	prevHasTransportModes(seg021_1152_2,walk).	prevHasTransportModes(seg021_1152_3,walk).	prevHasTransportModes(seg021_1152_4,walk).	prevHasTransportModes(seg021_1152_5,walk).	
+prevHasTransportModes(seg021_1097_1,walk).	prevHasTransportModes(seg021_1097_2,walk).	prevHasTransportModes(seg021_1097_3,walk).	prevHasTransportModes(seg021_1097_4,walk).	prevHasTransportModes(seg021_1097_5,walk).	
+prevHasTransportModes(seg020_1169_1,walk).	prevHasTransportModes(seg020_1169_2,walk).	prevHasTransportModes(seg020_1169_3,walk).	prevHasTransportModes(seg020_1169_4,walk).	prevHasTransportModes(seg020_1169_5,walk).	
+prevHasTransportModes(seg020_1130_1,walk).	prevHasTransportModes(seg020_1130_2,walk).	prevHasTransportModes(seg020_1130_3,walk).	prevHasTransportModes(seg020_1130_4,walk).	prevHasTransportModes(seg020_1130_5,walk).	
+prevHasTransportModes(seg021_774_1,walk).	prevHasTransportModes(seg021_774_2,walk).	prevHasTransportModes(seg021_774_3,walk).	prevHasTransportModes(seg021_774_4,walk).	prevHasTransportModes(seg021_774_5,walk).	
+prevHasTransportModes(seg021_606_1,walk).	prevHasTransportModes(seg021_606_2,walk).	prevHasTransportModes(seg021_606_3,walk).	prevHasTransportModes(seg021_606_4,walk).	prevHasTransportModes(seg021_606_5,walk).	
+prevHasTransportModes(seg021_1148_1,walk).	prevHasTransportModes(seg021_1148_2,walk).	prevHasTransportModes(seg021_1148_3,walk).	prevHasTransportModes(seg021_1148_4,walk).	prevHasTransportModes(seg021_1148_5,walk).	
+prevHasTransportModes(seg021_654_1,walk).	prevHasTransportModes(seg021_654_2,walk).	prevHasTransportModes(seg021_654_3,walk).	prevHasTransportModes(seg021_654_4,walk).	prevHasTransportModes(seg021_654_5,walk).	
+prevHasTransportModes(seg021_775_1,walk).	prevHasTransportModes(seg021_775_2,walk).	prevHasTransportModes(seg021_775_3,walk).	prevHasTransportModes(seg021_775_4,walk).	prevHasTransportModes(seg021_775_5,walk).	
+prevHasTransportModes(seg021_765_1,walk).	prevHasTransportModes(seg021_765_2,walk).	prevHasTransportModes(seg021_765_3,walk).	prevHasTransportModes(seg021_765_4,walk).	prevHasTransportModes(seg021_765_5,walk).	
+prevHasTransportModes(seg021_1034_1,walk).	prevHasTransportModes(seg021_1034_2,walk).	prevHasTransportModes(seg021_1034_3,walk).	prevHasTransportModes(seg021_1034_4,walk).	prevHasTransportModes(seg021_1034_5,walk).	
+prevHasTransportModes(seg020_779_1,walk).	prevHasTransportModes(seg020_779_2,walk).	prevHasTransportModes(seg020_779_3,walk).	prevHasTransportModes(seg020_779_4,walk).	prevHasTransportModes(seg020_779_5,walk).	
+prevHasTransportModes(seg021_1154_1,walk).	prevHasTransportModes(seg021_1154_2,walk).	prevHasTransportModes(seg021_1154_3,walk).	prevHasTransportModes(seg021_1154_4,walk).	prevHasTransportModes(seg021_1154_5,walk).	
+prevHasTransportModes(seg020_1149_1,walk).	prevHasTransportModes(seg020_1149_2,walk).	prevHasTransportModes(seg020_1149_3,walk).	prevHasTransportModes(seg020_1149_4,walk).	prevHasTransportModes(seg020_1149_5,walk).	
+prevHasTransportModes(seg021_970_1,walk).	prevHasTransportModes(seg021_970_2,car).	prevHasTransportModes(seg021_970_3,car).	prevHasTransportModes(seg021_970_4,car).	prevHasTransportModes(seg021_970_5,car).	
+prevHasTransportModes(seg021_1029_1,walk).	prevHasTransportModes(seg021_1029_2,walk).	prevHasTransportModes(seg021_1029_3,walk).	prevHasTransportModes(seg021_1029_4,walk).	prevHasTransportModes(seg021_1029_5,walk).	
+prevHasTransportModes(seg021_594_1,walk).	prevHasTransportModes(seg021_594_2,walk).	prevHasTransportModes(seg021_594_3,walk).	prevHasTransportModes(seg021_594_4,walk).	prevHasTransportModes(seg021_594_5,walk).	
+prevHasTransportModes(seg020_838_1,walk).	prevHasTransportModes(seg020_838_2,walk).	prevHasTransportModes(seg020_838_3,walk).	prevHasTransportModes(seg020_838_4,walk).	prevHasTransportModes(seg020_838_5,walk).	
+prevHasTransportModes(seg021_1046_1,walk).	prevHasTransportModes(seg021_1046_2,walk).	prevHasTransportModes(seg021_1046_3,walk).	prevHasTransportModes(seg021_1046_4,walk).	prevHasTransportModes(seg021_1046_5,walk).	
+prevHasTransportModes(seg021_582_1,walk).	prevHasTransportModes(seg021_582_2,walk).	prevHasTransportModes(seg021_582_3,walk).	prevHasTransportModes(seg021_582_4,walk).	prevHasTransportModes(seg021_582_5,walk).	
+prevHasTransportModes(seg021_1058_1,walk).	prevHasTransportModes(seg021_1058_2,walk).	prevHasTransportModes(seg021_1058_3,walk).	prevHasTransportModes(seg021_1058_4,walk).	prevHasTransportModes(seg021_1058_5,walk).	
+prevHasTransportModes(seg020_776_1,walk).	prevHasTransportModes(seg020_776_2,walk).	prevHasTransportModes(seg020_776_3,walk).	prevHasTransportModes(seg020_776_4,walk).	prevHasTransportModes(seg020_776_5,walk).	
+prevHasTransportModes(seg021_1081_1,walk).	prevHasTransportModes(seg021_1081_2,walk).	prevHasTransportModes(seg021_1081_3,walk).	prevHasTransportModes(seg021_1081_4,walk).	prevHasTransportModes(seg021_1081_5,walk).	
+prevHasTransportModes(seg020_1076_1,walk).	prevHasTransportModes(seg020_1076_2,walk).	prevHasTransportModes(seg020_1076_3,walk).	prevHasTransportModes(seg020_1076_4,walk).	prevHasTransportModes(seg020_1076_5,walk).	
+prevHasTransportModes(seg020_4242_1,walk).	prevHasTransportModes(seg020_4242_2,walk).	prevHasTransportModes(seg020_4242_3,walk).	prevHasTransportModes(seg020_4242_4,walk).	prevHasTransportModes(seg020_4242_5,walk).	
+prevHasTransportModes(seg021_785_1,walk).	prevHasTransportModes(seg021_785_2,walk).	prevHasTransportModes(seg021_785_3,walk).	prevHasTransportModes(seg021_785_4,walk).	prevHasTransportModes(seg021_785_5,walk).	
+prevHasTransportModes(seg021_1147_1,walk).	prevHasTransportModes(seg021_1147_2,walk).	prevHasTransportModes(seg021_1147_3,walk).	prevHasTransportModes(seg021_1147_4,walk).	prevHasTransportModes(seg021_1147_5,walk).	
+prevHasTransportModes(seg021_777_1,walk).	prevHasTransportModes(seg021_777_2,walk).	prevHasTransportModes(seg021_777_3,walk).	prevHasTransportModes(seg021_777_4,walk).	prevHasTransportModes(seg021_777_5,walk).	
+prevHasTransportModes(seg020_965_1,walk).	prevHasTransportModes(seg020_965_2,bus).	prevHasTransportModes(seg020_965_3,bus).	prevHasTransportModes(seg020_965_4,bus).	prevHasTransportModes(seg020_965_5,bus).	
+prevHasTransportModes(seg021_613_1,walk).	prevHasTransportModes(seg021_613_2,walk).	prevHasTransportModes(seg021_613_3,walk).	prevHasTransportModes(seg021_613_4,walk).	prevHasTransportModes(seg021_613_5,walk).	
+prevHasTransportModes(seg021_581_1,walk).	prevHasTransportModes(seg021_581_2,walk).	prevHasTransportModes(seg021_581_3,walk).	prevHasTransportModes(seg021_581_4,walk).	prevHasTransportModes(seg021_581_5,car).	
+prevHasTransportModes(seg021_1110_1,walk).	prevHasTransportModes(seg021_1110_2,walk).	prevHasTransportModes(seg021_1110_3,walk).	prevHasTransportModes(seg021_1110_4,walk).	prevHasTransportModes(seg021_1110_5,walk).	
+prevHasTransportModes(seg021_760_1,walk).	prevHasTransportModes(seg021_760_2,walk).	prevHasTransportModes(seg021_760_3,walk).	prevHasTransportModes(seg021_760_4,walk).	prevHasTransportModes(seg021_760_5,walk).	
+prevHasTransportModes(seg021_1038_1,walk).	prevHasTransportModes(seg021_1038_2,walk).	prevHasTransportModes(seg021_1038_3,walk).	prevHasTransportModes(seg021_1038_4,walk).	prevHasTransportModes(seg021_1038_5,walk).	
+prevHasTransportModes(seg021_1019_1,walk).	prevHasTransportModes(seg021_1019_2,walk).	prevHasTransportModes(seg021_1019_3,walk).	prevHasTransportModes(seg021_1019_4,walk).	prevHasTransportModes(seg021_1019_5,walk).	
+prevHasTransportModes(seg020_698_1,walk).	prevHasTransportModes(seg020_698_2,walk).	prevHasTransportModes(seg020_698_3,walk).	prevHasTransportModes(seg020_698_4,walk).	prevHasTransportModes(seg020_698_5,walk).	
+prevHasTransportModes(seg021_1052_1,walk).	prevHasTransportModes(seg021_1052_2,walk).	prevHasTransportModes(seg021_1052_3,walk).	prevHasTransportModes(seg021_1052_4,walk).	prevHasTransportModes(seg021_1052_5,walk).	
+prevHasTransportModes(seg020_1148_1,walk).	prevHasTransportModes(seg020_1148_2,walk).	prevHasTransportModes(seg020_1148_3,walk).	prevHasTransportModes(seg020_1148_4,walk).	prevHasTransportModes(seg020_1148_5,walk).	
+prevHasTransportModes(seg020_43_1,walk).	prevHasTransportModes(seg020_43_2,walk).	prevHasTransportModes(seg020_43_3,walk).	prevHasTransportModes(seg020_43_4,walk).	prevHasTransportModes(seg020_43_5,walk).	
+prevHasTransportModes(seg021_1057_1,walk).	prevHasTransportModes(seg021_1057_2,walk).	prevHasTransportModes(seg021_1057_3,walk).	prevHasTransportModes(seg021_1057_4,walk).	prevHasTransportModes(seg021_1057_5,walk).	
+prevHasTransportModes(seg021_878_1,walk).	prevHasTransportModes(seg021_878_2,walk).	prevHasTransportModes(seg021_878_3,walk).	prevHasTransportModes(seg021_878_4,walk).	prevHasTransportModes(seg021_878_5,walk).	
+prevHasTransportModes(seg021_1030_1,walk).	prevHasTransportModes(seg021_1030_2,walk).	prevHasTransportModes(seg021_1030_3,walk).	prevHasTransportModes(seg021_1030_4,walk).	prevHasTransportModes(seg021_1030_5,walk).	
+prevHasTransportModes(seg021_874_1,walk).	prevHasTransportModes(seg021_874_2,walk).	prevHasTransportModes(seg021_874_3,walk).	prevHasTransportModes(seg021_874_4,walk).	prevHasTransportModes(seg021_874_5,walk).	
+prevHasTransportModes(seg021_781_1,walk).	prevHasTransportModes(seg021_781_2,walk).	prevHasTransportModes(seg021_781_3,walk).	prevHasTransportModes(seg021_781_4,walk).	prevHasTransportModes(seg021_781_5,walk).	
+prevHasTransportModes(seg021_1039_1,walk).	prevHasTransportModes(seg021_1039_2,walk).	prevHasTransportModes(seg021_1039_3,walk).	prevHasTransportModes(seg021_1039_4,walk).	prevHasTransportModes(seg021_1039_5,walk).	
+prevHasTransportModes(seg021_1115_1,walk).	prevHasTransportModes(seg021_1115_2,walk).	prevHasTransportModes(seg021_1115_3,walk).	prevHasTransportModes(seg021_1115_4,walk).	prevHasTransportModes(seg021_1115_5,walk).	
+prevHasTransportModes(seg020_978_1,walk).	prevHasTransportModes(seg020_978_2,walk).	prevHasTransportModes(seg020_978_3,walk).	prevHasTransportModes(seg020_978_4,walk).	prevHasTransportModes(seg020_978_5,walk).	
+prevHasTransportModes(seg021_762_1,walk).	prevHasTransportModes(seg021_762_2,walk).	prevHasTransportModes(seg021_762_3,walk).	prevHasTransportModes(seg021_762_4,walk).	prevHasTransportModes(seg021_762_5,walk).	
 prevHasTransportModes(seg021_600_1,walk).	prevHasTransportModes(seg021_600_2,walk).	prevHasTransportModes(seg021_600_3,walk).	prevHasTransportModes(seg021_600_4,walk).	prevHasTransportModes(seg021_600_5,walk).	
-prevHasTransportModes(seg020_2156_1,walk).	prevHasTransportModes(seg020_2156_2,walk).	prevHasTransportModes(seg020_2156_3,walk).	prevHasTransportModes(seg020_2156_4,walk).	prevHasTransportModes(seg020_2156_5,walk).	
-prevHasTransportModes(seg021_766_1,walk).	prevHasTransportModes(seg021_766_2,walk).	prevHasTransportModes(seg021_766_3,walk).	prevHasTransportModes(seg021_766_4,walk).	prevHasTransportModes(seg021_766_5,walk).	
-prevHasTransportModes(seg020_889_1,bus).	prevHasTransportModes(seg020_889_2,bus).	prevHasTransportModes(seg020_889_3,bus).	prevHasTransportModes(seg020_889_4,bus).	prevHasTransportModes(seg020_889_5,bus).	
-prevHasTransportModes(seg020_2101_1,walk).	prevHasTransportModes(seg020_2101_2,walk).	prevHasTransportModes(seg020_2101_3,walk).	prevHasTransportModes(seg020_2101_4,walk).	prevHasTransportModes(seg020_2101_5,walk).	
-prevHasTransportModes(seg020_1069_1,walk).	prevHasTransportModes(seg020_1069_2,walk).	prevHasTransportModes(seg020_1069_3,walk).	prevHasTransportModes(seg020_1069_4,walk).	prevHasTransportModes(seg020_1069_5,walk).	
-prevHasTransportModes(seg021_587_1,walk).	prevHasTransportModes(seg021_587_2,walk).	prevHasTransportModes(seg021_587_3,walk).	prevHasTransportModes(seg021_587_4,walk).	prevHasTransportModes(seg021_587_5,walk).	
-prevHasTransportModes(seg020_2152_1,walk).	prevHasTransportModes(seg020_2152_2,walk).	prevHasTransportModes(seg020_2152_3,walk).	prevHasTransportModes(seg020_2152_4,walk).	prevHasTransportModes(seg020_2152_5,walk).	
-prevHasTransportModes(seg020_559_1,bus).	prevHasTransportModes(seg020_559_2,bus).	prevHasTransportModes(seg020_559_3,bus).	prevHasTransportModes(seg020_559_4,bus).	prevHasTransportModes(seg020_559_5,bus).	
-prevHasTransportModes(seg020_808_1,walk).	prevHasTransportModes(seg020_808_2,walk).	prevHasTransportModes(seg020_808_3,walk).	prevHasTransportModes(seg020_808_4,walk).	prevHasTransportModes(seg020_808_5,walk).	
-prevHasTransportModes(seg020_625_1,walk).	prevHasTransportModes(seg020_625_2,walk).	prevHasTransportModes(seg020_625_3,walk).	prevHasTransportModes(seg020_625_4,bus).	prevHasTransportModes(seg020_625_5,bus).	
-prevHasTransportModes(seg021_1142_1,walk).	prevHasTransportModes(seg021_1142_2,walk).	prevHasTransportModes(seg021_1142_3,walk).	prevHasTransportModes(seg021_1142_4,walk).	prevHasTransportModes(seg021_1142_5,walk).	
-prevHasTransportModes(seg020_857_1,walk).	prevHasTransportModes(seg020_857_2,walk).	prevHasTransportModes(seg020_857_3,walk).	prevHasTransportModes(seg020_857_4,walk).	prevHasTransportModes(seg020_857_5,walk).	
-prevHasTransportModes(seg020_93_1,bus).	prevHasTransportModes(seg020_93_2,bus).	prevHasTransportModes(seg020_93_3,bus).	prevHasTransportModes(seg020_93_4,bus).	prevHasTransportModes(seg020_93_5,bus).	
-prevHasTransportModes(seg020_2300_1,bus).	prevHasTransportModes(seg020_2300_2,bus).	prevHasTransportModes(seg020_2300_3,bus).	prevHasTransportModes(seg020_2300_4,bus).	prevHasTransportModes(seg020_2300_5,bus).	
-prevHasTransportModes(seg020_421_1,bus).	prevHasTransportModes(seg020_421_2,bus).	prevHasTransportModes(seg020_421_3,bus).	prevHasTransportModes(seg020_421_4,bus).	prevHasTransportModes(seg020_421_5,bus).	
-prevHasTransportModes(seg020_1012_1,bus).	prevHasTransportModes(seg020_1012_2,bus).	prevHasTransportModes(seg020_1012_3,bus).	prevHasTransportModes(seg020_1012_4,bus).	prevHasTransportModes(seg020_1012_5,bus).	
-prevHasTransportModes(seg020_267_1,bus).	prevHasTransportModes(seg020_267_2,bus).	prevHasTransportModes(seg020_267_3,bus).	prevHasTransportModes(seg020_267_4,bus).	prevHasTransportModes(seg020_267_5,bus).	
-prevHasTransportModes(seg020_1207_1,bus).	prevHasTransportModes(seg020_1207_2,bus).	prevHasTransportModes(seg020_1207_3,bus).	prevHasTransportModes(seg020_1207_4,bus).	prevHasTransportModes(seg020_1207_5,bus).	
-prevHasTransportModes(seg020_2184_1,bus).	prevHasTransportModes(seg020_2184_2,walk).	prevHasTransportModes(seg020_2184_3,walk).	prevHasTransportModes(seg020_2184_4,walk).	prevHasTransportModes(seg020_2184_5,walk).	
-prevHasTransportModes(seg020_678_1,bus).	prevHasTransportModes(seg020_678_2,bus).	prevHasTransportModes(seg020_678_3,bus).	prevHasTransportModes(seg020_678_4,bus).	prevHasTransportModes(seg020_678_5,bus).	
-prevHasTransportModes(seg020_2313_1,bus).	prevHasTransportModes(seg020_2313_2,walk).	prevHasTransportModes(seg020_2313_3,walk).	prevHasTransportModes(seg020_2313_4,walk).	prevHasTransportModes(seg020_2313_5,walk).	
-prevHasTransportModes(seg020_869_1,bus).	prevHasTransportModes(seg020_869_2,bus).	prevHasTransportModes(seg020_869_3,bus).	prevHasTransportModes(seg020_869_4,bus).	prevHasTransportModes(seg020_869_5,bus).	
-prevHasTransportModes(seg020_2245_1,bus).	prevHasTransportModes(seg020_2245_2,bus).	prevHasTransportModes(seg020_2245_3,bus).	prevHasTransportModes(seg020_2245_4,bus).	prevHasTransportModes(seg020_2245_5,bus).	
-prevHasTransportModes(seg020_2288_1,bus).	prevHasTransportModes(seg020_2288_2,bus).	prevHasTransportModes(seg020_2288_3,bus).	prevHasTransportModes(seg020_2288_4,bus).	prevHasTransportModes(seg020_2288_5,bus).	
-prevHasTransportModes(seg020_658_1,bus).	prevHasTransportModes(seg020_658_2,bus).	prevHasTransportModes(seg020_658_3,bus).	prevHasTransportModes(seg020_658_4,bus).	prevHasTransportModes(seg020_658_5,bus).	
-prevHasTransportModes(seg020_737_1,bus).	prevHasTransportModes(seg020_737_2,bus).	prevHasTransportModes(seg020_737_3,bus).	prevHasTransportModes(seg020_737_4,bus).	prevHasTransportModes(seg020_737_5,walk).	
-prevHasTransportModes(seg020_1055_1,bus).	prevHasTransportModes(seg020_1055_2,bus).	prevHasTransportModes(seg020_1055_3,bus).	prevHasTransportModes(seg020_1055_4,bus).	prevHasTransportModes(seg020_1055_5,bus).	
-prevHasTransportModes(seg020_517_1,bus).	prevHasTransportModes(seg020_517_2,bus).	prevHasTransportModes(seg020_517_3,bus).	prevHasTransportModes(seg020_517_4,bus).	prevHasTransportModes(seg020_517_5,bus).	
-prevHasTransportModes(seg020_758_1,bus).	prevHasTransportModes(seg020_758_2,bus).	prevHasTransportModes(seg020_758_3,bus).	prevHasTransportModes(seg020_758_4,bus).	prevHasTransportModes(seg020_758_5,bus).	
-prevHasTransportModes(seg020_1902_1,bus).	prevHasTransportModes(seg020_1902_2,walk).	prevHasTransportModes(seg020_1902_3,walk).	prevHasTransportModes(seg020_1902_4,walk).	prevHasTransportModes(seg020_1902_5,walk).	
-prevHasTransportModes(seg020_2299_1,bus).	prevHasTransportModes(seg020_2299_2,bus).	prevHasTransportModes(seg020_2299_3,bus).	prevHasTransportModes(seg020_2299_4,bus).	prevHasTransportModes(seg020_2299_5,bus).	
-prevHasTransportModes(seg020_444_1,bus).	prevHasTransportModes(seg020_444_2,bus).	prevHasTransportModes(seg020_444_3,bus).	prevHasTransportModes(seg020_444_4,bus).	prevHasTransportModes(seg020_444_5,bus).	
-prevHasTransportModes(seg020_954_1,bus).	prevHasTransportModes(seg020_954_2,bus).	prevHasTransportModes(seg020_954_3,bus).	prevHasTransportModes(seg020_954_4,bus).	prevHasTransportModes(seg020_954_5,bus).	
-prevHasTransportModes(seg020_2234_1,bus).	prevHasTransportModes(seg020_2234_2,bus).	prevHasTransportModes(seg020_2234_3,bus).	prevHasTransportModes(seg020_2234_4,bus).	prevHasTransportModes(seg020_2234_5,bus).	
-prevHasTransportModes(seg020_1195_1,bus).	prevHasTransportModes(seg020_1195_2,bus).	prevHasTransportModes(seg020_1195_3,bus).	prevHasTransportModes(seg020_1195_4,bus).	prevHasTransportModes(seg020_1195_5,bus).	
-prevHasTransportModes(seg020_673_1,bus).	prevHasTransportModes(seg020_673_2,bus).	prevHasTransportModes(seg020_673_3,bus).	prevHasTransportModes(seg020_673_4,bus).	prevHasTransportModes(seg020_673_5,bus).	
-prevHasTransportModes(seg020_2316_1,bus).	prevHasTransportModes(seg020_2316_2,bus).	prevHasTransportModes(seg020_2316_3,bus).	prevHasTransportModes(seg020_2316_4,walk).	prevHasTransportModes(seg020_2316_5,walk).	
-prevHasTransportModes(seg020_2074_1,bus).	prevHasTransportModes(seg020_2074_2,bus).	prevHasTransportModes(seg020_2074_3,bus).	prevHasTransportModes(seg020_2074_4,bus).	prevHasTransportModes(seg020_2074_5,bus).	
-prevHasTransportModes(seg020_1031_1,bus).	prevHasTransportModes(seg020_1031_2,bus).	prevHasTransportModes(seg020_1031_3,bus).	prevHasTransportModes(seg020_1031_4,bus).	prevHasTransportModes(seg020_1031_5,walk).	
-prevHasTransportModes(seg020_2248_1,bus).	prevHasTransportModes(seg020_2248_2,bus).	prevHasTransportModes(seg020_2248_3,bus).	prevHasTransportModes(seg020_2248_4,bus).	prevHasTransportModes(seg020_2248_5,bus).	
-prevHasTransportModes(seg020_70_1,bus).	prevHasTransportModes(seg020_70_2,bus).	prevHasTransportModes(seg020_70_3,walk).	prevHasTransportModes(seg020_70_4,walk).	prevHasTransportModes(seg020_70_5,walk).	
-prevHasTransportModes(seg020_1015_1,bus).	prevHasTransportModes(seg020_1015_2,bus).	prevHasTransportModes(seg020_1015_3,bus).	prevHasTransportModes(seg020_1015_4,bus).	prevHasTransportModes(seg020_1015_5,bus).	
-prevHasTransportModes(seg020_1053_1,bus).	prevHasTransportModes(seg020_1053_2,bus).	prevHasTransportModes(seg020_1053_3,bus).	prevHasTransportModes(seg020_1053_4,bus).	prevHasTransportModes(seg020_1053_5,bus).	
-prevHasTransportModes(seg020_209_1,bus).	prevHasTransportModes(seg020_209_2,bus).	prevHasTransportModes(seg020_209_3,bus).	prevHasTransportModes(seg020_209_4,bus).	prevHasTransportModes(seg020_209_5,bus).	
-prevHasTransportModes(seg020_233_1,bus).	prevHasTransportModes(seg020_233_2,bus).	prevHasTransportModes(seg020_233_3,bus).	prevHasTransportModes(seg020_233_4,bus).	prevHasTransportModes(seg020_233_5,walk).	
-prevHasTransportModes(seg020_2190_1,bus).	prevHasTransportModes(seg020_2190_2,bus).	prevHasTransportModes(seg020_2190_3,bus).	prevHasTransportModes(seg020_2190_4,bus).	prevHasTransportModes(seg020_2190_5,bus).	
-prevHasTransportModes(seg020_435_1,bus).	prevHasTransportModes(seg020_435_2,bus).	prevHasTransportModes(seg020_435_3,bus).	prevHasTransportModes(seg020_435_4,bus).	prevHasTransportModes(seg020_435_5,bus).	
+prevHasTransportModes(seg020_2125_1,walk).	prevHasTransportModes(seg020_2125_2,walk).	prevHasTransportModes(seg020_2125_3,walk).	prevHasTransportModes(seg020_2125_4,walk).	prevHasTransportModes(seg020_2125_5,walk).	
+prevHasTransportModes(seg020_2343_1,walk).	prevHasTransportModes(seg020_2343_2,bus).	prevHasTransportModes(seg020_2343_3,bus).	prevHasTransportModes(seg020_2343_4,bus).	prevHasTransportModes(seg020_2343_5,bus).	
+prevHasTransportModes(seg020_2119_1,walk).	prevHasTransportModes(seg020_2119_2,walk).	prevHasTransportModes(seg020_2119_3,walk).	prevHasTransportModes(seg020_2119_4,walk).	prevHasTransportModes(seg020_2119_5,walk).	
+prevHasTransportModes(seg021_1099_1,walk).	prevHasTransportModes(seg021_1099_2,walk).	prevHasTransportModes(seg021_1099_3,walk).	prevHasTransportModes(seg021_1099_4,walk).	prevHasTransportModes(seg021_1099_5,walk).	
+prevHasTransportModes(seg021_615_1,walk).	prevHasTransportModes(seg021_615_2,walk).	prevHasTransportModes(seg021_615_3,walk).	prevHasTransportModes(seg021_615_4,walk).	prevHasTransportModes(seg021_615_5,walk).	
+prevHasTransportModes(seg021_590_1,walk).	prevHasTransportModes(seg021_590_2,walk).	prevHasTransportModes(seg021_590_3,walk).	prevHasTransportModes(seg021_590_4,walk).	prevHasTransportModes(seg021_590_5,walk).	
+prevHasTransportModes(seg020_4237_1,walk).	prevHasTransportModes(seg020_4237_2,walk).	prevHasTransportModes(seg020_4237_3,walk).	prevHasTransportModes(seg020_4237_4,walk).	prevHasTransportModes(seg020_4237_5,walk).	
+prevHasTransportModes(seg021_596_1,walk).	prevHasTransportModes(seg021_596_2,walk).	prevHasTransportModes(seg021_596_3,walk).	prevHasTransportModes(seg021_596_4,walk).	prevHasTransportModes(seg021_596_5,walk).	
+prevHasTransportModes(seg020_914_1,walk).	prevHasTransportModes(seg020_914_2,walk).	prevHasTransportModes(seg020_914_3,walk).	prevHasTransportModes(seg020_914_4,walk).	prevHasTransportModes(seg020_914_5,walk).	
 
 % | RELATIONS
-isFasterThanPrev(seg020_3157_0).
-isFasterThanPrev(seg021_981_0).
-isFasterThanPrev(seg020_3098_0).
-isFasterThanPrev(seg021_586_0).
-isFasterThanPrev(seg020_1157_0).
-isFasterThanPrev(seg020_3598_0).
-isFasterThanPrev(seg021_558_0).
-isFasterThanPrev(seg020_3178_0).
-isFasterThanPrev(seg021_517_0).
-isFasterThanPrev(seg020_3006_0).
-isFasterThanPrev(seg021_780_0).
-isFasterThanPrev(seg021_556_0).
-isFasterThanPrev(seg020_1166_0).
-isFasterThanPrev(seg020_288_0).
-isFasterThanPrev(seg021_455_0).
-isFasterThanPrev(seg020_2363_0).
-isFasterThanPrev(seg021_676_0).
-isFasterThanPrev(seg021_47_0).
-isFasterThanPrev(seg021_1150_0).
-isFasterThanPrev(seg020_4369_0).
-isFasterThanPrev(seg021_467_0).
-isFasterThanPrev(seg020_2338_0).
-isFasterThanPrev(seg021_703_0).
-isFasterThanPrev(seg021_302_0).
-isFasterThanPrev(seg020_16_0).
-isFasterThanPrev(seg020_3594_0).
-isFasterThanPrev(seg021_30_0).
-isFasterThanPrev(seg020_3448_0).
-isFasterThanPrev(seg020_4951_0).
-isFasterThanPrev(seg021_86_0).
-isFasterThanPrev(seg020_4928_0).
-isFasterThanPrev(seg021_521_0).
-isFasterThanPrev(seg021_786_0).
-isFasterThanPrev(seg020_4190_0).
-isFasterThanPrev(seg021_595_0).
-isFasterThanPrev(seg020_4570_0).
-isFasterThanPrev(seg020_3935_0).
-isFasterThanPrev(seg020_2370_0).
-isFasterThanPrev(seg021_971_0).
-isFasterThanPrev(seg020_3529_0).
-isFasterThanPrev(seg020_2229_0).
-isFasterThanPrev(seg021_445_0).
-isFasterThanPrev(seg021_560_0).
-isFasterThanPrev(seg021_1064_0).
-isFasterThanPrev(seg020_385_0).
-isFasterThanPrev(seg021_306_0).
-isFasterThanPrev(seg020_2243_0).
-isFasterThanPrev(seg021_383_0).
-isFasterThanPrev(seg020_3944_0).
-isFasterThanPrev(seg021_767_0).
-isFasterThanPrev(seg020_1149_0).
-isFasterThanPrev(seg021_349_0).
-isFasterThanPrev(seg020_2492_0).
+isFasterThanPrev(seg021_550_0).
+isFasterThanPrev(seg021_205_0).
+isFasterThanPrev(seg021_985_0).
+isFasterThanPrev(seg021_213_0).
+isFasterThanPrev(seg020_2831_0).
+isFasterThanPrev(seg021_982_0).
+isFasterThanPrev(seg020_563_0).
+isFasterThanPrev(seg020_58_0).
+isFasterThanPrev(seg021_736_0).
+isFasterThanPrev(seg021_359_0).
+isFasterThanPrev(seg020_2426_0).
+isFasterThanPrev(seg020_2967_0).
+isFasterThanPrev(seg021_500_0).
+isFasterThanPrev(seg021_675_0).
+isFasterThanPrev(seg021_84_0).
+isFasterThanPrev(seg020_4167_0).
+isFasterThanPrev(seg021_497_0).
+isFasterThanPrev(seg021_75_0).
+isFasterThanPrev(seg021_882_0).
+isFasterThanPrev(seg021_867_0).
+isFasterThanPrev(seg020_2277_0).
+isFasterThanPrev(seg021_530_0).
+isFasterThanPrev(seg020_934_0).
+isFasterThanPrev(seg020_3905_0).
+isFasterThanPrev(seg020_4682_0).
 isFasterThanPrev(seg020_2882_0).
-isFasterThanPrev(seg021_274_0).
-isFasterThanPrev(seg020_3238_0).
-isFasterThanPrev(seg021_378_0).
-isFasterThanPrev(seg020_2496_0).
-isFasterThanPrev(seg021_312_0).
-isFasterThanPrev(seg021_784_0).
-isFasterThanPrev(seg020_4234_0).
-isFasterThanPrev(seg021_380_0).
-isFasterThanPrev(seg020_2849_0).
+isFasterThanPrev(seg021_332_0).
+isFasterThanPrev(seg021_404_0).
+isFasterThanPrev(seg020_4153_0).
+isFasterThanPrev(seg020_4819_0).
+isFasterThanPrev(seg021_293_0).
+isFasterThanPrev(seg020_3776_0).
+isFasterThanPrev(seg021_905_0).
+isFasterThanPrev(seg020_2332_0).
+isFasterThanPrev(seg021_478_0).
+isFasterThanPrev(seg021_29_0).
+isFasterThanPrev(seg020_4236_0).
+isFasterThanPrev(seg021_909_0).
+isFasterThanPrev(seg021_944_0).
+isFasterThanPrev(seg021_455_0).
+isFasterThanPrev(seg021_471_0).
+isFasterThanPrev(seg021_1066_0).
+isFasterThanPrev(seg020_2924_0).
+isFasterThanPrev(seg021_265_0).
+isFasterThanPrev(seg020_4931_0).
+isFasterThanPrev(seg020_4534_0).
+isFasterThanPrev(seg020_3083_0).
+isFasterThanPrev(seg021_485_0).
+isFasterThanPrev(seg021_521_0).
+isFasterThanPrev(seg020_2633_0).
+isFasterThanPrev(seg020_4602_0).
+isFasterThanPrev(seg021_224_0).
+isFasterThanPrev(seg020_2172_0).
+isFasterThanPrev(seg021_67_0).
+isFasterThanPrev(seg021_1020_0).
+isFasterThanPrev(seg020_363_0).
+isFasterThanPrev(seg021_1145_0).
+isFasterThanPrev(seg020_2838_0).
+isFasterThanPrev(seg020_587_0).
+isFasterThanPrev(seg021_691_0).
+isFasterThanPrev(seg020_2559_0).
+isFasterThanPrev(seg021_800_0).
+isFasterThanPrev(seg020_2673_0).
+isFasterThanPrev(seg020_4439_0).
+isFasterThanPrev(seg021_971_0).
+isFasterThanPrev(seg020_577_0).
+isFasterThanPrev(seg021_768_0).
 isFasterThanPrev(seg020_4977_0).
-isFasterThanPrev(seg020_1269_0).
-isFasterThanPrev(seg020_595_0).
-isFasterThanPrev(seg020_857_0).
-isFasterThanPrev(seg020_2300_0).
-isFasterThanPrev(seg020_421_0).
-isFasterThanPrev(seg020_267_0).
-isFasterThanPrev(seg020_2313_0).
-isFasterThanPrev(seg020_869_0).
-isFasterThanPrev(seg020_2245_0).
-isFasterThanPrev(seg020_2288_0).
-isFasterThanPrev(seg020_658_0).
-isFasterThanPrev(seg020_1902_0).
-isFasterThanPrev(seg020_444_0).
-isFasterThanPrev(seg020_954_0).
-isFasterThanPrev(seg020_2234_0).
-isFasterThanPrev(seg020_1195_0).
-isFasterThanPrev(seg020_673_0).
-isFasterThanPrev(seg020_2316_0).
-isFasterThanPrev(seg020_2074_0).
-isFasterThanPrev(seg020_1031_0).
-isFasterThanPrev(seg020_1053_0).
-isFasterThanPrev(seg020_209_0).
-isFasterThanPrev(seg020_233_0).
-isFasterThanPrev(seg020_2190_0).
+isFasterThanPrev(seg021_1036_0).
+isFasterThanPrev(seg021_1097_0).
+isFasterThanPrev(seg021_654_0).
+isFasterThanPrev(seg021_1034_0).
+isFasterThanPrev(seg020_779_0).
+isFasterThanPrev(seg021_1154_0).
+isFasterThanPrev(seg020_1149_0).
+isFasterThanPrev(seg021_970_0).
+isFasterThanPrev(seg021_760_0).
+isFasterThanPrev(seg020_43_0).
+isFasterThanPrev(seg021_1039_0).
+isFasterThanPrev(seg021_1115_0).
+isFasterThanPrev(seg020_978_0).
+isFasterThanPrev(seg020_2343_0).
+isFasterThanPrev(seg021_590_0).
 
-hasChangepoint(seg021_656_0).
-hasChangepoint(seg021_863_0).
-hasChangepoint(seg020_986_0).
+hasChangepoint(seg020_589_0).
 hasChangepoint(seg021_971_0).
-hasChangepoint(seg020_1015_0).
-hasChangepoint(seg020_986_2).
-hasChangepoint(seg020_305_4).
-hasChangepoint(seg020_654_5).
-hasChangepoint(seg020_4234_2).
-hasChangepoint(seg021_872_5).
-hasChangepoint(seg020_595_2).
-hasChangepoint(seg021_579_3).
-hasChangepoint(seg020_625_4).
-hasChangepoint(seg020_737_5).
-hasChangepoint(seg020_2316_4).
-hasChangepoint(seg020_70_3).
-hasChangepoint(seg020_233_5).
+hasChangepoint(seg020_989_5).
+hasChangepoint(seg020_934_2).
+hasChangepoint(seg020_4236_4).
+hasChangepoint(seg021_800_5).
+hasChangepoint(seg021_581_5).
+hasChangepoint(seg021_760_2).
+hasChangepoint(seg021_762_4).
+hasChangepoint(seg020_4237_5).

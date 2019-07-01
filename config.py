@@ -52,14 +52,14 @@ speeds = ["very_slow", "slow", "below_medium",
 # Translation Header
 rawClass = 'rawClass'
 targetSegId = 'segment_id'
-targetClass = 'class'
+targetClass = 'hasTransportMode'
 transportTargetClass = 'tmClass'
 targetVelocity = 'velocity'
 targetAcceleration = 'acceleration'
 targetHasChangepoint = 'hasChangepoint'
 isFasterThanPrev = 'isFasterThanPrev'
 hasPrevSegment = 'hasPrevSegments'
-prevTransportMode = 'prevHasTransportModes'
+prevTransportMode = 'prevHasTransportMode'
 prevHasChangepoint = 'prevHasChangepoint'
 
 translationHeader = [rawClass,

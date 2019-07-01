@@ -14,7 +14,7 @@ from services.data_service import DataService
 class AlephService:
 
     def __init__(self):
-        self.isOneAgainstAll = False
+        self.isOneAgainstAll = True
         self.transportMode = "walk"
         self.amountOfSegments = 200
         self.dataService = DataService()
@@ -46,6 +46,8 @@ class AlephService:
         while len(segmentDf) < self.amountOfSegments:
             folder = self.getRandomFolder(userFolders)
             file = self.getRandomFileInFolder(folder)
+            if file == config.empty:
+                continue
             row = self.getRandomRowFromDf(folder, file)
 
             rowTargetSegId = row[config.targetSegId]
@@ -122,12 +124,13 @@ class AlephService:
         filesInFolder = self.dataService.getFileNamesInPath(
             folderPath)
         lenFiles = len(filesInFolder)
-        randIndex = 0
+        fileName = config.empty
 
         if lenFiles > 0:
             randIndex = random.randrange(0, lenFiles)
+            fileName = filesInFolder[randIndex]
 
-        return filesInFolder[randIndex]
+        return fileName
 
     def getRandomFolder(self, folders):
         lenFolders = len(folders)
@@ -188,18 +191,21 @@ class AlephService:
 
             file.write("% | DETERMINATIONS\n")
             # =================================
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, config.targetVelocity))
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, config.targetAcceleration))
-            file.write(":- determination(class/%d,%s/1).\n" %
-                       (classArity, config.isFasterThanPrev))
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, config.hasPrevSegment))
-            file.write(":- determination(class/%d,%s/2).\n" %
-                       (classArity, config.prevTransportMode))
-            file.write(":- determination(class/%d,%s/1).\n" %
-                       (classArity, config.hasChangepoint))
+            file.write(":- determination(%s/%d,%s/2).\n" %
+                       (config.targetClass, classArity, config.targetVelocity))
+            file.write(":- determination(%s/%d,%s/2).\n" %
+                       (config.targetClass, classArity,
+                        config.targetAcceleration))
+            file.write(":- determination(%s/%d,%s/1).\n" %
+                       (config.targetClass, classArity,
+                        config.isFasterThanPrev))
+            file.write(":- determination(%s/%d,%s/2).\n" %
+                       (config.targetClass, classArity, config.hasPrevSegment))
+            file.write(":- determination(%s/%d,%s/2).\n" %
+                       (config.targetClass, classArity,
+                        config.prevTransportMode))
+            file.write(":- determination(%s/%d,%s/1).\n" %
+                       (config.targetClass, classArity, config.hasChangepoint))
             file.write("\n")
 
             file.write("% | TYPES\n")
