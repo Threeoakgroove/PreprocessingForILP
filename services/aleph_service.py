@@ -14,21 +14,13 @@ class AlephService:
 
     def __init__(self):
         self.isWalkAgainstAll = True
-        self.amountOfSegments = 100
+        self.amountOfSegments = 10000
         self.transportMode = "walk"
         self.dataService = DataService()
 
+        self.usedSegments = []
+
     def generateLogicProgram(self):
-        # 1.) Get all folders in translationPath
-        # 2.) Randomly select one
-        # 3.) Get all Filenames in userFolder
-        # 4.) select one randomly
-        # 5.) Open file as Dataframe
-        # 6.) select one row randomly
-
-        # 2. Version
-        # Speichere bereits verwendete Segmente in Array
-
         # 3. Version
         # Schaue nach dem TM
         # wähle je 100 pro TM
@@ -61,10 +53,13 @@ class AlephService:
 
         dfLength = len(selectedDf._values)
 
-        randomRow = 0
-        if(dfLength > 0):
-            randomRow = random.randrange(0, dfLength)
+        randomRow = random.randrange(0, dfLength)
+
         row = selectedDf.iloc[randomRow, :]
+        while (row[config.targetSegId] in self.usedSegments):
+            randomRow = random.randrange(0, dfLength)
+            row = selectedDf.iloc[randomRow, :]
+        self.usedSegments.append(row[config.targetSegId])
 
         return row
 
