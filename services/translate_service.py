@@ -121,9 +121,13 @@ class TranslateService:
             filePath = join(path, fileName)
             df = pd.read_csv(filePath, sep='\t', index_col=0, header=0)
 
-            fileOutputPath = join(outputPath, fileName)
-            translations = self.translateToLogic(userFolder, df, fileName)
-            translations.to_csv(fileOutputPath, sep='\t', encoding='utf-8')
+            if len(df) > self.sequenceSize:
+                fileOutputPath = join(outputPath, fileName)
+                translations = self.translateToLogic(userFolder, df, fileName)
+                translations.to_csv(fileOutputPath, sep='\t', encoding='utf-8')
+            else:
+                logging.info(
+                    "%s has not enough segments: #%d" % (fileName, len(df)))
 
     def translateToLogic(self, folder, df, file):
         translated = []
