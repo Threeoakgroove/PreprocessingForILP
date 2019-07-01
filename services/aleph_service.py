@@ -1,27 +1,93 @@
 import pandas as pd
 import numpy as np
+import random
 
 from os.path import join
 from ast import literal_eval
 
-
 import config
+
+from services.data_service import DataService
 
 
 class AlephService:
 
     def __init__(self):
         self.isWalkAgainstAll = True
+        self.amountOfSegments = 100
         self.transportMode = "walk"
+        self.dataService = DataService()
 
     def generateLogicProgram(self):
-        path = join(config.translationPath, '020', 'trajectory0000000111.csv')
-        translationDf = pd.read_csv(path, sep='\t', index_col=0, header=0)
-        # Randomly chose objects to print
-        # store in dataframe
+        # 1.) Get all folders in translationPath
+        # 2.) Randomly select one
+        # 3.) Get all Filenames in userFolder
+        # 4.) select one randomly
+        # 5.) Open file as Dataframe
+        # 6.) select one row randomly
+
+        # 2. Version
+        # Speichere bereits verwendete Segmente in Array
+
+        # 3. Version
+        # Schaue nach dem TM
+        # wähle je 100 pro TM
+
+        # 4. Version
+        # Wähle X mit changepoint und Y ohne
+
+        translationDf = self.generateSegmentDf()
 
         # print dataframe to aleph file
-        self.printTranslated(translationDf)
+        if translationDf.size > 0:
+            self.printTranslated(translationDf)
+
+    def generateSegmentDf(self):
+        segmentDf = pd.DataFrame(columns=config.translationHeader)
+        userFolders = self.dataService.getFileNamesInPath(
+            config.translationPath)
+
+        for x in range(self.amountOfSegments):
+            folder = self.getRandomFolder(userFolders)
+            file = self.getRandomFileInFolder(folder)
+            row = self.getRandomRowFromDf(folder, file)
+            segmentDf.loc[len(segmentDf)] = row
+
+        return segmentDf
+
+    def getRandomRowFromDf(self, folder, file):
+        path = join(config.translationPath, folder, file)
+        selectedDf = pd.read_csv(path, sep='\t', index_col=0, header=0)
+
+        dfLength = len(selectedDf._values)
+
+        randomRow = 0
+        if(dfLength > 0):
+            randomRow = random.randrange(0, dfLength)
+        row = selectedDf.iloc[randomRow, :]
+
+        return row
+
+    def getRandomFileInFolder(self, folder):
+        folderPath = join(config.translationPath, folder)
+        filesInFolder = self.dataService.getFileNamesInPath(
+            folderPath)
+        lenFiles = len(filesInFolder)
+        randIndex = 0
+
+        if lenFiles > 0:
+            randIndex = random.randrange(0, lenFiles)
+
+        return filesInFolder[randIndex]
+
+    def getRandomFolder(self, folders):
+        lenFolders = len(folders)
+        randIndex = 0
+
+        if lenFolders > 0:
+            randIndex = random.randrange(0, lenFolders)
+
+        return folders[randIndex]
 
     def printTranslated(self, translationDf):
         settings = None

@@ -59,7 +59,7 @@ targetAcceleration = 'acceleration'
 targetHasChangepoint = 'hasChangepoint'
 isFasterThanPrev = 'isFasterThanPrev'
 hasPrevSegment = 'hasPrevSegments'
-prevTransportMode = 'prevHaveTransportModes'
+prevTransportMode = 'prevHasTransportModes'
 prevHasChangepoint = 'prevHasChangepoint'
 
 translationHeader = [rawClass,
