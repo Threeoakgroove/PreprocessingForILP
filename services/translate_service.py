@@ -301,17 +301,17 @@ class TranslateService:
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs
-        if(0 <= speed < 1):
+        if(0 <= speed < 2):
             return config.speeds[0]
-        elif(1 <= speed < 2):
+        elif(2 <= speed < 4):
             return config.speeds[1]
-        elif(2 <= speed < 3):
+        elif(4 <= speed < 8):
             return config.speeds[2]
-        elif(3 <= speed < 5):
+        elif(8 <= speed < 14):
             return config.speeds[3]
-        elif(5 <= speed < 8):
+        elif(14 <= speed < 22):
             return config.speeds[4]
-        elif(8 <= speed < 13):
+        elif(22 <= speed < 32):
             return config.speeds[5]
         else:
             return config.speeds[6]

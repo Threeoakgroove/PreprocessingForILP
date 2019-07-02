@@ -185,7 +185,7 @@ class AlephService:
                        (sequenceSize, config.prevTransportMode,
                         segment, transportMode))
             file.write(":- modeb(%d,%s(+%s)).\n" %
-                       (sequenceSize, config.hasChangepoint,
+                       ((sequenceSize + 1), config.hasChangepoint,
                         segment))
             file.write("\n")
 

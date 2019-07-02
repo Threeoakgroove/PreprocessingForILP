@@ -78,7 +78,7 @@ class Main:
 if __name__ == '__main__':
     labelData = False
     makeSegments = False
-    makeTranslations = False
+    makeTranslations = True
     createLogicProgram = True
     showPlots = False
 
