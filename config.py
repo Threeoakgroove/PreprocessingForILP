@@ -49,6 +49,9 @@ transportmodes = ['bike', 'bus', 'car', 'walk']
 speeds = ["very_slow", "slow", "below_medium",
           "medium", "above_medium", "fast", "very_fast"]
 
+accels = ["much_slower", "slower", "slightly_slower",
+          "unchanged", "slightly_faster", "faster", "much_faster"]
+
 # Translation Header
 rawClass = 'rawClass'
 targetSegId = 'segment_id'

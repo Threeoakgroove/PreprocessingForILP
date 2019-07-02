@@ -174,7 +174,7 @@ class AlephService:
             file.write(modeH)
             file.write(":- modeb(1,%s(+%s,#speed)).\n" %
                        (config.targetVelocity, segment))
-            file.write(":- modeb(1,%s(+%s,#speed)).\n" %
+            file.write(":- modeb(1,%s(+%s,#acceleration)).\n" %
                        (config.targetAcceleration, segment))
             file.write(":- modeb(1,%s(+%s)).\n" %
                        (config.isFasterThanPrev, segment))
@@ -222,6 +222,10 @@ class AlephService:
 
             for type in config.speeds:
                 file.write("speed(%s).\n" % type)
+            file.write("\n")
+
+            for type in config.accels:
+                file.write("acceleration(%s).\n" % type)
             file.write("\n")
 
             for index, translation in translationDf.iterrows():

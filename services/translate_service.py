@@ -236,8 +236,8 @@ class TranslateService:
         return str("%s(%s,%s)." % (self.targetVelocity, segId, catVeloicty))
 
     def getTargetAccel(self, segId, targetSegment):
-        rawAccel = targetSegment[config.speedHead]
-        catAccel = self.catSpeedValueFor(rawAccel)
+        rawAccel = targetSegment[config.accelerationHead]
+        catAccel = self.catAccelValueFor(rawAccel)
 
         # returns targetAcceleration(segmentID, speed).
         return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
@@ -315,3 +315,19 @@ class TranslateService:
             return config.speeds[5]
         else:
             return config.speeds[6]
+
+    def catAccelValueFor(self, accel):
+        if(accel < -6):
+            return config.accels[0]
+        elif(-6 <= accel < -3):
+            return config.accels[1]
+        elif(-3 <= accel < -1):
+            return config.accels[2]
+        elif(-1 <= accel <= 1):
+            return config.accels[3]
+        elif(1 < accel <= 3):
+            return config.accels[4]
+        elif(3 < accel <= 6):
+            return config.accels[5]
+        else:
+            return config.accels[6]
