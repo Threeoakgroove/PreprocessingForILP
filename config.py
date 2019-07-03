@@ -57,12 +57,13 @@ rawClass = 'rawClass'
 targetSegId = 'segment_id'
 targetClass = 'hasTransportMode'
 transportTargetClass = 'tmClass'
-targetVelocity = 'velocity'
-targetAcceleration = 'acceleration'
+targetVelocity = 'hasVelocity'
+targetAcceleration = 'hasAcceleration'
 targetHasChangepoint = 'hasChangepoint'
 isFasterThanPrev = 'isFasterThanPrev'
 hasPrevSegment = 'hasPrevSegments'
 prevTransportMode = 'prevHasTransportMode'
+prevHaveVelocities = 'prevHasVelocitie'
 prevHasChangepoint = 'prevHasChangepoint'
 
 translationHeader = [rawClass,
@@ -75,4 +76,5 @@ translationHeader = [rawClass,
                      targetHasChangepoint,
                      isFasterThanPrev,
                      prevTransportMode,
+                     prevHaveVelocities,
                      prevHasChangepoint]
