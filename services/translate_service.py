@@ -90,7 +90,7 @@ class TranslateService:
         self.targetClass = config.targetClass
         self.targetVelocity = config.targetVelocity
         self.targetAccel = config.targetAcceleration
-        self.hasPrevSegment = config.hasPrevSegment
+        self.hasPrevSegment = config.prevSegmentRelation
         self.fasterPrev = config.isFasterThanPrev
         self.prevTransportMode = config.prevTransportMode
         self.hasChangepoint = config.targetHasChangepoint
@@ -188,12 +188,16 @@ class TranslateService:
 
                 translated.append(obj)
 
+                hasPrevSegmentIds = []
                 hasPrevSegmentsList = []
                 prevHaveTransportModes = []
                 prevHaveVelocities = []
                 prevHaveChangepoints = []
                 for prevSegment in obj.prevSegments:
-                    hasPrevSegmentsList.append(prevSegment.id)
+                    hasPrevSegmentIds.append(
+                        prevSegment.id)
+                    hasPrevSegmentsList.append(
+                        prevSegment.hasPrevSegment)
                     prevHaveTransportModes.append(
                         prevSegment.hasTransportMode)
                     prevHaveVelocities.append(
@@ -204,7 +208,7 @@ class TranslateService:
                 translationDf.loc[len(translationDf)] = [
                         obj.rawClass,
                         obj.targetSegId,
-                        str(hasPrevSegmentsList),
+                        hasPrevSegmentIds,
                         obj.targetClass,
                         obj.transportTargetClass,
                         obj.targetVelocity,
@@ -213,7 +217,8 @@ class TranslateService:
                         obj.isFasterThanPrev,
                         prevHaveTransportModes,
                         prevHaveVelocities,
-                        prevHaveChangepoints]
+                        prevHaveChangepoints,
+                        hasPrevSegmentsList]
 
         return translationDf
 

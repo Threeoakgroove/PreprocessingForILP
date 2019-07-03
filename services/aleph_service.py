@@ -148,7 +148,7 @@ class AlephService:
 
         segment = "segment"
         sequenceSize = 5
-        transportMode = "transport_mode"
+        transportMode = "transportMode"
         # :- modeh(1,class(+segment,#class)).
         if self.isOneAgainstAll:
             self.printPosAndNegExamples(translationDf, self.transportMode)
@@ -158,7 +158,7 @@ class AlephService:
         else:
             self.printPosOnly(translationDf)
             settings = self.getSettings()
-            modeH = str(":- modeh(1,%s(+%s,#class)).\n" %
+            modeH = str(":- modeh(1,%s(+%s,#transportMode)).\n" %
                         (config.targetClass, segment))
             classArity = 2
 
@@ -180,7 +180,7 @@ class AlephService:
             file.write(":- modeb(1,%s(+%s)).\n" %
                        (config.isFasterThanPrev, segment))
             file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
-                       (sequenceSize, config.hasPrevSegment,
+                       (sequenceSize, config.prevSegmentRelation,
                         segment, segment))
             file.write(":- modeb(%d,%s(+%s,#%s)).\n" %
                        (sequenceSize, config.prevTransportMode,
@@ -201,7 +201,8 @@ class AlephService:
                        (config.targetClass, classArity,
                         config.isFasterThanPrev))
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.targetClass, classArity, config.hasPrevSegment))
+                       (config.targetClass, classArity,
+                        config.prevSegmentRelation))
             file.write(":- determination(%s/%d,%s/2).\n" %
                        (config.targetClass, classArity,
                         config.prevTransportMode))
@@ -214,7 +215,7 @@ class AlephService:
             # Only used, when all four classes should be predicted
             if not self.isOneAgainstAll:
                 for type in config.transportmodes:
-                    file.write("class(%s).\n" % type)
+                    file.write("transportMode(%s).\n" % type)
                 file.write("\n")
 
             for type in config.transportmodes:
@@ -265,6 +266,12 @@ class AlephService:
             file.write("\n")
 
             file.write("% | RELATIONS\n")
+            for index, translation in translationDf.iterrows():
+                prevSegmentRelation = translation[[
+                        config.prevSegmentRelation]].apply(literal_eval)
+                for x in range(5):
+                    file.write("%s\n" % prevSegmentRelation[0][x])
+
             for index, translation in translationDf.iterrows():
                 if translation[config.isFasterThanPrev] != config.empty:
                     file.write("%s\n" % translation.isFasterThanPrev)
