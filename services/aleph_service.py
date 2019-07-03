@@ -14,9 +14,9 @@ from services.data_service import DataService
 class AlephService:
 
     def __init__(self):
-        self.isOneAgainstAll = False
+        self.isOneAgainstAll = True
         self.transportMode = "walk"
-        self.amountOfSegments = 100
+        self.amountOfSegments = 400
         self.dataService = DataService()
 
         # Remove the old ILP files
@@ -174,8 +174,8 @@ class AlephService:
             file.write(modeH)
             file.write(":- modeb(%d,%s(+%s,#speed)).\n" %
                        ((sequenceSize + 1), config.traSegVel, segment))
-            file.write(":- modeb(1,%s(+%s,#acceleration)).\n" %
-                       (config.traSegAcc,
+            file.write(":- modeb(%d,%s(+%s,#acceleration)).\n" %
+                       ((sequenceSize + 1), config.traSegAcc,
                         segment))
             file.write(":- modeb(1,%s(+%s)).\n" %
                        (config.traSegFasterPrev, segment))
@@ -254,6 +254,12 @@ class AlephService:
 
             for index, translation in translationDf.iterrows():
                 file.write("%s\n" % translation[config.traSegAcc])
+
+                accelerations = translation[[
+                    config.traPrevHasAcc]].apply(literal_eval)
+                for x in range(5):
+                    file.write("%s\t" % accelerations[0][x])
+                file.write("\n")
             file.write("\n")
 
             for index, translation in translationDf.iterrows():

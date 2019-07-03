@@ -172,6 +172,8 @@ class TranslateService:
                         prevSegId, prevSegment)
                     prev.hasVelocity = self.getTargetVelocity(
                         prevSegId, prevSegment)
+                    prev.hasAcceleration = self.getTargetAccel(
+                        prevSegId, prevSegment)
 
                     if innerIndex != 0:
                         prev.hasChangepoint = self.getHasChangepoint(
@@ -192,6 +194,7 @@ class TranslateService:
                 hasPrevSegmentsList = []
                 prevHaveTransportModes = []
                 prevHaveVelocities = []
+                prevHaveAccelerations = []
                 prevHaveChangepoints = []
                 for prevSegment in obj.prevSegments:
                     hasPrevSegmentIds.append(
@@ -202,6 +205,8 @@ class TranslateService:
                         prevSegment.hasTransportMode)
                     prevHaveVelocities.append(
                         prevSegment.hasVelocity)
+                    prevHaveAccelerations.append(
+                        prevSegment.hasAcceleration)
                     prevHaveChangepoints.append(
                         prevSegment.hasChangepoint)
 
@@ -217,6 +222,7 @@ class TranslateService:
                         obj.isFasterThanPrev,
                         prevHaveTransportModes,
                         prevHaveVelocities,
+                        prevHaveAccelerations,
                         prevHaveChangepoints,
                         hasPrevSegmentsList]
 
@@ -308,6 +314,7 @@ class TranslateService:
         id = config.empty
         hasTransportMode = config.empty
         hasVelocity = config.empty
+        hasAcceleration = config.empty
         hasPrevSegment = config.empty
         hasChangepoint = config.empty
 

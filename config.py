@@ -69,7 +69,8 @@ traSegAcc = 'hasAcceleration'
 traSegHasCP = 'hasChangepoint'
 traSegFasterPrev = 'isFasterThanPrev'
 traPrevHasTM = 'hasKnownTransportMode'
-traPrevHasVel = 'previousHasVelocitie'
+traPrevHasVel = 'previousHasVelocity'
+traPrevHasAcc = 'previousHasAcceleration'
 traPrevHasCP = 'previousHasChangepoint'
 traRelToPrev = 'previousSegmentRelation'
 
@@ -84,5 +85,6 @@ translationHeader = [traRawClass,
                      traSegFasterPrev,
                      traPrevHasTM,
                      traPrevHasVel,
+                     traPrevHasAcc,
                      traPrevHasCP,
                      traRelToPrev]
