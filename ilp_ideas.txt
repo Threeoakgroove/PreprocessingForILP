@@ -98,5 +98,70 @@ Korrigieren
 Noch Offen:
 ===========
 # + - erklären
-Recallvalue
-modes aufbau in Background Knowledge erklären
+Recallvalue (/)
+modes aufbau in Background Knowledge erklären (/)
+
+################################################################
+# How to improve the structure?
+# ==============================
+# instead of sequences use targetsegment as indicator
+# ------sequence1-- has segments[1,2,3,4,5,6]
+# seg201
+#   seg1 has speed(1_X1), acceleration(1_Y1) and class(1_Z1)
+#   seg2 has speed(1_X2), acceleration(1_Y2) and class(1_Z2)
+#     :
+#     :
+#   seg5 has speed(1_X5), acceleration(1_Y5) and class(1_Z5)
+#   seg201 has speed(1_X6), acceleration(1_Y6) and class (1_Z6)
+#
+# seg202 has segments[1,2,3,4,5,6]
+#   seg1 has speed(2_X1), acceleration(2_Y1) and class(2_Z1)
+#   seg2 has speed(2_X2), acceleration(2_Y2) and class(2_Z2)
+#    :
+#    :
+#   seg5 has speed(2_X5), acceleration(2_Y5) and class(2_Z5)
+#   seg202 has speed(2_X6), acceleration(2_Y6) and class(2_Z6)
+#
+# Structure of a sequence:
+# ==========================
+#
+#       |       |       |       |       | Target
+# ======|=======|=======|=======|=======|=======
+#  seg1 | seg2  | seg3  | seg4  | seg5  | seg201
+#
+#
+# This could lead to rules like:
+# ===============================
+# if
+#   seg1 has speed(X) and
+#   seg2 has acceleration(Y)
+# than
+#   seg203 has class(Z)
+#
+################################################################
+# HowTo:
+# =======
+# get six consecutive lines from dataframe
+#   - sequence size (5) plus target segment
+#
+# current implementation in new structure:
+# =========================================
+# class of targetSegment is only that can be named 'class'
+#   - otherwise this would confuse the aleph-algorithm
+# class of previous segments can still be mentioned elsewise
+#   - prevHasClass(seg1, seg201, bus).
+#   - class(seg201, bus).  <-- this is what will be predicted
+#
+# advantage over current solution:
+# =================================
+# in seg202 the seg1 is faster than seg2
+#   - isFasterThan(seg1,seg2,seg202).
+# in seg202 the seg2 is faster than seg3
+#   - isFasterThan(seg2,seg3,seg202).
+# leading to rules like:
+#   - seg1 is faster than seg 2 and seg 2 is faster than seg 3
+#   - isFasterThan(A,B,Target),
+#       isFasterThan(B,C,Target),
+#       class(Target,bus).
+#
+################################################################

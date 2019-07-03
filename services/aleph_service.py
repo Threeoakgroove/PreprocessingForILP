@@ -305,11 +305,15 @@ class AlephService:
             file.close()
 
     def getWalkSettings(self):
-        return str(
-                ":- set(i,6).\n" +
-                ":- set(minpos,3).\n" +
-                ":- set(noise,3).\n" +
-                ":- set(nodes,20000).\n")
+        numberVariables = str(":- set(i,6).")
+        minimumPositiveCoverage = str(
+            ":- set(minpos,%s)." % config.setMinPosCoverage)
+        maxNoise = str(":- set(noise,%s)." % config.setMaxNoise)
+        maxNodes = str(":- set(nodes,%d)." % config.setMaxNodes)
+
+        return str("%s\n %s\n %s\n %s\n" % (
+                numberVariables, minimumPositiveCoverage,
+                maxNoise, maxNodes))
 
     def getSettings(self):
         return str(

@@ -15,9 +15,15 @@ setTargetedTransportMode = "walk"
 # set 'True' to induce rules for the transportation mode
 #   declared in setTargetedTransportMode
 # set 'False' to induce rules for all four modes of transportation
-setOneAgainstAll = True
+setOneAgainstAll = False
 # the amount of selected segments for the induction
-setNumberOfTotalSegments = 200
+setNumberOfTotalSegments = 400
+# minimum amount of positive examples covered by a new rule
+setMinPosCoverage = 5
+# maximum number of negative examples covered by new rules
+setMaxNoise = 1
+# number of nodes evaluated for one rule
+setMaxNodes = 20000
 
 # settings to run only specific parts of the program
 # DEBUG SETTINGS:

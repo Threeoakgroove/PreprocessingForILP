@@ -1,68 +1,3 @@
-################################################################
-# How to improve the structure?
-# ==============================
-# instead of sequences use targetsegment as indicator
-# ------sequence1-- has segments[1,2,3,4,5,6]
-# seg201
-#   seg1 has speed(1_X1), acceleration(1_Y1) and class(1_Z1)
-#   seg2 has speed(1_X2), acceleration(1_Y2) and class(1_Z2)
-#     :
-#     :
-#   seg5 has speed(1_X5), acceleration(1_Y5) and class(1_Z5)
-#   seg201 has speed(1_X6), acceleration(1_Y6) and class (1_Z6)
-#
-# seg202 has segments[1,2,3,4,5,6]
-#   seg1 has speed(2_X1), acceleration(2_Y1) and class(2_Z1)
-#   seg2 has speed(2_X2), acceleration(2_Y2) and class(2_Z2)
-#    :
-#    :
-#   seg5 has speed(2_X5), acceleration(2_Y5) and class(2_Z5)
-#   seg202 has speed(2_X6), acceleration(2_Y6) and class(2_Z6)
-#
-# Structure of a sequence:
-# ==========================
-#
-#       |       |       |       |       | Target
-# ======|=======|=======|=======|=======|=======
-#  seg1 | seg2  | seg3  | seg4  | seg5  | seg201
-#
-#
-# This could lead to rules like:
-# ===============================
-# if
-#   seg1 has speed(X) and
-#   seg2 has acceleration(Y)
-# than
-#   seg203 has class(Z)
-#
-################################################################
-# HowTo:
-# =======
-# get six consecutive lines from dataframe
-#   - sequence size (5) plus target segment
-#
-# current implementation in new structure:
-# =========================================
-# class of targetSegment is only that can be named 'class'
-#   - otherwise this would confuse the aleph-algorithm
-# class of previous segments can still be mentioned elsewise
-#   - prevHasClass(seg1, seg201, bus).
-#   - class(seg201, bus).  <-- this is what will be predicted
-#
-# advantage over current solution:
-# =================================
-# in seg202 the seg1 is faster than seg2
-#   - isFasterThan(seg1,seg2,seg202).
-# in seg202 the seg2 is faster than seg3
-#   - isFasterThan(seg2,seg3,seg202).
-# leading to rules like:
-#   - seg1 is faster than seg 2 and seg 2 is faster than seg 3
-#   - isFasterThan(A,B,Target),
-#       isFasterThan(B,C,Target),
-#       class(Target,bus).
-#
-################################################################
-
 import config
 
 from services.data_service import DataService
@@ -82,18 +17,8 @@ class TranslateService:
         self.dataService = DataService()
 
         # Settings for logic output
-        self.segmentsPerClass = 10
         self.sequenceSize = 5
-
-        # Define Strings
         self.segment = "segment"
-        self.targetClass = config.traSegHasTM
-        self.targetVelocity = config.traSegVel
-        self.targetAccel = config.traSegAcc
-        self.hasPrevSegment = config.traRelToPrev
-        self.fasterPrev = config.traSegFasterPrev
-        self.prevTransportMode = config.traPrevHasTM
-        self.hasChangepoint = config.traSegHasCP
 
     def translateSegments(self):
         translated = []
@@ -238,12 +163,12 @@ class TranslateService:
         return str("%s(%s)." % (self.segment, segId))
 
     def getTargetClass(self, segId):
-        return str("%s(%s)." % (self.targetClass, segId))
+        return str("%s(%s)." % (config.traSegHasTM, segId))
 
     def getTransportTargetClass(self, segId, targetSegment):
         className = targetSegment[config.tmHead]
         targetClass = str("%s(%s,%s)." % (
-            self.targetClass, segId, className))
+            config.traSegHasTM, segId, className))
 
         return targetClass
 
@@ -252,14 +177,14 @@ class TranslateService:
         catVeloicty = self.catSpeedValueFor(rawVelocity)
 
         # returns targetVelocity(segmentID, speed).
-        return str("%s(%s,%s)." % (self.targetVelocity, segId, catVeloicty))
+        return str("%s(%s,%s)." % (config.traSegVel, segId, catVeloicty))
 
     def getTargetAccel(self, segId, targetSegment):
         rawAccel = targetSegment[config.accelerationHead]
         catAccel = self.catAccelValueFor(rawAccel)
 
         # returns targetAcceleration(segmentID, speed).
-        return str("%s(%s,%s)." % (self.targetAccel, segId, catAccel))
+        return str("%s(%s,%s)." % (config.traSegAcc, segId, catAccel))
 
     def getHasChangepoint(self, segId, targetSegment, prevSegment):
         hasChangepointString = config.empty
@@ -267,7 +192,7 @@ class TranslateService:
 
         if hasChangepoint == 1:
             hasChangepointString = str(
-                "%s(%s)." % (self.hasChangepoint, segId))
+                "%s(%s)." % (config.traSegHasCP, segId))
 
         return hasChangepointString
 
@@ -279,19 +204,20 @@ class TranslateService:
 
     def getHasPrevSegment(self, segId, prevSegId):
 
-        return str("%s(%s,%s)." % (self.hasPrevSegment, segId, prevSegId))
+        return str("%s(%s,%s)." % (config.traRelToPrev, segId, prevSegId))
 
     def getFasterThanPrev(self, segId, targetSegment, prevSegment):
         isFasterThanPrev = config.empty
         if targetSegment[config.speedHead] > prevSegment[config.speedHead]:
-            isFasterThanPrev = str("%s(%s)." % (self.fasterPrev, segId))
+            isFasterThanPrev = str(
+                "%s(%s)." % (config.traSegFasterPrev, segId))
 
         return isFasterThanPrev
 
     def getPrevTransportMode(self, prevSegId, prevSegment):
         transportMode = prevSegment[config.tmHead]
 
-        return str("%s(%s,%s)." % (self.prevTransportMode,
+        return str("%s(%s,%s)." % (config.traPrevHasTM,
                                    prevSegId, transportMode))
 
     class Sequence:
