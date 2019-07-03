@@ -52,7 +52,7 @@ class LabelService:
                 if currentLabel in config.transportmodes:
                     mask = ((gpsPointsDf[config.gpsTimeHead] > row[startColumn]) &
                             (gpsPointsDf[config.gpsTimeHead] <= row[endColumn]))
-                    gpsPointsDf.loc[mask, config.labelHead] = currentLabel
+                    gpsPointsDf.loc[mask, config.labLabelHead] = currentLabel
             gpsPointsDf.dropna(how='any', inplace=True)
 
             # Print to File

@@ -1,5 +1,8 @@
 from os.path import join
 
+#########
+# PATHS #
+#########
 logfileName = 'logfile.log'
 outputPath = join('data', 'output')
 labelPath = join(outputPath, 'labelled')
@@ -10,7 +13,6 @@ bAlephPath = join('aleph', 'transportation_mode.b')
 fAlephPath = join('aleph', 'transportation_mode.f')
 nAlephPath = join('aleph', 'transportation_mode.n')
 pathTestData = join('data', 'testdata')
-# pathTestData = join('data', 'Data')
 
 dashedDateFormat = "%Y-%m-%d %H:%M:%S"
 slashedDateFormat = "%Y/%m/%d %H:%M:%S"
@@ -21,6 +23,17 @@ rounding = 1
 maxEvalSpeed = 50 * rounding
 
 empty = "empty"
+
+# Constants
+transportmodes = ['bike', 'bus', 'car', 'walk']
+speeds = ["very_slow", "slow", "below_medium",
+          "medium", "above_medium", "fast", "very_fast"]
+accels = ["much_slower", "slower", "slightly_slower",
+          "unchanged", "slightly_faster", "faster", "much_faster"]
+
+###########
+# HEADER #
+##########
 
 # Segment Header
 tmHead = 'transMode'
@@ -36,47 +49,40 @@ segmentHeader = [tmHead, startDateHead, endDateHead,
                  hasChangepoint]
 
 # Label Header
-labelHead = 'label'
-dateHead = 'date'
-longHead = 'long'
-latHead = 'lat'
+labLabelHead = 'label'
+labDateHead = 'date'
+labLongHead = 'long'
+labLatHead = 'lat'
 
-labelHeader = [labelHead, dateHead, longHead, latHead]
+labelHeader = [labLabelHead, labDateHead, labLongHead, labLatHead]
 
 gpsTimeHead = 'Datetime'
 
-transportmodes = ['bike', 'bus', 'car', 'walk']
-speeds = ["very_slow", "slow", "below_medium",
-          "medium", "above_medium", "fast", "very_fast"]
-
-accels = ["much_slower", "slower", "slightly_slower",
-          "unchanged", "slightly_faster", "faster", "much_faster"]
-
 # Translation Header
-rawClass = 'rawClass'
-targetSegId = 'segment_id'
-targetClass = 'hasTransportMode'
-transportTargetClass = 'tmClass'
-targetVelocity = 'hasVelocity'
-targetAcceleration = 'hasAcceleration'
-targetHasChangepoint = 'hasChangepoint'
-isFasterThanPrev = 'isFasterThanPrev'
-hasPrevSegment = 'hasPrevSegmentIds'
-prevTransportMode = 'prevHasTransportMode'
-prevHaveVelocities = 'prevHasVelocitie'
-prevHasChangepoint = 'prevHasChangepoint'
-prevSegmentRelation = 'prevSegmentRelation'
+traRawClass = 'rawClass'
+traSegID = 'segment_id'
+traPreSegIDs = 'previousSegmentIDs'
+traSegTM = 'tmClass'
+traSegHasTM = 'hasTransportMode'
+traSegVel = 'hasVelocity'
+traSegAcc = 'hasAcceleration'
+traSegHasCP = 'hasChangepoint'
+traSegFasterPrev = 'isFasterThanPrev'
+traPrevHasTM = 'hasKnownTransportMode'
+traPrevHasVel = 'previousHasVelocitie'
+traPrevHasCP = 'previousHasChangepoint'
+traRelToPrev = 'previousSegmentRelation'
 
-translationHeader = [rawClass,
-                     targetSegId,
-                     hasPrevSegment,
-                     targetClass,
-                     transportTargetClass,
-                     targetVelocity,
-                     targetAcceleration,
-                     targetHasChangepoint,
-                     isFasterThanPrev,
-                     prevTransportMode,
-                     prevHaveVelocities,
-                     prevHasChangepoint,
-                     prevSegmentRelation]
+translationHeader = [traRawClass,
+                     traSegID,
+                     traPreSegIDs,
+                     traSegHasTM,
+                     traSegTM,
+                     traSegVel,
+                     traSegAcc,
+                     traSegHasCP,
+                     traSegFasterPrev,
+                     traPrevHasTM,
+                     traPrevHasVel,
+                     traPrevHasCP,
+                     traRelToPrev]

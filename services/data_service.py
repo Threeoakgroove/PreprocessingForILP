@@ -36,8 +36,8 @@ class DataService:
                             skiprows=[0, 1, 2, 3, 4, 5],
                             header=None,
                             usecols=[0, 1, 5, 6],
-                            names=[config.latHead,
-                                   config.longHead,
+                            names=[config.labLatHead,
+                                   config.labLongHead,
                                    "date",
                                    "time"])
             )

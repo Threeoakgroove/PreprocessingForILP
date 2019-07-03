@@ -87,13 +87,13 @@ class TranslateService:
 
         # Define Strings
         self.segment = "segment"
-        self.targetClass = config.targetClass
-        self.targetVelocity = config.targetVelocity
-        self.targetAccel = config.targetAcceleration
-        self.hasPrevSegment = config.prevSegmentRelation
-        self.fasterPrev = config.isFasterThanPrev
-        self.prevTransportMode = config.prevTransportMode
-        self.hasChangepoint = config.targetHasChangepoint
+        self.targetClass = config.traSegHasTM
+        self.targetVelocity = config.traSegVel
+        self.targetAccel = config.traSegAcc
+        self.hasPrevSegment = config.traRelToPrev
+        self.fasterPrev = config.traSegFasterPrev
+        self.prevTransportMode = config.traPrevHasTM
+        self.hasChangepoint = config.traSegHasCP
 
     def translateSegments(self):
         translated = []

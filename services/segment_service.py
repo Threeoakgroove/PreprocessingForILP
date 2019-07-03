@@ -136,7 +136,7 @@ class SegmentService:
 
         for index, row in labeledDf.iterrows():
             currentDate = self.getDate(labeledDf, index)
-            currentLabel = labeledDf.iloc[index][config.labelHead]
+            currentLabel = labeledDf.iloc[index][config.labLabelHead]
 
             # if there is already a changepoint detected, do not check again
             if hasChangepoint is not True:
@@ -188,7 +188,7 @@ class SegmentService:
                         startDate = lastDate
                         segmentsDistance = currentDistance
 
-                    segmentLabel = labeledDf.iloc[index][config.labelHead]
+                    segmentLabel = labeledDf.iloc[index][config.labLabelHead]
 
             # Reset
             hasChangepoint = False
@@ -235,8 +235,9 @@ class SegmentService:
 
     def getDistanceBetween(self, df, index1, index2):
         return self.featureService.distanceInMeter(
-            df.iloc[index1][config.longHead], df.iloc[index1][config.latHead],
-            df.iloc[index2][config.longHead], df.iloc[index2][config.latHead])
+            df.iloc[index1][config.labLongHead], df.iloc[
+                index1][config.labLatHead],
+            df.iloc[index2][config.labLongHead], df.iloc[index2][config.labLatHead])
 
     def getDate(self, df, index):
         return self.dateService.getDateTimeObjectDash(

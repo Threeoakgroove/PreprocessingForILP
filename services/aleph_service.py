@@ -14,9 +14,9 @@ from services.data_service import DataService
 class AlephService:
 
     def __init__(self):
-        self.isOneAgainstAll = True
+        self.isOneAgainstAll = False
         self.transportMode = "walk"
-        self.amountOfSegments = 400
+        self.amountOfSegments = 100
         self.dataService = DataService()
 
         # Remove the old ILP files
@@ -50,8 +50,8 @@ class AlephService:
                 continue
             row = self.getRandomRowFromDf(folder, file)
 
-            rowTargetSegId = row[config.targetSegId]
-            rowTransportMode = row[config.rawClass]
+            rowTargetSegId = row[config.traSegID]
+            rowTransportMode = row[config.traRawClass]
 
             if((self.canRowBeAddedOAA(
                      rowTargetSegId, rowTransportMode) is False) or
@@ -60,7 +60,7 @@ class AlephService:
                 continue
             else:
                 segmentDf.loc[len(segmentDf)] = row
-                self.usedSegments.append(row[config.targetSegId])
+                self.usedSegments.append(row[config.traSegID])
                 self.updateCounters(rowTransportMode)
 
         return segmentDf
@@ -148,18 +148,18 @@ class AlephService:
 
         segment = "segment"
         sequenceSize = 5
-        transportMode = "transportMode"
+        transportMode = "transport_mode"
         # :- modeh(1,class(+segment,#class)).
         if self.isOneAgainstAll:
             self.printPosAndNegExamples(translationDf, self.transportMode)
             settings = self.getWalkSettings()
             modeH = str(":- modeh(1,%s(+%s)).\n" %
-                        (config.targetClass, segment))
+                        (config.traSegHasTM, segment))
         else:
             self.printPosOnly(translationDf)
             settings = self.getSettings()
             modeH = str(":- modeh(1,%s(+%s,#transportMode)).\n" %
-                        (config.targetClass, segment))
+                        (config.traSegHasTM, segment))
             classArity = 2
 
         # Background Knowledge
@@ -173,17 +173,17 @@ class AlephService:
             # ============================
             file.write(modeH)
             file.write(":- modeb(%d,%s(+%s,#speed)).\n" %
-                       ((sequenceSize + 1), config.targetVelocity, segment))
+                       ((sequenceSize + 1), config.traSegVel, segment))
             file.write(":- modeb(1,%s(+%s,#acceleration)).\n" %
-                       (config.targetAcceleration,
+                       (config.traSegAcc,
                         segment))
             file.write(":- modeb(1,%s(+%s)).\n" %
-                       (config.isFasterThanPrev, segment))
+                       (config.traSegFasterPrev, segment))
             file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
-                       (sequenceSize, config.prevSegmentRelation,
+                       (sequenceSize, config.traRelToPrev,
                         segment, segment))
             file.write(":- modeb(%d,%s(+%s,#%s)).\n" %
-                       (sequenceSize, config.prevTransportMode,
+                       (sequenceSize, config.traPrevHasTM,
                         segment, transportMode))
             file.write(":- modeb(%d,%s(+%s)).\n" %
                        ((sequenceSize + 1), config.hasChangepoint,
@@ -193,21 +193,21 @@ class AlephService:
             file.write("% | DETERMINATIONS\n")
             # =================================
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.targetClass, classArity, config.targetVelocity))
+                       (config.traSegHasTM, classArity, config.traSegVel))
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.targetClass, classArity,
-                        config.targetAcceleration))
+                       (config.traSegHasTM, classArity,
+                        config.traSegAcc))
             file.write(":- determination(%s/%d,%s/1).\n" %
-                       (config.targetClass, classArity,
-                        config.isFasterThanPrev))
+                       (config.traSegHasTM, classArity,
+                        config.traSegFasterPrev))
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.targetClass, classArity,
-                        config.prevSegmentRelation))
+                       (config.traSegHasTM, classArity,
+                        config.traRelToPrev))
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.targetClass, classArity,
-                        config.prevTransportMode))
+                       (config.traSegHasTM, classArity,
+                        config.traPrevHasTM))
             file.write(":- determination(%s/%d,%s/1).\n" %
-                       (config.targetClass, classArity, config.hasChangepoint))
+                       (config.traSegHasTM, classArity, config.hasChangepoint))
             file.write("\n")
 
             file.write("% | TYPES\n")
@@ -231,9 +231,9 @@ class AlephService:
             file.write("\n")
 
             for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.targetSegId])
+                file.write("%s\n" % translation[config.traSegID])
                 segmentTypes = translation[[
-                    config.hasPrevSegment]].apply(literal_eval)
+                    config.traPreSegIDs]].apply(literal_eval)
 
                 for x in range(5):
                     file.write("%s\t" % segmentTypes[0][x])
@@ -243,22 +243,22 @@ class AlephService:
 
             file.write("% | FEATURES\n")
             for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.targetVelocity])
+                file.write("%s\n" % translation[config.traSegVel])
 
                 velocities = translation[[
-                    config.prevHaveVelocities]].apply(literal_eval)
+                    config.traPrevHasVel]].apply(literal_eval)
                 for x in range(5):
                     file.write("%s\t" % velocities[0][x])
                 file.write("\n")
             file.write("\n")
 
             for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.targetAcceleration])
+                file.write("%s\n" % translation[config.traSegAcc])
             file.write("\n")
 
             for index, translation in translationDf.iterrows():
                 transportModes = translation[[
-                    config.prevTransportMode]].apply(literal_eval)
+                    config.traPrevHasTM]].apply(literal_eval)
 
                 for x in range(5):
                     file.write("%s\t" % transportModes[0][x])
@@ -268,25 +268,25 @@ class AlephService:
             file.write("% | RELATIONS\n")
             for index, translation in translationDf.iterrows():
                 prevSegmentRelation = translation[[
-                        config.prevSegmentRelation]].apply(literal_eval)
+                        config.traRelToPrev]].apply(literal_eval)
                 for x in range(5):
                     file.write("%s\n" % prevSegmentRelation[0][x])
 
             for index, translation in translationDf.iterrows():
-                if translation[config.isFasterThanPrev] != config.empty:
+                if translation[config.traSegFasterPrev] != config.empty:
                     file.write("%s\n" % translation.isFasterThanPrev)
             file.write("\n")
 
             for index, translation in translationDf.iterrows():
                 currentHasChangepoint = translation[
-                    config.targetHasChangepoint]
+                    config.traSegHasCP]
 
-                if translation[config.targetHasChangepoint] != config.empty:
+                if translation[config.traSegHasCP] != config.empty:
                     file.write("%s\n" % currentHasChangepoint)
 
             for index, translation in translationDf.iterrows():
                 changepoints = translation[[
-                        config.prevHasChangepoint]].apply(literal_eval)
+                        config.traPrevHasCP]].apply(literal_eval)
                 for x in range(5):
                     if changepoints[0][x] != config.empty:
                         file.write("%s\n" % changepoints[0][x])
@@ -312,19 +312,19 @@ class AlephService:
         # Positive Examples
         with open(config.fAlephPath, "w") as file:
             for index, row in translationDf.iterrows():
-                if row[config.rawClass] == transportMode:
-                    file.write("%s\n" % row[config.targetClass])
+                if row[config.traRawClass] == transportMode:
+                    file.write("%s\n" % row[config.traSegHasTM])
             file.close()
 
         # Negative Examples
         with open(config.nAlephPath, "w") as file:
             for index, row in translationDf.iterrows():
-                if row[config.rawClass] != transportMode:
-                    file.write("%s\n" % row[config.targetClass])
+                if row[config.traRawClass] != transportMode:
+                    file.write("%s\n" % row[config.traSegHasTM])
             file.close()
 
     def printPosOnly(self, translationDf):
         with open(config.fAlephPath, "w") as file:
             for index, row in translationDf.iterrows():
-                file.write("%s\n" % row[config.transportTargetClass])
+                file.write("%s\n" % row[config.traSegTM])
             file.close()
