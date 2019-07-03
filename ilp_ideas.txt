@@ -46,17 +46,18 @@ Implementierung:
 ----------------
 neue Features:
 * hasChangepoint - feature (/)
-* hasStopPoint - feature 
 * tmChangeInAnyPrior - relation (/)
 * look at determinations again (/)
 
-* add hasChangepoint already in segmentation step
+* add hasChangepoint already in segmentation step (/)
 
-* hasPrevSegment - sollte immer von 0 zu 1 von 1 zu 2 usw. gehen...
-** alternative hasPredecessor zusätzlich
+* hasPrevSegment - sollte immer von 0 zu 1 von 1 zu 2 usw. gehen... (/)
+** alternative hasPredecessor zusätzlich (x)
+
+* hasStopPoint - feature 
 
 Selektion von je 100 Objekten pro Target
-* 1. Implementierung = random 100
+* 1. Implementierung = random 100 (/)
 * evntl. 2. Version = schauen das 25% oder ähnlich, Changepoint beinhalten
 
 Label Zuweisung:
@@ -71,15 +72,15 @@ Kapitel 3 --> Preprocessing zu einem ersten Sinnvollen Stand bringen (/)
 
 TODO für Freitag:
 =================
-Kapitel 3 --> ILP zu einem ersten Sinnvollen Stand bringen
+Kapitel 3 --> ILP zu einem ersten Sinnvollen Stand bringen (/)
 
-Auffangen was Donnerstags nicht geschafft wurde?
+Auffangen was Donnerstags nicht geschafft wurde? (/)
 
 TODO für Samstag:
 =================
 Auswerten der Resultate
-* Struktur für Auswertung
-* Vergleich 1 against all, 4 against 4
+* Struktur für Auswertung 
+* Vergleich 1 against all, 4 against 4 (/)
 
 TODO für Sonntag:
 =================

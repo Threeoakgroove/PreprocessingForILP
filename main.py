@@ -12,43 +12,43 @@ from services.translate_service import TranslateService
 class Main:
 
     def __init__(self,
-                 labelData,
-                 makeSegments,
-                 makeTranslations,
-                 createLogicProgram,
-                 showPlots):
+                 skipLabelling,
+                 skipSegmenting,
+                 skipTranslating,
+                 skipLogicProgram,
+                 skipMakingPlots):
         self.setupLogging()
         logging.info("Programm Started.")
 
-        if labelData:
+        if not skipLabelling:
             logging.info("Label GPS Points.")
             labelService = LabelService()
             labelService.generateLabeledGpsPoints()
         else:
             logging.info("Skip labeling GPS Points.")
 
-        if makeSegments:
+        if not skipSegmenting:
             logging.info("Generating Segments.")
             segmentService = SegmentService()
             segmentService.generateSegments()
         else:
             logging.info("Skip Generating Segments.")
 
-        if makeTranslations:
+        if not skipTranslating:
             logging.info("Translating Segments.")
             translateService = TranslateService()
             translateService.translateSegments()
         else:
             logging.info("Skip Translating Segments.")
 
-        if createLogicProgram:
+        if not skipLogicProgram:
             logging.info("Generating Logic Program.")
             alephService = AlephService()
             alephService.generateLogicProgram()
         else:
             logging.info("Skip Generating Logic Program.")
 
-        if showPlots:
+        if not skipMakingPlots:
             logging.info("Making Plots.")
             plotService = PlotService()
             plotService.generatePlots()
@@ -76,14 +76,21 @@ class Main:
 
 
 if __name__ == '__main__':
-    labelData = False
-    makeSegments = False
-    makeTranslations = True
-    createLogicProgram = True
-    showPlots = False
+    skipLabelling = False
+    skipSegmenting = False
+    skipTranslating = False
+    skipLogicProgram = False
+    skipMakingPlots = True
 
-    Main(labelData,
-         makeSegments,
-         makeTranslations,
-         createLogicProgram,
-         showPlots)
+    if not config.setRunAll:
+        skipLabelling = config.setSkipLabelling
+        skipSegmenting = config.setSkipSegmenting
+        skipTranslating = config.setSkipTranslating
+        skipLogicProgram = config.setSkipLogicProgram
+        skipMakingPlots = config.setSkipMakingPlots
+
+    Main(skipLabelling,
+         skipSegmenting,
+         skipTranslating,
+         skipLogicProgram,
+         skipMakingPlots)

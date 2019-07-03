@@ -14,9 +14,6 @@ from services.data_service import DataService
 class AlephService:
 
     def __init__(self):
-        self.isOneAgainstAll = True
-        self.transportMode = "walk"
-        self.amountOfSegments = 400
         self.dataService = DataService()
 
         # Remove the old ILP files
@@ -29,7 +26,8 @@ class AlephService:
         self.bikeCounter = 0
         self.busCounter = 0
         self.carCounter = 0
-        self.nonWalkCounter = 0
+        self.transportModeCounter = 0
+        self.nonTransportModeCounter = 0
 
     def generateLogicProgram(self):
         # 4. Version
@@ -43,7 +41,7 @@ class AlephService:
         userFolders = self.dataService.getFileNamesInPath(
             config.translationPath)
 
-        while len(segmentDf) < self.amountOfSegments:
+        while len(segmentDf) < config.setNumberOfTotalSegments:
             folder = self.getRandomFolder(userFolders)
             file = self.getRandomFileInFolder(folder)
             if file == config.empty:
@@ -55,7 +53,7 @@ class AlephService:
 
             if((self.canRowBeAddedOAA(
                      rowTargetSegId, rowTransportMode) is False) or
-                    (not self.isOneAgainstAll and self.canRowBeAdded(
+                    (not config.setOneAgainstAll and self.canRowBeAdded(
                      rowTargetSegId, rowTransportMode) is False)):
                 continue
             else:
@@ -66,11 +64,11 @@ class AlephService:
         return segmentDf
 
     def updateCounters(self, rowTransportMode):
-        if self.isOneAgainstAll:
-            if(rowTransportMode == self.transportMode):
-                self.walkCounter += 1
+        if config.setOneAgainstAll:
+            if(rowTransportMode == config.setTargetedTransportMode):
+                self.transportModeCounter += 1
             else:
-                self.nonWalkCounter += 1
+                self.nonTransportModeCounter += 1
         else:
             if(rowTransportMode == "walk"):
                 self.walkCounter += 1
@@ -86,11 +84,13 @@ class AlephService:
 
     def canRowBeAddedOAA(self, rowTargetSegId, rowTransportMode):
         canBeAdded = True
-        if (self.isOneAgainstAll and (rowTargetSegId in self.usedSegments or
-            (rowTransportMode == self.transportMode and
-                self.walkCounter >= (self.amountOfSegments / 2)) or
-            (rowTransportMode != self.transportMode and
-                self.nonWalkCounter >= (self.amountOfSegments / 2)))):
+        if (config.setOneAgainstAll and (rowTargetSegId in self.usedSegments or
+            (rowTransportMode == config.setTargetedTransportMode and
+                self.transportModeCounter >= int(
+                    config.setNumberOfTotalSegments / 2)) or
+            (rowTransportMode != config.setTargetedTransportMode and
+                self.nonTransportModeCounter >= int(
+                    config.setNumberOfTotalSegments / 2)))):
             canBeAdded = False
 
         return canBeAdded
@@ -99,13 +99,17 @@ class AlephService:
         canBeAdded = True
         if (rowTargetSegId in self.usedSegments or
             (rowTransportMode == "walk" and
-                self.walkCounter >= (self.amountOfSegments / 4)) or
+                self.walkCounter >= int(
+                    config.setNumberOfTotalSegments / 4)) or
             (rowTransportMode == "bike" and
-                self.bikeCounter >= (self.amountOfSegments / 4)) or
+                self.bikeCounter >= int(
+                    config.setNumberOfTotalSegments / 4)) or
             (rowTransportMode == "bus" and
-                self.busCounter >= (self.amountOfSegments / 4)) or
+                self.busCounter >= int(
+                    config.setNumberOfTotalSegments / 4)) or
             (rowTransportMode == "car" and
-                self.carCounter >= (self.amountOfSegments / 4))):
+                self.carCounter >= int(
+                    config.setNumberOfTotalSegments / 4))):
             canBeAdded = False
 
         return canBeAdded
@@ -150,8 +154,9 @@ class AlephService:
         sequenceSize = 5
         transportMode = "transport_mode"
         # :- modeh(1,class(+segment,#class)).
-        if self.isOneAgainstAll:
-            self.printPosAndNegExamples(translationDf, self.transportMode)
+        if config.setOneAgainstAll:
+            self.printPosAndNegExamples(
+                translationDf, config.setTargetedTransportMode)
             settings = self.getWalkSettings()
             modeH = str(":- modeh(1,%s(+%s)).\n" %
                         (config.traSegHasTM, segment))
@@ -213,7 +218,7 @@ class AlephService:
             file.write("% | TYPES\n")
             # ============================
             # Only used, when all four classes should be predicted
-            if not self.isOneAgainstAll:
+            if not config.setOneAgainstAll:
                 for type in config.transportmodes:
                     file.write("transportMode(%s).\n" % type)
                 file.write("\n")
