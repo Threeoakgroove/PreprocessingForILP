@@ -158,6 +158,7 @@ class TranslateService:
                     segId, targetSegment, prevSegment)
 
                 # Relations
+                previousOfPrevSegId = segId
                 prevSegId = self.getPrevSegmentId(segId)
                 innerPrevSegment = None
                 prevSegments = []
@@ -167,7 +168,7 @@ class TranslateService:
 
                     prev.id = self.getLogicSegId(prevSegId)
                     prev.hasPrevSegment = self.getHasPrevSegment(
-                        segId, prevSegId)
+                        previousOfPrevSegId, prevSegId)
                     prev.hasTransportMode = self.getPrevTransportMode(
                         prevSegId, prevSegment)
                     prev.hasVelocity = self.getTargetVelocity(
@@ -184,6 +185,7 @@ class TranslateService:
                     prevSegment = df.iloc[prevSegIndex]
                     innerPrevSegIndex = prevSegIndex - 1
                     innerPrevSegment = df.iloc[innerPrevSegIndex]
+                    previousOfPrevSegId = prevSegId
                     prevSegId = self.getPrevSegmentId(prevSegId)
 
                 obj.prevSegments = prevSegments
