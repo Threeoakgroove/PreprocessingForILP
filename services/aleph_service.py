@@ -21,13 +21,29 @@ class AlephService:
         self.dataService.removeFile(config.fAlephPath)
         self.dataService.removeFile(config.nAlephPath)
 
+        self.dividedTotalSegments = int(config.setNumberOfTotalSegments / 20)
+        # 80 % of examples without CP, 20 % with
+        # Classify Four
+        self.examplesCF = self.dividedTotalSegments * 4
+        self.cpExamplesCF = self.dividedTotalSegments
+        # One Against All
+        self.examplesOAA = self.dividedTotalSegments * 8
+        self.cpExamplesOAA = self.dividedTotalSegments * 2
+
         self.usedSegments = []
         self.walkCounter = 0
         self.bikeCounter = 0
         self.busCounter = 0
         self.carCounter = 0
+        self.cpWalkCounter = 0
+        self.cpBikeCounter = 0
+        self.cpBusCounter = 0
+        self.cpCarCounter = 0
+
         self.transportModeCounter = 0
         self.nonTransportModeCounter = 0
+        self.cpTransportModeCounter = 0
+        self.cpNonTransportModeCounter = 0
 
     def generateLogicProgram(self):
         # 4. Version
@@ -50,69 +66,76 @@ class AlephService:
 
             rowTargetSegId = row[config.traSegID]
             rowTransportMode = row[config.traRawClass]
+            rowHasChangepoint = []
+            rowHasChangepoint.append(row[config.traSegHasCP])
+            prevSegCPs = row[[config.traPrevHasCP]].apply(literal_eval)
+            for x in range(5):
+                rowHasChangepoint.append(prevSegCPs[0][x])
 
-            if((self.canRowBeAddedOAA(
-                     rowTargetSegId, rowTransportMode) is False) or
-                    (not config.setOneAgainstAll and self.canRowBeAdded(
-                     rowTargetSegId, rowTransportMode) is False)):
-                continue
+            # If is Changepoint Segment
+            if (self.checkNotEmpty(rowHasChangepoint)):
+                if (self.isChangeSegmentNeeded(rowTransportMode)):
+                    segmentDf.loc[len(segmentDf)] = row
+                    self.usedSegments.append(row[config.traSegID])
+            elif (self.isSegmentNeeded(rowTransportMode)):
+                    segmentDf.loc[len(segmentDf)] = row
+                    self.usedSegments.append(row[config.traSegID])
             else:
-                segmentDf.loc[len(segmentDf)] = row
-                self.usedSegments.append(row[config.traSegID])
-                self.updateCounters(rowTransportMode)
-
+                continue
         return segmentDf
 
-    def updateCounters(self, rowTransportMode):
-        if config.setOneAgainstAll:
-            if(rowTransportMode == config.setTargetedTransportMode):
-                self.transportModeCounter += 1
-            else:
-                self.nonTransportModeCounter += 1
-        else:
-            if(rowTransportMode == "walk"):
-                self.walkCounter += 1
-            elif(rowTransportMode == "bike"):
-                self.bikeCounter += 1
-            elif(rowTransportMode == "bus"):
-                self.busCounter += 1
-            elif(rowTransportMode == "car"):
-                self.carCounter += 1
-            else:
-                logging.warn(
-                    "Unknown transport-mode in data %s" % rowTransportMode)
+    def isChangeSegmentNeeded(self, transportMode):
+        tmIsNeeded = False
+        if (transportMode == "walk" and
+                self.cpWalkCounter < self.cpExamplesCF):
+            tmIsNeeded = True
+            self.cpWalkCounter += 1
+            logging.info(str("Walk CP Counter = %d/%d" %
+                             (self.cpWalkCounter, self.cpExamplesCF)))
+        elif (transportMode == "bike" and
+                self.cpBikeCounter < self.cpExamplesCF):
+            tmIsNeeded = True
+            self.cpBikeCounter += 1
+            logging.info(str("Bike CP Counter = %d/%d" %
+                             (self.cpBikeCounter, self.cpExamplesCF)))
+        elif (transportMode == "bus" and
+                self.cpBusCounter < self.cpExamplesCF):
+            tmIsNeeded = True
+            self.cpBusCounter += 1
+            logging.info(str("Bus CP Counter = %d/%d" %
+                             (self.cpBusCounter, self.cpExamplesCF)))
+        elif (transportMode == "car" and
+                self.cpCarCounter < self.cpExamplesCF):
+            tmIsNeeded = True
+            self.cpCarCounter += 1
+            logging.info(str("Car CP Counter = %d/%d" %
+                             (self.cpCarCounter, self.cpExamplesCF)))
 
-    def canRowBeAddedOAA(self, rowTargetSegId, rowTransportMode):
-        canBeAdded = True
-        if (config.setOneAgainstAll and (rowTargetSegId in self.usedSegments or
-            (rowTransportMode == config.setTargetedTransportMode and
-                self.transportModeCounter >= int(
-                    config.setNumberOfTotalSegments / 2)) or
-            (rowTransportMode != config.setTargetedTransportMode and
-                self.nonTransportModeCounter >= int(
-                    config.setNumberOfTotalSegments / 2)))):
-            canBeAdded = False
+        return tmIsNeeded
 
-        return canBeAdded
+    def checkNotEmpty(self, cpList):
+        return cpList[1:] != cpList[:-1]
 
-    def canRowBeAdded(self, rowTargetSegId, rowTransportMode):
-        canBeAdded = True
-        if (rowTargetSegId in self.usedSegments or
-            (rowTransportMode == "walk" and
-                self.walkCounter >= int(
-                    config.setNumberOfTotalSegments / 4)) or
-            (rowTransportMode == "bike" and
-                self.bikeCounter >= int(
-                    config.setNumberOfTotalSegments / 4)) or
-            (rowTransportMode == "bus" and
-                self.busCounter >= int(
-                    config.setNumberOfTotalSegments / 4)) or
-            (rowTransportMode == "car" and
-                self.carCounter >= int(
-                    config.setNumberOfTotalSegments / 4))):
-            canBeAdded = False
+    def isSegmentNeeded(self, transportMode):
+        tmIsNeeded = False
+        if (transportMode == "walk" and
+                self.walkCounter < self.examplesCF):
+            tmIsNeeded = True
+            self.walkCounter += 1
+        elif (transportMode == "bike" and
+                self.bikeCounter < self.examplesCF):
+            tmIsNeeded = True
+            self.bikeCounter += 1
+        elif (transportMode == "bus" and
+                self.busCounter < self.examplesCF):
+            tmIsNeeded = True
+            self.busCounter += 1
+        elif (transportMode == "car" and
+                self.carCounter < self.examplesCF):
+            tmIsNeeded = True
+            self.carCounter += 1
 
-        return canBeAdded
+        return tmIsNeeded
 
     def getRandomRowFromDf(self, folder, file):
         path = join(config.translationPath, folder, file)
@@ -154,7 +177,7 @@ class AlephService:
         sequenceSize = 5
         transportMode = "transport_mode"
         # :- modeh(1,class(+segment,#class)).
-        if config.setOneAgainstAll:
+        if config.setWithNegativeExamples:
             self.printPosAndNegExamples(
                 translationDf, config.setTargetedTransportMode)
             settings = self.getWalkSettings()
@@ -162,7 +185,7 @@ class AlephService:
                         (config.traSegHasTM, segment))
         else:
             self.printPosOnly(translationDf)
-            settings = self.getSettings()
+            settings = self.getPosonlySettings()
             modeH = str(":- modeh(1,%s(+%s,#transportMode)).\n" %
                         (config.traSegHasTM, segment))
             classArity = 2
@@ -218,7 +241,7 @@ class AlephService:
             file.write("% | TYPES\n")
             # ============================
             # Only used, when all four classes should be predicted
-            if not config.setOneAgainstAll:
+            if not config.setWithNegativeExamples:
                 for type in config.transportmodes:
                     file.write("transportMode(%s).\n" % type)
                 file.write("\n")
@@ -315,7 +338,7 @@ class AlephService:
                 numberVariables, minimumPositiveCoverage,
                 maxNoise, maxNodes))
 
-    def getSettings(self):
+    def getPosonlySettings(self):
         return str(
                 ":- set(i,6).\n" +
                 ":- set(clauselength,20).\n" +
@@ -323,7 +346,8 @@ class AlephService:
                 ":- set(minpos,3).\n" +
                 ":- set(noise,0).\n" +
                 ":- set(nodes,20000).\n" +
-                ":- set(gsamplesize,100).\n")
+                ":- set(gsamplesize,100).\n\n" +
+                "%s\n" % config.constraint)
 
     def printPosAndNegExamples(self, translationDf, transportMode):
         # Positive Examples

@@ -15,9 +15,10 @@ setTargetedTransportMode = "walk"
 # set 'True' to induce rules for the transportation mode
 #   declared in setTargetedTransportMode
 # set 'False' to induce rules for all four modes of transportation
-setOneAgainstAll = False
+setWithNegativeExamples = False
 # the amount of selected segments for the induction
-setNumberOfTotalSegments = 400
+# should be a value divideable by 20
+setNumberOfTotalSegments = 100
 # minimum amount of positive examples covered by a new rule
 setMinPosCoverage = 5
 # maximum number of negative examples covered by new rules
