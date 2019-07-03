@@ -134,3 +134,9 @@ translationHeader = [traRawClass,
                      traPrevHasAcc,
                      traPrevHasCP,
                      traRelToPrev]
+
+##############
+# CONSTRAINT #
+##############
+constraint = str("false:-segment(X),hasTransportMode(X,Y),\
+    hasTransportMode(X,Z),Y\=Z.")

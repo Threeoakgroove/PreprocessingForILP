@@ -317,6 +317,8 @@ class AlephService:
 
     def getSettings(self):
         return str(
+                ":- set(i,6).\n" +
+                ":- set(clauselength,20).\n" +
                 ":- set(evalfn,posonly).\n" +
                 ":- set(minpos,3).\n" +
                 ":- set(noise,0).\n" +
