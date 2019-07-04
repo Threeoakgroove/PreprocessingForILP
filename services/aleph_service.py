@@ -171,7 +171,7 @@ class AlephService:
     def printTranslated(self, translationDf):
         settings = None
         modeH = None
-        classArity = 1
+        hasTransportModeArity = 2
 
         segment = "segment"
         sequenceSize = 5
@@ -180,15 +180,14 @@ class AlephService:
         if config.setWithNegativeExamples:
             self.printPosAndNegExamples(
                 translationDf, config.setTargetedTransportMode)
-            settings = self.getWalkSettings()
-            modeH = str(":- modeh(1,%s(+%s)).\n" %
-                        (config.traSegHasTM, segment))
+            settings = self.getDefaultSetting()
+            modeH = str(":- modeh(1,%s(+%s,#%s)).\n" %
+                        (config.traSegTM, segment, transportMode))
         else:
             self.printPosOnly(translationDf)
-            settings = self.getPosonlySettings()
-            modeH = str(":- modeh(1,%s(+%s,#transportMode)).\n" %
-                        (config.traSegHasTM, segment))
-            classArity = 2
+            settings = self.getPosonlySetting()
+            modeH = str(":- modeh(6,%s(+%s,#%s)).\n" %
+                        (config.traSegTM, segment, transportMode))
 
         # Background Knowledge
         with open(config.bAlephPath, "w") as file:
@@ -221,32 +220,27 @@ class AlephService:
             file.write("% | DETERMINATIONS\n")
             # =================================
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegHasTM, classArity, config.traSegVel))
+                       (config.traSegTM, hasTransportModeArity,
+                        config.traSegVel))
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegHasTM, classArity,
+                       (config.traSegTM, hasTransportModeArity,
                         config.traSegAcc))
             file.write(":- determination(%s/%d,%s/1).\n" %
-                       (config.traSegHasTM, classArity,
+                       (config.traSegTM, hasTransportModeArity,
                         config.traSegFasterPrev))
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegHasTM, classArity,
+                       (config.traSegTM, hasTransportModeArity,
                         config.traRelToPrev))
             file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegHasTM, classArity,
+                       (config.traSegTM, hasTransportModeArity,
                         config.traPrevHasTM))
             file.write(":- determination(%s/%d,%s/1).\n" %
-                       (config.traSegHasTM, classArity, config.hasChangepoint))
+                       (config.traSegTM, hasTransportModeArity,
+                        config.hasChangepoint))
             file.write("\n")
 
             file.write("% | TYPES\n")
-            # ============================
-            # Only used, when all four classes should be predicted
-            if not config.setWithNegativeExamples:
-                for type in config.transportmodes:
-                    file.write("transportMode(%s).\n" % type)
-                file.write("\n")
-
-            for type in config.transportmodes:
+            for type in config.transportModes:
                 file.write("%s(%s).\n" % (transportMode, type))
             file.write("\n")
 
@@ -327,18 +321,15 @@ class AlephService:
 
             file.close()
 
-    def getWalkSettings(self):
-        numberVariables = str(":- set(i,6).")
-        minimumPositiveCoverage = str(
-            ":- set(minpos,%s)." % config.setMinPosCoverage)
-        maxNoise = str(":- set(noise,%s)." % config.setMaxNoise)
-        maxNodes = str(":- set(nodes,%d)." % config.setMaxNodes)
+    def getDefaultSetting(self):
+        return str(
+                ":- set(i,6).\n" +
+                ":- set(clauselength,20).\n" +
+                ":- set(minpos,3).\n" +
+                ":- set(noise,0).\n" +
+                ":- set(nodes,20000).\n")
 
-        return str("%s\n %s\n %s\n %s\n" % (
-                numberVariables, minimumPositiveCoverage,
-                maxNoise, maxNodes))
-
-    def getPosonlySettings(self):
+    def getPosonlySetting(self):
         return str(
                 ":- set(i,6).\n" +
                 ":- set(clauselength,20).\n" +
@@ -353,15 +344,17 @@ class AlephService:
         # Positive Examples
         with open(config.fAlephPath, "w") as file:
             for index, row in translationDf.iterrows():
-                if row[config.traRawClass] == transportMode:
-                    file.write("%s\n" % row[config.traSegHasTM])
+                file.write("%s\n" % row[config.traSegTM])
             file.close()
 
         # Negative Examples
         with open(config.nAlephPath, "w") as file:
             for index, row in translationDf.iterrows():
-                if row[config.traRawClass] != transportMode:
-                    file.write("%s\n" % row[config.traSegHasTM])
+                negTransportModes = row[[
+                    config.traSegHasTM]].apply(literal_eval)
+                for x in range(len(config.transportModes) - 1):
+                    file.write("%s\t" % negTransportModes[0][x])
+                file.write("\n")
             file.close()
 
     def printPosOnly(self, translationDf):

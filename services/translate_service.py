@@ -69,7 +69,8 @@ class TranslateService:
                 # Features
                 obj.rawClass = targetSegment[config.tmHead]
 
-                obj.targetClass = self.getTargetClass(segId)
+                obj.negativeTransportMode = self.getNegativeTransportModes(
+                    segId, targetSegment)
                 obj.transportTargetClass = self.getTransportTargetClass(
                     segId, targetSegment)
                 obj.targetSegId = self.getLogicSegId(segId)
@@ -141,7 +142,7 @@ class TranslateService:
                         obj.rawClass,
                         obj.targetSegId,
                         hasPrevSegmentIds,
-                        obj.targetClass,
+                        obj.negativeTransportMode,
                         obj.transportTargetClass,
                         obj.targetVelocity,
                         obj.targetAccel,
@@ -162,13 +163,21 @@ class TranslateService:
         # returns segment(segmentID).
         return str("%s(%s)." % (self.segment, segId))
 
-    def getTargetClass(self, segId):
-        return str("%s(%s)." % (config.traSegHasTM, segId))
+    def getNegativeTransportModes(self, segId, targetSegment):
+        className = targetSegment[config.tmHead]
+        negativeTransportModes = []
+
+        for tm in config.transportModes:
+            if tm != className:
+                negativeTransportModes.append(
+                    str("%s(%s,%s)." % (config.traSegTM,
+                                        segId, tm)))
+        return negativeTransportModes
 
     def getTransportTargetClass(self, segId, targetSegment):
         className = targetSegment[config.tmHead]
         targetClass = str("%s(%s,%s)." % (
-            config.traSegHasTM, segId, className))
+            config.traSegTM, segId, className))
 
         return targetClass
 
@@ -225,7 +234,7 @@ class TranslateService:
         # Head
         targetSegId = config.empty
         # Feature
-        targetClass = config.empty
+        negativeTransportMode = config.empty
         transportTargetClass = config.empty
         targetVelocity = config.empty
         targetAccel = config.empty

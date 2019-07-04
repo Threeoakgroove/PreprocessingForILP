@@ -16,7 +16,7 @@ class PlotService:
         self.dataService = DataService()
 
     def generatePlots(self):
-        relevantLabels = config.transportmodes
+        relevantLabels = config.transportModes
 
         for label in relevantLabels:
             array = self.getDataForLabel(label)

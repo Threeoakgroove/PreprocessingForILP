@@ -15,10 +15,10 @@ setTargetedTransportMode = "walk"
 # set 'True' to induce rules for the transportation mode
 #   declared in setTargetedTransportMode
 # set 'False' to induce rules for all four modes of transportation
-setWithNegativeExamples = False
+setWithNegativeExamples = True
 # the amount of selected segments for the induction
 # should be a value divideable by 20
-setNumberOfTotalSegments = 100
+setNumberOfTotalSegments = 400
 # minimum amount of positive examples covered by a new rule
 setMinPosCoverage = 5
 # maximum number of negative examples covered by new rules
@@ -57,7 +57,7 @@ translationPath = join(outputPath, 'translated')
 bAlephPath = join('aleph', 'transportation_mode.b')
 fAlephPath = join('aleph', 'transportation_mode.f')
 nAlephPath = join('aleph', 'transportation_mode.n')
-pathTestData = join('data', 'testdata')
+pathTestData = join('data', 'Data')
 
 dashedDateFormat = "%Y-%m-%d %H:%M:%S"
 slashedDateFormat = "%Y/%m/%d %H:%M:%S"
@@ -70,7 +70,7 @@ maxEvalSpeed = 50 * rounding
 empty = "empty"
 
 # Constants
-transportmodes = ['bike', 'bus', 'car', 'walk']
+transportModes = ['bike', 'bus', 'car', 'walk']
 speeds = ["very_slow", "slow", "below_medium",
           "medium", "above_medium", "fast", "very_fast"]
 accels = ["much_slower", "slower", "slightly_slower",
@@ -109,8 +109,8 @@ gpsTimeHead = 'Datetime'
 traRawClass = 'rawClass'
 traSegID = 'segment_id'
 traPreSegIDs = 'previousSegmentIDs'
-traSegTM = 'tmClass'
-traSegHasTM = 'hasTransportMode'
+traSegTM = 'hasTransportMode'
+traSegHasTM = 'hasNotTransportMode'
 traSegVel = 'hasVelocity'
 traSegAcc = 'hasAcceleration'
 traSegHasCP = 'hasChangepoint'

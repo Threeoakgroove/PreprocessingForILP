@@ -49,7 +49,7 @@ class LabelService:
             # add labelname to each point
             for index, row in labelsDf.iterrows():
                 currentLabel = row['Transportation Mode']
-                if currentLabel in config.transportmodes:
+                if currentLabel in config.transportModes:
                     mask = ((gpsPointsDf[config.gpsTimeHead] > row[startColumn]) &
                             (gpsPointsDf[config.gpsTimeHead] <= row[endColumn]))
                     gpsPointsDf.loc[mask, config.labLabelHead] = currentLabel
