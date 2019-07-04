@@ -127,7 +127,7 @@ class SegmentService:
         segmentDf = pd.DataFrame(columns=config.segmentHeader)
 
         segmentsDistance = 0
-        segmentLabel = None
+        segmentLabels = []
         startDate = None
         lastDate = startDate
         lastVelocity = 0
@@ -139,13 +139,15 @@ class SegmentService:
             currentLabel = labeledDf.iloc[index][config.labLabelHead]
 
             # if there is already a changepoint detected, do not check again
-            if hasChangepoint is not True:
-                hasChangepoint = self.hasSegmentsLabelChanged(
-                    segmentLabel, currentLabel, index)
+            if currentLabel not in segmentLabels:
+                segmentLabels.append(currentLabel)
+
+            length = len(segmentLabels)
+            if length >= 2:
+                hasChangepoint = True
 
             if index == 0:
                 startDate = currentDate
-                segmentLabel = currentLabel
             elif index == 1:
                 currentDistance = self.getDistanceBetween(
                     labeledDf, index - 1, index)
@@ -167,10 +169,9 @@ class SegmentService:
                         acceleration = velocity - lastVelocity
                     else:
                         acceleration = velocity
-                    lastVelocity = velocity
 
                     segmentDf.loc[len(segmentDf)] = [
-                        segmentLabel,
+                        segmentLabels,
                         startDate,
                         lastDate,
                         segmentsDistance,
@@ -178,17 +179,18 @@ class SegmentService:
                         acceleration,
                         hasChangepoint]
 
-                    self.countSegment(
-                        segmentLabel, velocity, acceleration)
+                    # Needed for evaluation of the speeds
+                    self.countSegment(segmentLabels, velocity, acceleration)
 
+                    # Setting values for next iteration
                     if self.isTrajectoryBreak(differenceToLast):
                         startDate = currentDate
                         segmentsDistance = 0  # to hide untracked movement
                     else:
                         startDate = lastDate
                         segmentsDistance = currentDistance
-
-                    segmentLabel = labeledDf.iloc[index][config.labLabelHead]
+                    lastVelocity = velocity
+                    segmentLabels = []
 
             # Reset
             hasChangepoint = False
@@ -209,29 +211,30 @@ class SegmentService:
 
         return diff.seconds > timeLimitSec
 
-    def countSegment(self, label, velocity, acceleration):
+    def countSegment(self, labels, velocity, acceleration):
         velocityIndex = int(velocity * config.rounding)
         accelIndex = abs(int(acceleration * config.rounding))
 
-        if velocityIndex < config.maxEvalSpeed:
-            if label == 'bike':
-                self.bikeVelocities[velocityIndex] += 1
-            elif label == 'bus':
-                self.busVelocities[velocityIndex] += 1
-            elif label == 'car':
-                self.carVelocities[velocityIndex] += 1
-            elif label == 'walk':
-                self.walkVelocities[velocityIndex] += 1
+        for label in labels:
+            if velocityIndex < config.maxEvalSpeed:
+                if label == 'bike':
+                    self.bikeVelocities[velocityIndex] += 1
+                elif label == 'bus':
+                    self.busVelocities[velocityIndex] += 1
+                elif label == 'car':
+                    self.carVelocities[velocityIndex] += 1
+                elif label == 'walk':
+                    self.walkVelocities[velocityIndex] += 1
 
-        if accelIndex < config.maxEvalSpeed:
-            if label == 'bike':
-                self.bikeAccelerations[accelIndex] += 1
-            elif label == 'bus':
-                self.busAccelerations[accelIndex] += 1
-            elif label == 'car':
-                self.carAccelerations[accelIndex] += 1
-            elif label == 'walk':
-                self.walkAccelerations[accelIndex] += 1
+            if accelIndex < config.maxEvalSpeed:
+                if label == 'bike':
+                    self.bikeAccelerations[accelIndex] += 1
+                elif label == 'bus':
+                    self.busAccelerations[accelIndex] += 1
+                elif label == 'car':
+                    self.carAccelerations[accelIndex] += 1
+                elif label == 'walk':
+                    self.walkAccelerations[accelIndex] += 1
 
     def getDistanceBetween(self, df, index1, index2):
         return self.featureService.distanceInMeter(

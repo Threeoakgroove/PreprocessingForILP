@@ -33,11 +33,11 @@ setMaxNodes = 20000
 # the global setting for setRunAll has to be 'False'.
 setSkipLabelling = True
 # IMPORTANT: Labelling has to be finished once, before running segmenting.
-setSkipSegmenting = True
+setSkipSegmenting = False
 # IMPORTANT: Segmenting has to be finished once, before running translating.
 setSkipTranslating = True
 # IMPORTANT: Translating has to be finished once, before making logic program.
-setSkipLogicProgram = False
+setSkipLogicProgram = True
 # IMPORTANT: Only produces useful output, when segmenting is run before.
 setSkipMakingPlots = True
 
@@ -57,7 +57,7 @@ translationPath = join(outputPath, 'translated')
 bAlephPath = join('aleph', 'transportation_mode.b')
 fAlephPath = join('aleph', 'transportation_mode.f')
 nAlephPath = join('aleph', 'transportation_mode.n')
-pathTestData = join('data', 'Data')
+pathTestData = join('data', 'testdata')
 
 dashedDateFormat = "%Y-%m-%d %H:%M:%S"
 slashedDateFormat = "%Y/%m/%d %H:%M:%S"
