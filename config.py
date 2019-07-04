@@ -10,15 +10,13 @@ setRunAll = False
 
 # Aleph-Service
 # -------------
-# has to be 'walk', 'bike', 'bus' or 'car'
-setTargetedTransportMode = "walk"
 # set 'True' to induce rules for the transportation mode
 #   declared in setTargetedTransportMode
 # set 'False' to induce rules for all four modes of transportation
-setWithNegativeExamples = True
+setWithNegativeExamples = False
 # the amount of selected segments for the induction
 # should be a value divideable by 20
-setNumberOfTotalSegments = 400
+setNumberOfTotalSegments = 20
 # minimum amount of positive examples covered by a new rule
 setMinPosCoverage = 5
 # maximum number of negative examples covered by new rules
@@ -35,9 +33,9 @@ setSkipLabelling = True
 # IMPORTANT: Labelling has to be finished once, before running segmenting.
 setSkipSegmenting = True
 # IMPORTANT: Segmenting has to be finished once, before running translating.
-setSkipTranslating = False
+setSkipTranslating = True
 # IMPORTANT: Translating has to be finished once, before making logic program.
-setSkipLogicProgram = True
+setSkipLogicProgram = False
 # IMPORTANT: Only produces useful output, when segmenting is run before.
 setSkipMakingPlots = True
 

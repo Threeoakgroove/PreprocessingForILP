@@ -40,15 +40,7 @@ class AlephService:
         self.cpBusCounter = 0
         self.cpCarCounter = 0
 
-        self.transportModeCounter = 0
-        self.nonTransportModeCounter = 0
-        self.cpTransportModeCounter = 0
-        self.cpNonTransportModeCounter = 0
-
     def generateLogicProgram(self):
-        # 4. Version
-        # TODO Wähle X mit changepoint und Y ohne
-
         translationDf = self.generateSegmentDf()
         self.printTranslated(translationDf)
 
@@ -65,7 +57,8 @@ class AlephService:
             row = self.getRandomRowFromDf(folder, file)
 
             rowTargetSegId = row[config.traSegID]
-            rowTransportMode = row[config.traRawClass]
+            rowTransportModes = row[[config.traRawClass]
+                                    ].apply(literal_eval)[0][0]
             rowHasChangepoint = []
             rowHasChangepoint.append(row[config.traSegHasCP])
             prevSegCPs = row[[config.traPrevHasCP]].apply(literal_eval)
@@ -74,10 +67,10 @@ class AlephService:
 
             # If is Changepoint Segment
             if (self.checkNotEmpty(rowHasChangepoint)):
-                if (self.isChangeSegmentNeeded(rowTransportMode)):
+                if (self.isChangeSegmentNeeded(rowTransportModes)):
                     segmentDf.loc[len(segmentDf)] = row
                     self.usedSegments.append(row[config.traSegID])
-            elif (self.isSegmentNeeded(rowTransportMode)):
+            elif (self.isSegmentNeeded(rowTransportModes)):
                     segmentDf.loc[len(segmentDf)] = row
                     self.usedSegments.append(row[config.traSegID])
             else:
@@ -178,13 +171,12 @@ class AlephService:
         transportMode = "transport_mode"
         # :- modeh(1,class(+segment,#class)).
         if config.setWithNegativeExamples:
-            self.printPosAndNegExamples(
-                translationDf, config.setTargetedTransportMode)
+            self.printPosAndNegExamples(translationDf)
             settings = self.getDefaultSetting()
             modeH = str(":- modeh(1,%s(+%s,#%s)).\n" %
                         (config.traSegTM, segment, transportMode))
         else:
-            self.printPosOnly(translationDf)
+            self.printPosAndNegExamples(translationDf)
             settings = self.getPosonlySetting()
             modeH = str(":- modeh(6,%s(+%s,#%s)).\n" %
                         (config.traSegTM, segment, transportMode))
@@ -340,25 +332,22 @@ class AlephService:
                 ":- set(gsamplesize,100).\n\n" +
                 "%s\n" % config.constraint)
 
-    def printPosAndNegExamples(self, translationDf, transportMode):
+    def printPosAndNegExamples(self, translationDf):
         # Positive Examples
         with open(config.fAlephPath, "w") as file:
             for index, row in translationDf.iterrows():
-                file.write("%s\n" % row[config.traSegTM])
+                posTransportModes = row[[
+                    config.traSegTM]].apply(literal_eval)[0]
+                for transportMode in posTransportModes:
+                    file.write("%s\n" % transportMode)
             file.close()
 
         # Negative Examples
-        with open(config.nAlephPath, "w") as file:
-            for index, row in translationDf.iterrows():
-                negTransportModes = row[[
-                    config.traSegHasTM]].apply(literal_eval)
-                for x in range(len(config.transportModes) - 1):
-                    file.write("%s\t" % negTransportModes[0][x])
-                file.write("\n")
-            file.close()
-
-    def printPosOnly(self, translationDf):
-        with open(config.fAlephPath, "w") as file:
-            for index, row in translationDf.iterrows():
-                file.write("%s\n" % row[config.traSegTM])
-            file.close()
+        if config.setWithNegativeExamples:
+            with open(config.nAlephPath, "w") as file:
+                for index, row in translationDf.iterrows():
+                    posTransportModes = row[[
+                        config.traSegHasTM]].apply(literal_eval)[0]
+                    for transportMode in posTransportModes:
+                        file.write("%s\n" % transportMode)
+                file.close()

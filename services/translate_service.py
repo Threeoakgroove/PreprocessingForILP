@@ -131,7 +131,7 @@ class TranslateService:
                         prevSegment.id)
                     hasPrevSegmentsList.append(
                         prevSegment.hasPrevSegment)
-                    prevHaveTransportModes.append(
+                    prevHaveTransportModes.extend(
                         prevSegment.hasTransportMode)
                     prevHaveVelocities.append(
                         prevSegment.hasVelocity)
@@ -186,6 +186,17 @@ class TranslateService:
 
         return translatedTransportModes
 
+    def getPrevTransportMode(self, prevSegId, prevSegment):
+        transportModes = prevSegment[[config.tmHead]].apply(literal_eval)
+        translatedTransportModes = []
+
+        for transportMode in transportModes[0]:
+            translatedTransportModes.append(
+                str("%s(%s,%s)." % (config.traPrevHasTM,
+                                    prevSegId, transportMode)))
+
+        return translatedTransportModes
+
     def getTargetVelocity(self, segId, targetSegment):
         rawVelocity = targetSegment[config.speedHead]
         catVeloicty = self.catSpeedValueFor(rawVelocity)
@@ -227,12 +238,6 @@ class TranslateService:
                 "%s(%s)." % (config.traSegFasterPrev, segId))
 
         return isFasterThanPrev
-
-    def getPrevTransportMode(self, prevSegId, prevSegment):
-        transportMode = prevSegment[config.tmHead]
-
-        return str("%s(%s,%s)." % (config.traPrevHasTM,
-                                   prevSegId, transportMode))
 
     class Sequence:
         rawClass = config.empty
