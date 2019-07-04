@@ -16,7 +16,7 @@ setRunAll = False
 setWithNegativeExamples = False
 # the amount of selected segments for the induction
 # should be a value divideable by 20
-setNumberOfTotalSegments = 100
+numberOfSegments = 100
 # minimum amount of positive examples covered by a new rule
 setMinPosCoverage = 5
 # maximum number of negative examples covered by new rules
@@ -57,6 +57,7 @@ fAlephPath = join('aleph', 'transportation_mode.f')
 nAlephPath = join('aleph', 'transportation_mode.n')
 bPosOnlyPath = join('aleph', 'pos_only_transportation_mode.b')
 fPosOnlyPath = join('aleph', 'pos_only_transportation_mode.f')
+testDataPath = join('aleph', 'testData.b')
 pathTestData = join('data', 'testdata')
 
 dashedDateFormat = "%Y-%m-%d %H:%M:%S"
@@ -141,3 +142,5 @@ translationHeader = [traRawClass,
 ##############
 constraint = str("false:-segment(X),hasTransportMode(X,Y),\
     hasTransportMode(X,Z),Y\=Z.")
+
+transportMode = "transport_mode"

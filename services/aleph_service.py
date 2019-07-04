@@ -23,16 +23,6 @@ class AlephService:
         self.dataService.removeFile(config.bPosOnlyPath)
         self.dataService.removeFile(config.fPosOnlyPath)
 
-        self.dividedTotalSegments = int(config.setNumberOfTotalSegments / 20)
-        # 80 % of examples without CP, 20 % with
-        # Classify Four
-        self.examplesCF = self.dividedTotalSegments * 4
-        self.cpExamplesCF = self.dividedTotalSegments
-        # One Against All
-        self.examplesOAA = self.dividedTotalSegments * 8
-        self.cpExamplesOAA = self.dividedTotalSegments * 2
-
-        self.usedSegments = []
         self.walkCounter = 0
         self.bikeCounter = 0
         self.busCounter = 0
@@ -42,19 +32,39 @@ class AlephService:
         self.cpBusCounter = 0
         self.cpCarCounter = 0
 
-    def generateLogicProgram(self):
-        translationDf = self.generateSegmentDf()
-        isPosOnly = True
-        self.printTranslated(translationDf, isPosOnly)
-        isPosOnly = False
-        self.printTranslated(translationDf, isPosOnly)
+        # is not reseted before the test-data is created
+        # no duplicates in test- and training-data
+        self.usedSegments = []
 
-    def generateSegmentDf(self):
+    def generateLogicProgram(self):
+        logging.info("Selecting TestData")
+        trainingData = self.generateSegmentDf(config.numberOfSegments)
+
+        isPosOnly = True
+        self.printTranslated(trainingData, isPosOnly)
+        self.printExampleFiles(trainingData, isPosOnly)
+
+        isPosOnly = False
+        self.printTranslated(trainingData, isPosOnly)
+        self.printExampleFiles(trainingData, isPosOnly)
+
+        logging.info("Selecting TestData")
+        self.resetGlobalCounters()
+        testData = self.generateSegmentDf(100)
+        self.printTestDataFile(testData)
+
+    def generateSegmentDf(self, numberOfSegments):
         segmentDf = pd.DataFrame(columns=config.translationHeader)
         userFolders = self.dataService.getFileNamesInPath(
             config.translationPath)
 
-        while len(segmentDf) < config.setNumberOfTotalSegments:
+        dividedTotalSegments = int(numberOfSegments / 20)
+        # 80 % of examples without CP, 20 % with
+        # Classify Four
+        examplesCF = dividedTotalSegments * 4
+        cpExamplesCF = dividedTotalSegments
+
+        while len(segmentDf) < numberOfSegments:
             folder = self.getRandomFolder(userFolders)
             file = self.getRandomFileInFolder(folder)
             if file == config.empty:
@@ -70,66 +80,70 @@ class AlephService:
             for x in range(5):
                 rowHasChangepoint.append(prevSegCPs[0][x])
 
-            # If is Changepoint Segment
-            if (self.checkNotEmpty(rowHasChangepoint)):
-                if (self.isChangeSegmentNeeded(rowTransportModes)):
-                    segmentDf.loc[len(segmentDf)] = row
-                    self.usedSegments.append(row[config.traSegID])
-            elif (self.isSegmentNeeded(rowTransportModes)):
-                    segmentDf.loc[len(segmentDf)] = row
-                    self.usedSegments.append(row[config.traSegID])
-            else:
+            if(row[config.traSegID] in self.usedSegments):
                 continue
+            elif ((self.checkForChangePoint(rowHasChangepoint)) and
+                    self.isChangeSegmentNeeded(rowTransportModes,
+                                               cpExamplesCF) or
+                    (self.isSegmentNeeded(rowTransportModes, examplesCF))):
+                segmentDf.loc[len(segmentDf)] = row
+                self.usedSegments.append(row[config.traSegID])
+                logging.info(str(str("Walk: %d/%d" % (self.cpWalkCounter,
+                                                      cpExamplesCF)) +
+                                 str(" Bike: %d/%d" % (self.cpBikeCounter,
+                                                       cpExamplesCF)) +
+                                 str(" Bus: %d/%d" % (self.cpBusCounter,
+                                                      cpExamplesCF)) +
+                                 str(" Car: %d/%d" % (self.cpCarCounter,
+                                                      cpExamplesCF)) +
+                                 str(" | Total: %d/%d" % (len(segmentDf),
+                                                          numberOfSegments))))
+
         return segmentDf
 
-    def isChangeSegmentNeeded(self, transportMode):
+    def isChangeSegmentNeeded(self, transportMode, cpExamplesCF):
         tmIsNeeded = False
         if (transportMode == "walk" and
-                self.cpWalkCounter < self.cpExamplesCF):
+                self.cpWalkCounter < cpExamplesCF):
             tmIsNeeded = True
             self.cpWalkCounter += 1
 
         elif (transportMode == "bike" and
-                self.cpBikeCounter < self.cpExamplesCF):
+                self.cpBikeCounter < cpExamplesCF):
             tmIsNeeded = True
             self.cpBikeCounter += 1
 
         elif (transportMode == "bus" and
-                self.cpBusCounter < self.cpExamplesCF):
+                self.cpBusCounter < cpExamplesCF):
             tmIsNeeded = True
             self.cpBusCounter += 1
 
         elif (transportMode == "car" and
-                self.cpCarCounter < self.cpExamplesCF):
+                self.cpCarCounter < cpExamplesCF):
             tmIsNeeded = True
             self.cpCarCounter += 1
 
-        logging.info(str("Walk: %d/%d; Bike: %d/%d; Bus: %d/%d; Car: %d/%d" %
-                         (self.cpWalkCounter, self.cpExamplesCF,
-                             self.cpBikeCounter, self.cpExamplesCF,
-                             self.cpBusCounter, self.cpExamplesCF,
-                             self.cpCarCounter, self.cpExamplesCF)))
         return tmIsNeeded
 
-    def checkNotEmpty(self, cpList):
+    def checkForChangePoint(self, cpList):
         return cpList[1:] != cpList[:-1]
 
-    def isSegmentNeeded(self, transportMode):
+    def isSegmentNeeded(self, transportMode, examplesCF):
         tmIsNeeded = False
         if (transportMode == "walk" and
-                self.walkCounter < self.examplesCF):
+                self.walkCounter < examplesCF):
             tmIsNeeded = True
             self.walkCounter += 1
         elif (transportMode == "bike" and
-                self.bikeCounter < self.examplesCF):
+                self.bikeCounter < examplesCF):
             tmIsNeeded = True
             self.bikeCounter += 1
         elif (transportMode == "bus" and
-                self.busCounter < self.examplesCF):
+                self.busCounter < examplesCF):
             tmIsNeeded = True
             self.busCounter += 1
         elif (transportMode == "car" and
-                self.carCounter < self.examplesCF):
+                self.carCounter < examplesCF):
             tmIsNeeded = True
             self.carCounter += 1
 
@@ -166,15 +180,30 @@ class AlephService:
 
         return folders[randIndex]
 
-    def printTranslated(self, translationDf, isPosOnly):
-        segment = "segment"
-        sequenceSize = 5
-        transportMode = "transport_mode"
-        modeH = str(":- modeh(*,%s(+%s,#%s)).\n" %
-                    (config.traSegTM, segment, transportMode))
-        self.printExamples(translationDf, isPosOnly)
-        settings = self.getSetting(isPosOnly)
+    def printTestDataFile(self, trainingDf):
+        path = config.testDataPath
+        with open(path, "w") as file:
+            file.write("% TestData File\n\n")
 
+            file.write("% | TargetClause\n")
+            self.writeHasTransportMode(file, trainingDf)
+
+            file.write("% | TYPES\n")
+            self.writeTypes(file)
+            self.writeSegments(file, trainingDf)
+
+            file.write("% | RELATIONS\n")
+            self.writeSegmentRelations(file, trainingDf)
+            self.writeFasterThanPrevious(file, trainingDf)
+            self.writeHasChangePoint(file, trainingDf)
+
+            file.write("% | FEATURES\n")
+            self.writeVelocities(file, trainingDf)
+            self.writeAccelerations(file, trainingDf)
+            self.writePrevSegmentsTM(file, trainingDf)
+            self.writeHasChangePoint(file, trainingDf)
+
+    def printTranslated(self, translationDf, isPosOnly):
         bPath = None
         if isPosOnly:
             bPath = config.bPosOnlyPath
@@ -184,140 +213,160 @@ class AlephService:
         # Background Knowledge
         with open(bPath, "w") as file:
             file.write("% | SETTINGS\n")
-            # ===============================
-            file.write(settings)
-            file.write("\n")
+            self.writeSettings(file, isPosOnly)
 
             file.write("% | MODES\n")
-            # ============================
-            file.write(modeH)
-            file.write(":- modeb(%d,%s(+%s,#speed)).\n" %
-                       ((sequenceSize + 1), config.traSegVel, segment))
-            file.write(":- modeb(%d,%s(+%s,#acceleration)).\n" %
-                       ((sequenceSize + 1), config.traSegAcc,
-                        segment))
-            file.write(":- modeb(1,%s(+%s)).\n" %
-                       (config.traSegFasterPrev, segment))
-            file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
-                       (sequenceSize, config.traRelToPrev,
-                        segment, segment))
-            file.write(":- modeb(%d,%s(+%s,#%s)).\n" %
-                       (sequenceSize, config.traPrevHasTM,
-                        segment, transportMode))
-            file.write(":- modeb(%d,%s(+%s)).\n" %
-                       ((sequenceSize + 1), config.hasChangepoint,
-                        segment))
-            file.write("\n")
+            self.writeModes(file)
 
             file.write("% | DETERMINATIONS\n")
-            # =================================
-            file.write(":- determination(%s/2,%s/2).\n" %
-                       (config.traSegTM,
-                        config.traSegVel))
-            file.write(":- determination(%s/2,%s/2).\n" %
-                       (config.traSegTM,
-                        config.traSegAcc))
-            file.write(":- determination(%s/2,%s/1).\n" %
-                       (config.traSegTM,
-                        config.traSegFasterPrev))
-            file.write(":- determination(%s/2,%s/2).\n" %
-                       (config.traSegTM,
-                        config.traRelToPrev))
-            file.write(":- determination(%s/2,%s/2).\n" %
-                       (config.traSegTM,
-                        config.traPrevHasTM))
-            file.write(":- determination(%s/2,%s/1).\n" %
-                       (config.traSegTM,
-                        config.hasChangepoint))
-            file.write("\n")
+            self.writeDeterminations(file)
 
             file.write("% | TYPES\n")
-            for type in config.transportModes:
-                file.write("%s(%s).\n" % (transportMode, type))
-            file.write("\n")
-
-            for type in config.speeds:
-                file.write("speed(%s).\n" % type)
-            file.write("\n")
-
-            for type in config.accels:
-                file.write("acceleration(%s).\n" % type)
-            file.write("\n")
-
-            for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.traSegID])
-                segmentTypes = translation[[
-                    config.traPreSegIDs]].apply(literal_eval)
-
-                for x in range(5):
-                    file.write("%s\t" % segmentTypes[0][x])
-
-                file.write("\n")
-            file.write("\n")
-
-            file.write("% | FEATURES\n")
-            for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.traSegVel])
-
-                velocities = translation[[
-                    config.traPrevHasVel]].apply(literal_eval)
-                for x in range(5):
-                    file.write("%s\t" % velocities[0][x])
-                file.write("\n")
-            file.write("\n")
-
-            for index, translation in translationDf.iterrows():
-                file.write("%s\n" % translation[config.traSegAcc])
-
-                accelerations = translation[[
-                    config.traPrevHasAcc]].apply(literal_eval)
-                for x in range(5):
-                    file.write("%s\t" % accelerations[0][x])
-                file.write("\n")
-            file.write("\n")
-
-            for index, translation in translationDf.iterrows():
-                transportModes = translation[[
-                    config.traPrevHasTM]].apply(literal_eval)
-
-                for x in range(5):
-                    file.write("%s\t" % transportModes[0][x])
-                file.write("\n")
-            file.write("\n")
+            self.writeTypes(file)
+            self.writeSegments(file, translationDf)
 
             file.write("% | RELATIONS\n")
-            for index, translation in translationDf.iterrows():
-                prevSegmentRelation = translation[[
-                        config.traRelToPrev]].apply(literal_eval)
-                for x in range(5):
-                    file.write("%s\n" % prevSegmentRelation[0][x])
+            self.writeSegmentRelations(file, translationDf)
+            self.writeFasterThanPrevious(file, translationDf)
+            self.writeHasChangePoint(file, translationDf)
 
-            for index, translation in translationDf.iterrows():
-                if translation[config.traSegFasterPrev] != config.empty:
-                    file.write("%s\n" % translation.isFasterThanPrev)
+            file.write("% | FEATURES\n")
+            self.writeVelocities(file, translationDf)
+            self.writeAccelerations(file, translationDf)
+            self.writePrevSegmentsTM(file, translationDf)
+            self.writeHasChangePoint(file, translationDf)
+
+    def writeModes(self, file):
+        segment = "segment"
+        sequenceSize = 5
+
+        file.write(":- modeh(*,%s(+%s,#%s)).\n" %
+                   (config.traSegTM, segment, config.transportMode))
+        file.write(":- modeb(%d,%s(+%s,#speed)).\n" %
+                   ((sequenceSize + 1), config.traSegVel, segment))
+        file.write(":- modeb(%d,%s(+%s,#acceleration)).\n" %
+                   ((sequenceSize + 1), config.traSegAcc, segment))
+        file.write(":- modeb(1,%s(+%s)).\n" %
+                   (config.traSegFasterPrev, segment))
+        file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
+                   (sequenceSize, config.traRelToPrev, segment, segment))
+        file.write(":- modeb(*,%s(+%s,#%s)).\n" %
+                   (config.traPrevHasTM, segment, config.transportMode))
+        file.write(":- modeb(%d,%s(+%s)).\n" %
+                   ((sequenceSize + 1), config.hasChangepoint, segment))
+        file.write("\n")
+
+    def writeDeterminations(self, file):
+        file.write(":- determination(%s/2,%s/2).\n" %
+                   (config.traSegTM,
+                    config.traSegVel))
+        file.write(":- determination(%s/2,%s/2).\n" %
+                   (config.traSegTM,
+                    config.traSegAcc))
+        file.write(":- determination(%s/2,%s/1).\n" %
+                   (config.traSegTM,
+                    config.traSegFasterPrev))
+        file.write(":- determination(%s/2,%s/2).\n" %
+                   (config.traSegTM,
+                    config.traRelToPrev))
+        file.write(":- determination(%s/2,%s/2).\n" %
+                   (config.traSegTM,
+                    config.traPrevHasTM))
+        file.write(":- determination(%s/2,%s/1).\n" %
+                   (config.traSegTM,
+                    config.hasChangepoint))
+        file.write("\n")
+
+    def writeFasterThanPrevious(self, file, translationDf):
+        for index, translation in translationDf.iterrows():
+            if translation[config.traSegFasterPrev] != config.empty:
+                file.write("%s\n" % translation.isFasterThanPrev)
+        file.write("\n")
+
+    def writeHasChangePoint(self, file, translationDf):
+        for index, translation in translationDf.iterrows():
+            currentHasChangepoint = translation[
+                config.traSegHasCP]
+
+            if translation[config.traSegHasCP] != config.empty:
+                file.write("%s\n" % currentHasChangepoint)
+
+            changepoints = translation[[
+                config.traPrevHasCP]].apply(literal_eval)
+            for x in range(5):
+                if changepoints[0][x] != config.empty:
+                    file.write("%s\n" % changepoints[0][x])
+
+    def writeTypes(self, file):
+        for type in config.transportModes:
+            file.write("%s(%s).\n" % (config.transportMode, type))
+        file.write("\n")
+
+        for type in config.speeds:
+            file.write("speed(%s).\n" % type)
+        file.write("\n")
+
+        for type in config.accels:
+            file.write("acceleration(%s).\n" % type)
+        file.write("\n")
+
+    def writeSegments(self, file, translationDf):
+        for index, translation in translationDf.iterrows():
+            file.write("%s\n" % translation[config.traSegID])
+            segmentTypes = translation[[
+                config.traPreSegIDs]].apply(literal_eval)
+
+            for x in range(5):
+                file.write("%s\t" % segmentTypes[0][x])
+
             file.write("\n")
+        file.write("\n")
 
-            for index, translation in translationDf.iterrows():
-                currentHasChangepoint = translation[
-                    config.traSegHasCP]
+    def writeVelocities(self, file, translationDf):
+        for index, translation in translationDf.iterrows():
+            file.write("%s\n" % translation[config.traSegVel])
 
-                if translation[config.traSegHasCP] != config.empty:
-                    file.write("%s\n" % currentHasChangepoint)
+            velocities = translation[[
+                config.traPrevHasVel]].apply(literal_eval)
+            for x in range(5):
+                file.write("%s\t" % velocities[0][x])
+            file.write("\n")
+        file.write("\n")
 
-            for index, translation in translationDf.iterrows():
-                changepoints = translation[[
-                        config.traPrevHasCP]].apply(literal_eval)
-                for x in range(5):
-                    if changepoints[0][x] != config.empty:
-                        file.write("%s\n" % changepoints[0][x])
+    def writeAccelerations(self, file, translationDf):
+        for index, translation in translationDf.iterrows():
+            file.write("%s\n" % translation[config.traSegAcc])
 
-            file.close()
+            accelerations = translation[[
+                config.traPrevHasAcc]].apply(literal_eval)
+            for x in range(5):
+                file.write("%s\t" % accelerations[0][x])
+            file.write("\n")
+        file.write("\n")
 
-    def getSetting(self, isPosOnly):
+    def writeSegmentRelations(self, file, translationDf):
+        for index, translation in translationDf.iterrows():
+            prevSegmentRelation = translation[[
+                    config.traRelToPrev]].apply(literal_eval)
+            for x in range(5):
+                file.write("%s\n" % prevSegmentRelation[0][x])
+
+    def writePrevSegmentsTM(self, file, translationDf):
+        for index, translation in translationDf.iterrows():
+            transportModes = translation[[
+                config.traPrevHasTM]].apply(literal_eval)
+
+            for x in range(5):
+                file.write("%s\t" % transportModes[0][x])
+            file.write("\n")
+        file.write("\n")
+
+    def writeSettings(self, file, isPosOnly):
         if isPosOnly:
-            return self.getPosOnlySetting()
+            file.write(self.getPosOnlySetting())
         else:
-            return self.getDefaultSetting()
+            file.write(self.getDefaultSetting())
+        file.write("\n")
 
     def getDefaultSetting(self):
         return str(
@@ -338,7 +387,7 @@ class AlephService:
                 ":- set(gsamplesize,100).\n\n" +
                 "%s\n" % config.constraint)
 
-    def printExamples(self, translationDf, isPosOnly):
+    def printExampleFiles(self, translationDf, isPosOnly):
         fPath = None
         if isPosOnly:
             fPath = config.fPosOnlyPath
@@ -348,11 +397,7 @@ class AlephService:
 
         # Positive Examples
         with open(fPath, "w") as file:
-            for index, row in translationDf.iterrows():
-                posTransportModes = row[[
-                    config.traSegTM]].apply(literal_eval)[0]
-                for transportMode in posTransportModes:
-                    file.write("%s\n" % transportMode)
+            self.writeHasTransportMode(file, translationDf)
             file.close()
 
         # Negative Examples
@@ -364,3 +409,20 @@ class AlephService:
                     for transportMode in posTransportModes:
                         file.write("%s\n" % transportMode)
                 file.close()
+
+    def writeHasTransportMode(self, file, df):
+        for index, row in df.iterrows():
+            posTransportModes = row[[
+                config.traSegTM]].apply(literal_eval)[0]
+            for transportMode in posTransportModes:
+                file.write("%s\n" % transportMode)
+
+    def resetGlobalCounters(self):
+        self.walkCounter = 0
+        self.bikeCounter = 0
+        self.busCounter = 0
+        self.carCounter = 0
+        self.cpWalkCounter = 0
+        self.cpBikeCounter = 0
+        self.cpBusCounter = 0
+        self.cpCarCounter = 0

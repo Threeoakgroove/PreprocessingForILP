@@ -44,37 +44,13 @@ TODO Für Donnerstag:
 ======================
 Implementierung:
 ----------------
-neue Features:
-* hasChangepoint - feature (/)
-* tmChangeInAnyPrior - relation (/)
-* look at determinations again (/)
-
-* add hasChangepoint already in segmentation step (/)
-
-* hasPrevSegment - sollte immer von 0 zu 1 von 1 zu 2 usw. gehen... (/)
-** alternative hasPredecessor zusätzlich (x)
-
 * hasStopPoint - feature 
 
-Selektion von je 100 Objekten pro Target
-* 1. Implementierung = random 100 (/)
-* evntl. 2. Version = schauen das 25% oder ähnlich, Changepoint beinhalten
-
-Label Zuweisung:
-* wenn mehr walk in segment dann walk, wenn mehr bike dann bike etc...
-* erkennen anhand der Meter (wenn mehr als 50 dann ist es das label)
-* davon ausgehen, dass auf 100 metern nie mehr als 2 label auftreten?
 
 Schreiben:
 ----------
 Kapitel 3 --> Preprocessing zu einem ersten Sinnvollen Stand bringen (/)
 
-
-TODO für Freitag:
-=================
-Kapitel 3 --> ILP zu einem ersten Sinnvollen Stand bringen (/)
-
-Auffangen was Donnerstags nicht geschafft wurde? (/)
 
 TODO für Samstag:
 =================
@@ -94,12 +70,6 @@ TODO für Dienstag:
 ==================
 Korrigieren
 
-
-Noch Offen:
-===========
-# + - erklären
-Recallvalue (/)
-modes aufbau in Background Knowledge erklären (/)
 
 ################################################################
 # How to improve the structure?
