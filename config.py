@@ -33,9 +33,9 @@ setMaxNodes = 20000
 # the global setting for setRunAll has to be 'False'.
 setSkipLabelling = True
 # IMPORTANT: Labelling has to be finished once, before running segmenting.
-setSkipSegmenting = False
+setSkipSegmenting = True
 # IMPORTANT: Segmenting has to be finished once, before running translating.
-setSkipTranslating = True
+setSkipTranslating = False
 # IMPORTANT: Translating has to be finished once, before making logic program.
 setSkipLogicProgram = True
 # IMPORTANT: Only produces useful output, when segmenting is run before.

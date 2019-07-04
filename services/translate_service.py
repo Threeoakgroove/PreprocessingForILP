@@ -3,10 +3,12 @@ import config
 from services.data_service import DataService
 from services.user_service import UserService
 
+
 import logging
 import pandas as pd
 import numpy as np
 
+from ast import literal_eval
 from os.path import join
 
 
@@ -164,22 +166,25 @@ class TranslateService:
         return str("%s(%s)." % (self.segment, segId))
 
     def getNegativeTransportModes(self, segId, targetSegment):
-        className = targetSegment[config.tmHead]
+        classNames = targetSegment[[config.tmHead]].apply(literal_eval)
         negativeTransportModes = []
 
         for tm in config.transportModes:
-            if tm != className:
+            if tm not in classNames[0]:
                 negativeTransportModes.append(
                     str("%s(%s,%s)." % (config.traSegTM,
                                         segId, tm)))
         return negativeTransportModes
 
     def getTransportTargetClass(self, segId, targetSegment):
-        className = targetSegment[config.tmHead]
-        targetClass = str("%s(%s,%s)." % (
-            config.traSegTM, segId, className))
+        transportModes = targetSegment[[config.tmHead]].apply(literal_eval)
+        translatedTransportModes = []
 
-        return targetClass
+        for transportMode in transportModes[0]:
+            translatedTransportModes.append(str("%s(%s,%s)." % (
+                config.traSegTM, segId, transportMode)))
+
+        return translatedTransportModes
 
     def getTargetVelocity(self, segId, targetSegment):
         rawVelocity = targetSegment[config.speedHead]
