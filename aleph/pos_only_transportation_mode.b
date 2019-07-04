@@ -1,9 +1,13 @@
 % | SETTINGS
 :- set(i,6).
 :- set(clauselength,20).
+:- set(evalfn,posonly).
 :- set(minpos,3).
 :- set(noise,0).
 :- set(nodes,20000).
+:- set(gsamplesize,100).
+
+false:-segment(X),hasTransportMode(X,Y),    hasTransportMode(X,Z),Y\=Z.
 
 % | MODES
 :- modeh(*,hasTransportMode(+segment,#transport_mode)).

@@ -20,6 +20,8 @@ class AlephService:
         self.dataService.removeFile(config.bAlephPath)
         self.dataService.removeFile(config.fAlephPath)
         self.dataService.removeFile(config.nAlephPath)
+        self.dataService.removeFile(config.bPosOnlyPath)
+        self.dataService.removeFile(config.fPosOnlyPath)
 
         self.dividedTotalSegments = int(config.setNumberOfTotalSegments / 20)
         # 80 % of examples without CP, 20 % with
@@ -42,7 +44,10 @@ class AlephService:
 
     def generateLogicProgram(self):
         translationDf = self.generateSegmentDf()
-        self.printTranslated(translationDf)
+        isPosOnly = True
+        self.printTranslated(translationDf, isPosOnly)
+        isPosOnly = False
+        self.printTranslated(translationDf, isPosOnly)
 
     def generateSegmentDf(self):
         segmentDf = pd.DataFrame(columns=config.translationHeader)
@@ -83,27 +88,27 @@ class AlephService:
                 self.cpWalkCounter < self.cpExamplesCF):
             tmIsNeeded = True
             self.cpWalkCounter += 1
-            logging.info(str("Walk CP Counter = %d/%d" %
-                             (self.cpWalkCounter, self.cpExamplesCF)))
+
         elif (transportMode == "bike" and
                 self.cpBikeCounter < self.cpExamplesCF):
             tmIsNeeded = True
             self.cpBikeCounter += 1
-            logging.info(str("Bike CP Counter = %d/%d" %
-                             (self.cpBikeCounter, self.cpExamplesCF)))
+
         elif (transportMode == "bus" and
                 self.cpBusCounter < self.cpExamplesCF):
             tmIsNeeded = True
             self.cpBusCounter += 1
-            logging.info(str("Bus CP Counter = %d/%d" %
-                             (self.cpBusCounter, self.cpExamplesCF)))
+
         elif (transportMode == "car" and
                 self.cpCarCounter < self.cpExamplesCF):
             tmIsNeeded = True
             self.cpCarCounter += 1
-            logging.info(str("Car CP Counter = %d/%d" %
-                             (self.cpCarCounter, self.cpExamplesCF)))
 
+        logging.info(str("Walk: %d/%d; Bike: %d/%d; Bus: %d/%d; Car: %d/%d" %
+                         (self.cpWalkCounter, self.cpExamplesCF,
+                             self.cpBikeCounter, self.cpExamplesCF,
+                             self.cpBusCounter, self.cpExamplesCF,
+                             self.cpCarCounter, self.cpExamplesCF)))
         return tmIsNeeded
 
     def checkNotEmpty(self, cpList):
@@ -161,28 +166,23 @@ class AlephService:
 
         return folders[randIndex]
 
-    def printTranslated(self, translationDf):
-        settings = None
-        modeH = None
-        hasTransportModeArity = 2
-
+    def printTranslated(self, translationDf, isPosOnly):
         segment = "segment"
         sequenceSize = 5
         transportMode = "transport_mode"
-        # :- modeh(1,class(+segment,#class)).
-        if config.setWithNegativeExamples:
-            self.printPosAndNegExamples(translationDf)
-            settings = self.getDefaultSetting()
-            modeH = str(":- modeh(1,%s(+%s,#%s)).\n" %
-                        (config.traSegTM, segment, transportMode))
+        modeH = str(":- modeh(*,%s(+%s,#%s)).\n" %
+                    (config.traSegTM, segment, transportMode))
+        self.printExamples(translationDf, isPosOnly)
+        settings = self.getSetting(isPosOnly)
+
+        bPath = None
+        if isPosOnly:
+            bPath = config.bPosOnlyPath
         else:
-            self.printPosAndNegExamples(translationDf)
-            settings = self.getPosonlySetting()
-            modeH = str(":- modeh(6,%s(+%s,#%s)).\n" %
-                        (config.traSegTM, segment, transportMode))
+            bPath = config.bAlephPath
 
         # Background Knowledge
-        with open(config.bAlephPath, "w") as file:
+        with open(bPath, "w") as file:
             file.write("% | SETTINGS\n")
             # ===============================
             file.write(settings)
@@ -211,23 +211,23 @@ class AlephService:
 
             file.write("% | DETERMINATIONS\n")
             # =================================
-            file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegTM, hasTransportModeArity,
+            file.write(":- determination(%s/2,%s/2).\n" %
+                       (config.traSegTM,
                         config.traSegVel))
-            file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegTM, hasTransportModeArity,
+            file.write(":- determination(%s/2,%s/2).\n" %
+                       (config.traSegTM,
                         config.traSegAcc))
-            file.write(":- determination(%s/%d,%s/1).\n" %
-                       (config.traSegTM, hasTransportModeArity,
+            file.write(":- determination(%s/2,%s/1).\n" %
+                       (config.traSegTM,
                         config.traSegFasterPrev))
-            file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegTM, hasTransportModeArity,
+            file.write(":- determination(%s/2,%s/2).\n" %
+                       (config.traSegTM,
                         config.traRelToPrev))
-            file.write(":- determination(%s/%d,%s/2).\n" %
-                       (config.traSegTM, hasTransportModeArity,
+            file.write(":- determination(%s/2,%s/2).\n" %
+                       (config.traSegTM,
                         config.traPrevHasTM))
-            file.write(":- determination(%s/%d,%s/1).\n" %
-                       (config.traSegTM, hasTransportModeArity,
+            file.write(":- determination(%s/2,%s/1).\n" %
+                       (config.traSegTM,
                         config.hasChangepoint))
             file.write("\n")
 
@@ -313,6 +313,12 @@ class AlephService:
 
             file.close()
 
+    def getSetting(self, isPosOnly):
+        if isPosOnly:
+            return self.getPosOnlySetting()
+        else:
+            return self.getDefaultSetting()
+
     def getDefaultSetting(self):
         return str(
                 ":- set(i,6).\n" +
@@ -321,7 +327,7 @@ class AlephService:
                 ":- set(noise,0).\n" +
                 ":- set(nodes,20000).\n")
 
-    def getPosonlySetting(self):
+    def getPosOnlySetting(self):
         return str(
                 ":- set(i,6).\n" +
                 ":- set(clauselength,20).\n" +
@@ -332,9 +338,16 @@ class AlephService:
                 ":- set(gsamplesize,100).\n\n" +
                 "%s\n" % config.constraint)
 
-    def printPosAndNegExamples(self, translationDf):
+    def printExamples(self, translationDf, isPosOnly):
+        fPath = None
+        if isPosOnly:
+            fPath = config.fPosOnlyPath
+        else:
+            fPath = config.fAlephPath
+            nPath = config.nAlephPath
+
         # Positive Examples
-        with open(config.fAlephPath, "w") as file:
+        with open(fPath, "w") as file:
             for index, row in translationDf.iterrows():
                 posTransportModes = row[[
                     config.traSegTM]].apply(literal_eval)[0]
@@ -343,8 +356,8 @@ class AlephService:
             file.close()
 
         # Negative Examples
-        if config.setWithNegativeExamples:
-            with open(config.nAlephPath, "w") as file:
+        if not isPosOnly:
+            with open(nPath, "w") as file:
                 for index, row in translationDf.iterrows():
                     posTransportModes = row[[
                         config.traSegHasTM]].apply(literal_eval)[0]
