@@ -133,6 +133,7 @@ class SegmentService:
         lastVelocity = 0
         acceleration = 0
         hasChangepoint = False
+        hasStopPoint = 0
 
         for index, row in labeledDf.iterrows():
             currentDate = self.getDate(labeledDf, index)
@@ -142,8 +143,7 @@ class SegmentService:
             if currentLabel not in segmentLabels:
                 segmentLabels.append(currentLabel)
 
-            length = len(segmentLabels)
-            if length >= 2:
+            if len(segmentLabels) >= 2:
                 hasChangepoint = True
 
             if index == 0:
@@ -156,8 +156,12 @@ class SegmentService:
                     labeledDf, index - 1, index)
                 differenceToLast = currentDate - lastDate
 
+                oldSegmentDistance = segmentsDistance
                 segmentsDistance += currentDistance
-                if segmentsDistance < 100:
+                if oldSegmentDistance == segmentsDistance:
+                    hasStopPoint += 1
+
+                if segmentsDistance < config.setSegmentLength:
                     lastDate = currentDate
                 else:
                     totalTime = self.dateService.getDifInSec(
@@ -177,7 +181,8 @@ class SegmentService:
                         segmentsDistance,
                         velocity,
                         acceleration,
-                        hasChangepoint]
+                        hasChangepoint,
+                        hasStopPoint]
 
                     # Needed for evaluation of the speeds
                     self.countSegment(segmentLabels, velocity, acceleration)

@@ -83,6 +83,8 @@ class TranslateService:
                     segId, targetSegment)
                 obj.hasChangepoint = self.getLogicHasChangepoint(
                     segId, targetSegment, prevSegment)
+                obj.hasStopPoint = self.getLogicHasStopPoints(
+                    segId, targetSegment)
 
                 # Relations
                 isFasterThanAllPrevious = False
@@ -105,6 +107,8 @@ class TranslateService:
                     prev.hasVelocity = self.getLogicVelocity(
                         prevSegId, prevSegment)
                     prev.hasAcceleration = self.getLogicAcceleration(
+                        prevSegId, prevSegment)
+                    prev.hasStopPoint = self.getLogicHasStopPoints(
                         prevSegId, prevSegment)
 
                     if innerIndex != 0:
@@ -131,6 +135,7 @@ class TranslateService:
                 prevHaveVelocities = []
                 prevHaveAccelerations = []
                 prevHaveChangepoints = []
+                prevHaveStopPoint = []
                 for prevSegment in obj.prevSegments:
                     hasPrevSegmentIds.append(
                         prevSegment.id)
@@ -144,6 +149,8 @@ class TranslateService:
                         prevSegment.hasAcceleration)
                     prevHaveChangepoints.append(
                         prevSegment.hasChangepoint)
+                    prevHaveStopPoint.append(
+                        prevSegment.hasStopPoint)
 
                 translationDf.loc[len(translationDf)] = [
                         obj.rawClass,
@@ -159,9 +166,23 @@ class TranslateService:
                         prevHaveVelocities,
                         prevHaveAccelerations,
                         prevHaveChangepoints,
-                        hasPrevSegmentsList]
+                        hasPrevSegmentsList,
+                        obj.hasStopPoint,
+                        prevHaveStopPoint]
 
         return translationDf
+
+    def getLogicHasStopPoints(self, segId, segment):
+        stopPoints = segment[config.hasStopPoint]
+        stopPointString = None
+        if stopPoints == 0:
+            stopPointString = config.hasNoStopPoint
+        elif stopPoints == 1:
+            stopPointString = config.hasOneStopPoint
+        else:
+            stopPointString = config.hasMultipleStopPoints
+
+        return str("%s(%s)." % (segId, stopPointString))
 
     def isTargetFasterThanThis(self, targetVelocity, previousVelocity):
         isFaster = True
@@ -263,6 +284,7 @@ class TranslateService:
         targetVelocity = config.empty
         targetAccel = config.empty
         hasChangepoint = config.empty
+        hasStopPoint = config.empty
 
         # Relation
         isFasterThanPrev = config.empty
@@ -278,6 +300,7 @@ class TranslateService:
         hasAcceleration = config.empty
         hasPrevSegment = config.empty
         hasChangepoint = config.empty
+        hasStopPoint = config.empty
 
     def catSpeedValueFor(self, speed):
         # TODO: calculate medium speed of all TMs

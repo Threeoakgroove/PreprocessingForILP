@@ -202,6 +202,7 @@ class AlephService:
             self.writeAccelerations(file, trainingDf)
             self.writePrevSegmentsTM(file, trainingDf)
             self.writeHasChangePoint(file, trainingDf)
+            self.writeHasStopPoint(file, trainingDf)
 
     def printTranslated(self, translationDf, isPosOnly):
         bPath = None
@@ -275,6 +276,16 @@ class AlephService:
                    (config.traSegTM,
                     config.hasChangepoint))
         file.write("\n")
+
+    def writeHasStopPoint(self, file, trainingDf):
+        for index, translation in translationDf.iterrows():
+            targetSegmentHasStopPoint = translation[config.traSegHasStopPoint]
+            file.write("%s\n" % targetSegmentHasStopPoint)
+
+            stopPoints = translation[[
+                config.traPrevHasStopPoint]].apply(literal_eval)[0]
+            for stopPoint in stopPoints:
+                file.write("%s\n" % stopPoint)
 
     def writeFasterThanPrevious(self, file, translationDf):
         for index, translation in translationDf.iterrows():

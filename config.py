@@ -23,6 +23,8 @@ setMinPosCoverage = 5
 setMaxNoise = 1
 # number of nodes evaluated for one rule
 setMaxNodes = 20000
+# set length of segments
+setSegmentLength = 100
 
 # settings to run only specific parts of the program
 # DEBUG SETTINGS:
@@ -72,10 +74,16 @@ distHead = 'distance'
 speedHead = 'speed'
 accelerationHead = 'acceleration'
 hasChangepoint = 'hasChangepoint'
+hasStopPoint = 'hasStopPoint'
 
-segmentHeader = [tmHead, startDateHead, endDateHead,
-                 distHead, speedHead, accelerationHead,
-                 hasChangepoint]
+segmentHeader = [tmHead,
+                 startDateHead,
+                 endDateHead,
+                 distHead,
+                 speedHead,
+                 accelerationHead,
+                 hasChangepoint,
+                 hasStopPoint]
 
 # Label Header
 # ------------
@@ -104,6 +112,8 @@ traPrevHasVel = 'previousHasVelocity'
 traPrevHasAcc = 'previousHasAcceleration'
 traPrevHasCP = 'previousHasChangepoint'
 traRelToPrev = 'previousSegmentRelation'
+traSegHasStopPoint = 'hasStopPoint'
+traPrevHasStopPoint = 'previousHasStopPoint'
 
 translationHeader = [traRawClass,
                      traSegID,
@@ -118,7 +128,14 @@ translationHeader = [traRawClass,
                      traPrevHasVel,
                      traPrevHasAcc,
                      traPrevHasCP,
-                     traRelToPrev]
+                     traRelToPrev,
+                     traSegHasStopPoint,
+                     traPrevHasStopPoint]
+
+# translation constants
+hasNoStopPoint = 'hasNoStopPoint'
+hasOneStopPoint = 'hasOneStopPoint'
+hasMultipleStopPoints = 'hasMultipleStopPoints'
 
 ##############
 # CONSTANTS #
