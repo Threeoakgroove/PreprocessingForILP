@@ -67,25 +67,25 @@ class TranslateService:
                 segmentIndex = firstSegmentIndex + index
                 segId = self.makeSegId(
                     folder, segmentIndex + self.sequenceSize)
+                targetVelocity = int(targetSegment[config.speedHead])
 
                 # Features
                 obj.rawClass = targetSegment[config.tmHead]
 
-                obj.negativeTransportMode = self.getNegativeTransportModes(
+                obj.negativeTransportMode = self.getLogicNegatedTransportModes(
                     segId, targetSegment)
-                obj.transportTargetClass = self.getTransportTargetClass(
+                obj.transportTargetClass = self.getLogicTransportModes(
                     segId, targetSegment)
                 obj.targetSegId = self.getLogicSegId(segId)
-                obj.targetVelocity = self.getTargetVelocity(
+                obj.targetVelocity = self.getLogicVelocity(
                     segId, targetSegment)
-                obj.targetAccel = self.getTargetAccel(
+                obj.targetAccel = self.getLogicAcceleration(
                     segId, targetSegment)
-                obj.hasChangepoint = self.getHasChangepoint(
-                    segId, targetSegment, prevSegment)
-                obj.isFasterThanPrev = self.getFasterThanPrev(
+                obj.hasChangepoint = self.getLogicHasChangepoint(
                     segId, targetSegment, prevSegment)
 
                 # Relations
+                isFasterThanAllPrevious = False
                 previousOfPrevSegId = segId
                 prevSegId = self.getPrevSegmentId(segId)
                 innerPrevSegment = None
@@ -93,19 +93,22 @@ class TranslateService:
                 for innerIndex, i in enumerate(range(
                         0, self.sequenceSize)):
                     prev = self.PreviousSegment()
+                    previousVelocity = int(prevSegment[config.speedHead])
+                    isFasterThanAllprevious = self.isTargetFasterThanThis(
+                        targetVelocity, previousVelocity)
 
                     prev.id = self.getLogicSegId(prevSegId)
-                    prev.hasPrevSegment = self.getHasPrevSegment(
+                    prev.hasPrevSegment = self.getLogicHasPrevSegment(
                         previousOfPrevSegId, prevSegId)
-                    prev.hasTransportMode = self.getPrevTransportMode(
+                    prev.hasTransportMode = self.getLogicHasKnownTransportMode(
                         prevSegId, prevSegment)
-                    prev.hasVelocity = self.getTargetVelocity(
+                    prev.hasVelocity = self.getLogicVelocity(
                         prevSegId, prevSegment)
-                    prev.hasAcceleration = self.getTargetAccel(
+                    prev.hasAcceleration = self.getLogicAcceleration(
                         prevSegId, prevSegment)
 
                     if innerIndex != 0:
-                        prev.hasChangepoint = self.getHasChangepoint(
+                        prev.hasChangepoint = self.getLogicHasChangepoint(
                             prevSegId, prevSegment, innerPrevSegment)
 
                     prevSegments.append(prev)
@@ -117,6 +120,8 @@ class TranslateService:
                     prevSegId = self.getPrevSegmentId(prevSegId)
 
                 obj.prevSegments = prevSegments
+                obj.isFasterThanPrev = self.getFasterThanPrev(
+                    segId, isFasterThanAllPrevious)
 
                 translated.append(obj)
 
@@ -158,6 +163,14 @@ class TranslateService:
 
         return translationDf
 
+    def isTargetFasterThanThis(self, targetVelocity, previousVelocity):
+        isFaster = True
+
+        if targetVelocity < previousVelocity:
+            isFaster = False
+
+        return isFaster
+
     def makeSegId(self, folder, segmentNumber):
         return ("seg%s_%s_0" % (str(folder), str(segmentNumber)))
 
@@ -165,7 +178,7 @@ class TranslateService:
         # returns segment(segmentID).
         return str("%s(%s)." % (self.segment, segId))
 
-    def getNegativeTransportModes(self, segId, targetSegment):
+    def getLogicNegatedTransportModes(self, segId, targetSegment):
         classNames = targetSegment[[config.tmHead]].apply(literal_eval)
         negativeTransportModes = []
 
@@ -176,7 +189,7 @@ class TranslateService:
                                         segId, tm)))
         return negativeTransportModes
 
-    def getTransportTargetClass(self, segId, targetSegment):
+    def getLogicTransportModes(self, segId, targetSegment):
         transportModes = targetSegment[[config.tmHead]].apply(literal_eval)
         translatedTransportModes = []
 
@@ -186,7 +199,7 @@ class TranslateService:
 
         return translatedTransportModes
 
-    def getPrevTransportMode(self, prevSegId, prevSegment):
+    def getLogicHasKnownTransportMode(self, prevSegId, prevSegment):
         transportModes = prevSegment[[config.tmHead]].apply(literal_eval)
         translatedTransportModes = []
 
@@ -197,21 +210,21 @@ class TranslateService:
 
         return translatedTransportModes
 
-    def getTargetVelocity(self, segId, targetSegment):
-        rawVelocity = targetSegment[config.speedHead]
-        catVeloicty = self.catSpeedValueFor(rawVelocity)
+    def getLogicVelocity(self, segId, segment):
+        segmentVelocity = segment[config.speedHead]
+        catVeloicty = self.catSpeedValueFor(segmentVelocity)
 
         # returns targetVelocity(segmentID, speed).
         return str("%s(%s,%s)." % (config.traSegVel, segId, catVeloicty))
 
-    def getTargetAccel(self, segId, targetSegment):
+    def getLogicAcceleration(self, segId, targetSegment):
         rawAccel = targetSegment[config.accelerationHead]
         catAccel = self.catAccelValueFor(rawAccel)
 
         # returns targetAcceleration(segmentID, speed).
         return str("%s(%s,%s)." % (config.traSegAcc, segId, catAccel))
 
-    def getHasChangepoint(self, segId, targetSegment, prevSegment):
+    def getLogicHasChangepoint(self, segId, targetSegment, prevSegment):
         hasChangepointString = config.empty
         hasChangepoint = targetSegment[config.hasChangepoint]
 
@@ -227,13 +240,14 @@ class TranslateService:
 
         return str("%s_%s_%s" % (split[0], split[1], newSegCount))
 
-    def getHasPrevSegment(self, segId, prevSegId):
+    def getLogicHasPrevSegment(self, segId, prevSegId):
 
         return str("%s(%s,%s)." % (config.traRelToPrev, segId, prevSegId))
 
-    def getFasterThanPrev(self, segId, targetSegment, prevSegment):
+    def getFasterThanPrev(self, segId, isFasterThanAllPrevious):
         isFasterThanPrev = config.empty
-        if targetSegment[config.speedHead] > prevSegment[config.speedHead]:
+
+        if isFasterThanAllPrevious:
             isFasterThanPrev = str(
                 "%s(%s)." % (config.traSegFasterPrev, segId))
 
