@@ -6,7 +6,7 @@ from os.path import join
 # Main
 # ----
 # run complete program without ploting
-setRunAll = False
+setRunAll = True
 
 # Aleph-Service
 # -------------
@@ -16,7 +16,7 @@ setRunAll = False
 setWithNegativeExamples = False
 # the amount of selected segments for the induction
 # should be a value divideable by 20
-numberOfSegments = 100
+numberOfSegments = 400
 # minimum amount of positive examples covered by a new rule
 setMinPosCoverage = 5
 # maximum number of negative examples covered by new rules
@@ -59,23 +59,6 @@ bPosOnlyPath = join('aleph', 'pos_only_transportation_mode.b')
 fPosOnlyPath = join('aleph', 'pos_only_transportation_mode.f')
 testDataPath = join('aleph', 'testData.b')
 pathTestData = join('data', 'testdata')
-
-dashedDateFormat = "%Y-%m-%d %H:%M:%S"
-slashedDateFormat = "%Y/%m/%d %H:%M:%S"
-
-segmentDuration = 90
-
-rounding = 1
-maxEvalSpeed = 50 * rounding
-
-empty = "empty"
-
-# Constants
-transportModes = ['bike', 'bus', 'car', 'walk']
-speeds = ["very_slow", "slow", "below_medium",
-          "medium", "above_medium", "fast", "very_fast"]
-accels = ["much_slower", "slower", "slightly_slower",
-          "unchanged", "slightly_faster", "faster", "much_faster"]
 
 ###########
 # HEADER #
@@ -138,9 +121,18 @@ translationHeader = [traRawClass,
                      traRelToPrev]
 
 ##############
-# CONSTRAINT #
+# CONSTANTS #
 ##############
-constraint = str("false:-segment(X),hasTransportMode(X,Y),\
-    hasTransportMode(X,Z),Y\=Z.")
-
+empty = "empty"
 transportMode = "transport_mode"
+dashedDateFormat = "%Y-%m-%d %H:%M:%S"
+slashedDateFormat = "%Y/%m/%d %H:%M:%S"
+rounding = 1
+maxEvalSpeed = 50 * rounding
+
+# Types for Aleph
+transportModes = ['bike', 'bus', 'car', 'walk']
+speeds = ["very_slow", "slow", "below_medium",
+          "medium", "above_medium", "fast", "very_fast"]
+accels = ["much_slower", "slower", "slightly_slower",
+          "unchanged", "slightly_faster", "faster", "much_faster"]

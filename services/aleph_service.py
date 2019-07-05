@@ -228,7 +228,6 @@ class AlephService:
             file.write("% | RELATIONS\n")
             self.writeSegmentRelations(file, translationDf)
             self.writeFasterThanPrevious(file, translationDf)
-            self.writeHasChangePoint(file, translationDf)
 
             file.write("% | FEATURES\n")
             self.writeVelocities(file, translationDf)
@@ -245,7 +244,7 @@ class AlephService:
         file.write(":- modeb(%d,%s(+%s,#speed)).\n" %
                    ((sequenceSize + 1), config.traSegVel, segment))
         file.write(":- modeb(%d,%s(+%s,#acceleration)).\n" %
-                   ((sequenceSize + 1), config.traSegAcc, segment))
+                   ((sequenceSize), config.traSegAcc, segment))
         file.write(":- modeb(1,%s(+%s)).\n" %
                    (config.traSegFasterPrev, segment))
         file.write(":- modeb(%d,%s(+%s,-%s)).\n" %
@@ -373,7 +372,7 @@ class AlephService:
                 ":- set(i,6).\n" +
                 ":- set(clauselength,20).\n" +
                 ":- set(minpos,3).\n" +
-                ":- set(noise,0).\n" +
+                ":- set(noise,3).\n" +
                 ":- set(nodes,20000).\n")
 
     def getPosOnlySetting(self):
@@ -384,8 +383,7 @@ class AlephService:
                 ":- set(minpos,3).\n" +
                 ":- set(noise,0).\n" +
                 ":- set(nodes,20000).\n" +
-                ":- set(gsamplesize,100).\n\n" +
-                "%s\n" % config.constraint)
+                ":- set(gsamplesize,160).\n\n")
 
     def printExampleFiles(self, translationDf, isPosOnly):
         fPath = None
