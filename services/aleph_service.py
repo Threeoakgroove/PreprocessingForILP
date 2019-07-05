@@ -50,7 +50,7 @@ class AlephService:
 
         logging.info("Selecting TestData")
         self.resetGlobalCounters()
-        testData = self.generateSegmentDf(100)
+        testData = self.generateSegmentDf(20)
         self.printTestDataFile(testData)
 
     def generateSegmentDf(self, numberOfSegments):
@@ -235,6 +235,7 @@ class AlephService:
             self.writeAccelerations(file, translationDf)
             self.writePrevSegmentsTM(file, translationDf)
             self.writeHasChangePoint(file, translationDf)
+            self.writeHasStopPoint(file, translationDf)
 
     def writeModes(self, file):
         segment = "segment"
@@ -254,6 +255,8 @@ class AlephService:
                    (config.traPrevHasTM, segment, config.transportMode))
         file.write(":- modeb(%d,%s(+%s)).\n" %
                    ((sequenceSize + 1), config.hasChangepoint, segment))
+        file.write(":- modeb(%d,%s(+%s,#stop_point)).\n" %
+                   ((sequenceSize + 1, config.traSegHasStopPoint, segment)))
         file.write("\n")
 
     def writeDeterminations(self, file):
@@ -275,17 +278,22 @@ class AlephService:
         file.write(":- determination(%s/2,%s/1).\n" %
                    (config.traSegTM,
                     config.hasChangepoint))
+        file.write(":- determination(%s/2,%s/2).\n" %
+                   (config.traSegTM,
+                    config.traSegHasStopPoint))
         file.write("\n")
 
-    def writeHasStopPoint(self, file, trainingDf):
-        for index, translation in translationDf.iterrows():
+    def writeHasStopPoint(self, file, df):
+        for index, translation in df.iterrows():
             targetSegmentHasStopPoint = translation[config.traSegHasStopPoint]
             file.write("%s\n" % targetSegmentHasStopPoint)
 
             stopPoints = translation[[
-                config.traPrevHasStopPoint]].apply(literal_eval)[0]
-            for stopPoint in stopPoints:
-                file.write("%s\n" % stopPoint)
+                config.traPrevHasStopPoint]].apply(literal_eval)
+            for x in range(5):
+                file.write("%s\t" % stopPoints[0][x])
+            file.write("\n")
+        file.write("\n")
 
     def writeFasterThanPrevious(self, file, translationDf):
         for index, translation in translationDf.iterrows():
@@ -318,6 +326,10 @@ class AlephService:
 
         for type in config.accels:
             file.write("acceleration(%s).\n" % type)
+        file.write("\n")
+
+        for type in config.stopPoints:
+            file.write("stop_point(%s).\n" % type)
         file.write("\n")
 
     def writeSegments(self, file, translationDf):

@@ -176,13 +176,16 @@ class TranslateService:
         stopPoints = segment[config.hasStopPoint]
         stopPointString = None
         if stopPoints == 0:
-            stopPointString = config.hasNoStopPoint
+            stopPointString = config.stopPoints[0]
         elif stopPoints == 1:
-            stopPointString = config.hasOneStopPoint
+            stopPointString = config.stopPoints[1]
+        elif stopPoints > 1 and stopPoints <= 5:
+            stopPointString = config.stopPoints[2]
         else:
-            stopPointString = config.hasMultipleStopPoints
+            stopPointString = config.stopPoints[3]
 
-        return str("%s(%s)." % (segId, stopPointString))
+        return str("%s(%s,%s)." % (config.traSegHasStopPoint, segId,
+                                   stopPointString))
 
     def isTargetFasterThanThis(self, targetVelocity, previousVelocity):
         isFaster = True

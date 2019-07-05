@@ -6,7 +6,7 @@ from os.path import join
 # Main
 # ----
 # run complete program without ploting
-setRunAll = True
+setRunAll = False
 
 # Aleph-Service
 # -------------
@@ -16,7 +16,7 @@ setRunAll = True
 setWithNegativeExamples = False
 # the amount of selected segments for the induction
 # should be a value divideable by 20
-numberOfSegments = 400
+numberOfSegments = 20
 # minimum amount of positive examples covered by a new rule
 setMinPosCoverage = 5
 # maximum number of negative examples covered by new rules
@@ -33,9 +33,9 @@ setSegmentLength = 100
 # the global setting for setRunAll has to be 'False'.
 setSkipLabelling = True
 # IMPORTANT: Labelling has to be finished once, before running segmenting.
-setSkipSegmenting = True
+setSkipSegmenting = False
 # IMPORTANT: Segmenting has to be finished once, before running translating.
-setSkipTranslating = True
+setSkipTranslating = False
 # IMPORTANT: Translating has to be finished once, before making logic program.
 setSkipLogicProgram = False
 # IMPORTANT: Only produces useful output, when segmenting is run before.
@@ -132,11 +132,6 @@ translationHeader = [traRawClass,
                      traSegHasStopPoint,
                      traPrevHasStopPoint]
 
-# translation constants
-hasNoStopPoint = 'hasNoStopPoint'
-hasOneStopPoint = 'hasOneStopPoint'
-hasMultipleStopPoints = 'hasMultipleStopPoints'
-
 ##############
 # CONSTANTS #
 ##############
@@ -153,3 +148,4 @@ speeds = ["very_slow", "slow", "below_medium",
           "medium", "above_medium", "fast", "very_fast"]
 accels = ["much_slower", "slower", "slightly_slower",
           "unchanged", "slightly_faster", "faster", "much_faster"]
+stopPoints = ["none", "one", "up_to_five", "more_than_five"]

@@ -134,6 +134,8 @@ class SegmentService:
         acceleration = 0
         hasChangepoint = False
         hasStopPoint = 0
+        lastSegmentDistance = 0
+        secondLastSegmentDistance = 0
 
         for index, row in labeledDf.iterrows():
             currentDate = self.getDate(labeledDf, index)
@@ -156,10 +158,12 @@ class SegmentService:
                     labeledDf, index - 1, index)
                 differenceToLast = currentDate - lastDate
 
-                oldSegmentDistance = segmentsDistance
+                secondLastSegmentDistance = lastSegmentDistance
+                lastSegmentDistance = segmentsDistance
                 segmentsDistance += currentDistance
-                if oldSegmentDistance == segmentsDistance:
-                    hasStopPoint += 1
+                if lastSegmentDistance == segmentsDistance:
+                    if lastSegmentDistance != secondLastSegmentDistance:
+                        hasStopPoint += 1
 
                 if segmentsDistance < config.setSegmentLength:
                     lastDate = currentDate
@@ -196,6 +200,7 @@ class SegmentService:
                         segmentsDistance = currentDistance
                     lastVelocity = velocity
                     segmentLabels = []
+                    hasStopPoint = 0
 
             # Reset
             hasChangepoint = False
