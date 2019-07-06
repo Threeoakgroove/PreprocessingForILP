@@ -118,6 +118,4 @@ dmypy.json
 # Project specific
 logfile.log
 
-/data/*
-/data_test
-/output/*
+/data/test_data

@@ -1,0 +1,2 @@
+	transMode	startDate	endDate	distance	speed	acceleration	hasChangepoint	hasStopPoint
+16411	['bike']	2008-09-12 10:13:24	2008-09-12 10:13:36	1382.719819082044	115.0	108.0	False	1

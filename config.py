@@ -6,7 +6,7 @@ from os.path import join
 # Main
 # ----
 # run complete program without ploting
-setRunAll = False
+setRunAll = True
 
 # Aleph-Service
 # -------------
@@ -33,11 +33,11 @@ setSegmentLength = 100
 # the global setting for setRunAll has to be 'False'.
 setSkipLabelling = True
 # IMPORTANT: Labelling has to be finished once, before running segmenting.
-setSkipSegmenting = False
+setSkipSegmenting = True
 # IMPORTANT: Segmenting has to be finished once, before running translating.
-setSkipTranslating = False
+setSkipTranslating = True
 # IMPORTANT: Translating has to be finished once, before making logic program.
-setSkipLogicProgram = False
+setSkipLogicProgram = True
 # IMPORTANT: Only produces useful output, when segmenting is run before.
 setSkipMakingPlots = True
 
@@ -60,7 +60,7 @@ nAlephPath = join('aleph', 'transportation_mode.n')
 bPosOnlyPath = join('aleph', 'pos_only_transportation_mode.b')
 fPosOnlyPath = join('aleph', 'pos_only_transportation_mode.f')
 testDataPath = join('aleph', 'testData.b')
-pathTestData = join('data', 'testdata')
+pathTestData = join('data', 'Data')
 
 ###########
 # HEADER #

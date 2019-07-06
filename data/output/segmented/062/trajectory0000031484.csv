@@ -1,0 +1,4 @@
+	transMode	startDate	endDate	distance	speed	acceleration	hasChangepoint	hasStopPoint
+31481	['walk']	2008-11-12 03:33:39	2008-11-12 03:33:51	119.88060906478111	10.0	8.0	False	0
+31482	['walk']	2008-11-12 03:33:51	2008-11-12 03:34:53	126.68711812148533	2.0	-8.0	False	0
+31483	['walk']	2008-11-12 03:34:53	2008-11-12 03:36:58	236.1573238617524	2.0	0.0	False	0

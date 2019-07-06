@@ -1,0 +1,3 @@
+	transMode	startDate	endDate	distance	speed	acceleration	hasChangepoint	hasStopPoint
+14856	['bus']	2008-08-29 10:16:39	2008-08-29 10:16:55	173.2439539437383	11.0	1.0	False	0
+14857	['bus']	2008-08-29 10:16:55	2008-08-29 10:16:58	334.9118474131781	112.0	101.0	False	0
