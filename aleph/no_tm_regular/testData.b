@@ -1,4 +1,414 @@
 % TestData File
+% [Rule 1] [Pos cover = 7 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,above_medium), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasAcceleration(E,much_faster).
+
+% [Rule 2] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,very_fast), previousSegmentRelation(A,B), hasVelocity(B,medium), hasAcceleration(B,much_slower).
+
+% [Rule 4] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasVelocity(D,medium), 
+   hasStopPoint(C,more_than_five).
+
+% [Rule 5] [Pos cover = 8 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,very_fast), hasAcceleration(A,much_faster), previousSegmentRelation(A,B), previousSegmentRelation(B,C), 
+   hasVelocity(C,very_fast), hasStopPoint(C,none).
+
+% [Rule 6] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasAcceleration(C,much_slower), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasVelocity(E,slow), hasAcceleration(E,unchanged), previousSegmentRelation(E,F), 
+   hasAcceleration(F,unchanged).
+
+% [Rule 7] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   previousSegmentRelation(A,B), hasVelocity(B,above_medium), hasAcceleration(B,unchanged), previousSegmentRelation(B,C), 
+   hasAcceleration(C,much_slower).
+
+% [Rule 8] [Pos cover = 18 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   hasAcceleration(A,unchanged), previousSegmentRelation(A,B), hasVelocity(B,very_slow), previousSegmentRelation(B,C), 
+   hasAcceleration(C,unchanged), hasStopPoint(A,none).
+
+% [Rule 9] [Pos cover = 8 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), hasVelocity(B,slow), hasAcceleration(B,unchanged), previousSegmentRelation(B,C), 
+   previousSegmentRelation(C,D), hasAcceleration(D,unchanged), previousSegmentRelation(D,E), hasVelocity(E,very_slow), 
+   hasStopPoint(E,none).
+
+% [Rule 10] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   hasAcceleration(A,much_faster), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasAcceleration(C,much_faster), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,slow).
+
+% [Rule 11] [Pos cover = 16 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,below_medium), previousSegmentRelation(C,D), 
+   hasVelocity(D,below_medium), hasAcceleration(D,unchanged).
+
+% [Rule 12] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasVelocity(A,below_medium), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasAcceleration(C,unchanged), 
+   previousSegmentRelation(C,D), hasVelocity(D,slow), previousSegmentRelation(D,E), hasAcceleration(E,unchanged), 
+   hasStopPoint(E,none).
+
+% [Rule 13] [Pos cover = 15 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), hasVelocity(B,very_slow), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasVelocity(E,slow), hasAcceleration(E,unchanged).
+
+% [Rule 14] [Pos cover = 6 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   hasAcceleration(E,slightly_slower), previousSegmentRelation(E,F), hasVelocity(F,below_medium), hasAcceleration(F,unchanged), 
+   hasStopPoint(C,none).
+
+% [Rule 15] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasAcceleration(D,slower), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,above_medium).
+
+% [Rule 16] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), hasVelocity(B,medium), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasAcceleration(D,slightly_slower).
+
+% [Rule 17] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasAcceleration(A,much_faster), previousSegmentRelation(A,B), hasVelocity(B,above_medium), previousSegmentRelation(B,C), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasAcceleration(E,much_faster).
+
+% [Rule 18] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,fast), hasAcceleration(A,much_faster), previousSegmentRelation(A,B), previousSegmentRelation(B,C), 
+   hasVelocity(C,very_fast).
+
+% [Rule 19] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasAcceleration(A,much_slower), previousSegmentRelation(A,B), hasVelocity(B,above_medium), previousSegmentRelation(B,C), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasVelocity(E,below_medium).
+
+% [Rule 20] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   hasVelocity(A,very_slow), previousSegmentRelation(A,B), hasVelocity(B,slow), previousSegmentRelation(B,C), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,very_slow), 
+   hasAcceleration(F,unchanged).
+
+% [Rule 21] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasVelocity(A,below_medium), hasAcceleration(A,unchanged), previousSegmentRelation(A,B), previousSegmentRelation(B,C), 
+   hasAcceleration(C,faster).
+
+% [Rule 22] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,above_medium), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasAcceleration(F,unchanged), hasStopPoint(D,none).
+
+% [Rule 23] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasVelocity(A,slow), hasAcceleration(A,slightly_slower), previousSegmentRelation(A,B), previousSegmentRelation(B,C), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasAcceleration(F,slightly_slower).
+
+% [Rule 24] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,above_medium), hasAcceleration(C,unchanged), 
+   previousSegmentRelation(C,D), hasVelocity(D,above_medium).
+
+% [Rule 26] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,below_medium), hasAcceleration(A,slower), previousSegmentRelation(A,B), previousSegmentRelation(B,C), 
+   hasAcceleration(C,unchanged).
+
+% [Rule 27] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,very_fast), hasAcceleration(A,faster).
+
+% [Rule 29] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasAcceleration(A,unchanged), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,medium), hasAcceleration(F,faster).
+
+% [Rule 30] [Pos cover = 6 Neg cover = 0]
+hasTransportMode(A,car) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasVelocity(D,above_medium), 
+   hasAcceleration(D,slightly_faster).
+
+% [Rule 31] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasVelocity(F,slow), hasStopPoint(F,one).
+
+% [Rule 32] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasAcceleration(A,slightly_slower), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasVelocity(E,below_medium), previousSegmentRelation(E,F), hasAcceleration(F,much_faster).
+
+% [Rule 33] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), hasVelocity(B,below_medium), hasAcceleration(B,unchanged), previousSegmentRelation(B,C), 
+   hasAcceleration(C,unchanged), previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasVelocity(E,slow).
+
+% [Rule 34] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasAcceleration(A,slightly_slower), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,slow), 
+   previousSegmentRelation(C,D), hasAcceleration(D,slower).
+
+% [Rule 35] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasVelocity(A,slow), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,slow), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasAcceleration(E,slightly_slower).
+
+% [Rule 36] [Pos cover = 9 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   hasVelocity(A,very_slow), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,very_slow), 
+   previousSegmentRelation(C,D), hasVelocity(D,very_slow), hasAcceleration(D,unchanged).
+
+% [Rule 37] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   hasAcceleration(A,unchanged), previousSegmentRelation(A,B), hasVelocity(B,slow), previousSegmentRelation(B,C), 
+   hasAcceleration(C,unchanged), previousSegmentRelation(C,D), hasVelocity(D,slow), previousSegmentRelation(D,E), 
+   hasAcceleration(E,unchanged).
+
+% [Rule 39] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasVelocity(A,fast), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,fast), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasAcceleration(E,unchanged).
+
+% [Rule 40] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasVelocity(D,medium), 
+   previousSegmentRelation(D,E), hasVelocity(E,below_medium), previousSegmentRelation(E,F), hasAcceleration(F,slightly_faster).
+
+% [Rule 42] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), hasAcceleration(B,unchanged), previousSegmentRelation(B,C), hasVelocity(C,very_slow), 
+   previousSegmentRelation(C,D), hasVelocity(D,very_fast), hasStopPoint(D,none).
+
+% [Rule 43] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   hasVelocity(A,slow), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,slow), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasAcceleration(F,much_slower).
+
+% [Rule 44] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasStopPoint(F,more_than_five).
+
+% [Rule 45] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasVelocity(A,below_medium), hasAcceleration(A,much_slower), previousSegmentRelation(A,B), hasVelocity(B,medium).
+
+% [Rule 46] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), hasVelocity(B,slow), hasAcceleration(B,slightly_faster), previousSegmentRelation(B,C), 
+   hasAcceleration(C,much_slower), hasStopPoint(C,none).
+
+% [Rule 47] [Pos cover = 6 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), hasAcceleration(B,unchanged), previousSegmentRelation(B,C), hasVelocity(C,very_fast), 
+   hasAcceleration(C,much_faster), previousSegmentRelation(C,D), hasAcceleration(D,unchanged), hasStopPoint(D,none).
+
+% [Rule 51] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,below_medium), hasStopPoint(A,one).
+
+% [Rule 52] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasAcceleration(A,much_slower), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasAcceleration(C,much_slower), 
+   previousSegmentRelation(C,D), hasAcceleration(D,much_faster).
+
+% [Rule 53] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   hasAcceleration(E,much_slower), previousSegmentRelation(E,F), hasAcceleration(F,slightly_slower).
+
+% [Rule 54] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,slow), previousSegmentRelation(C,D), 
+   hasVelocity(D,very_slow), previousSegmentRelation(D,E), hasVelocity(E,below_medium), previousSegmentRelation(E,F), 
+   hasAcceleration(F,unchanged).
+
+% [Rule 55] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasAcceleration(A,unchanged), previousSegmentRelation(A,B), hasVelocity(B,medium), hasAcceleration(B,slightly_faster).
+
+% [Rule 58] [Pos cover = 8 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasVelocity(A,above_medium), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasAcceleration(E,faster).
+
+% [Rule 59] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,car) :-
+   previousSegmentRelation(A,B), hasVelocity(B,very_fast), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasVelocity(D,fast), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasAcceleration(F,much_faster).
+
+% [Rule 60] [Pos cover = 7 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,medium), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasAcceleration(F,much_slower).
+
+% [Rule 62] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   previousSegmentRelation(A,B), hasVelocity(B,below_medium), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasVelocity(D,medium), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,very_fast).
+
+% [Rule 64] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   hasVelocity(A,slow), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasAcceleration(C,slightly_faster), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasAcceleration(E,unchanged).
+
+% [Rule 65] [Pos cover = 6 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), hasVelocity(B,very_slow), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasAcceleration(D,much_slower), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasAcceleration(F,unchanged), 
+   hasStopPoint(A,none).
+
+% [Rule 66] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasAcceleration(D,much_slower), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,very_slow), hasAcceleration(F,slightly_slower).
+
+% [Rule 67] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasAcceleration(A,unchanged), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasAcceleration(C,much_slower), 
+   previousSegmentRelation(C,D), hasAcceleration(D,much_faster), previousSegmentRelation(D,E), hasAcceleration(E,unchanged), 
+   hasStopPoint(A,none).
+
+% [Rule 72] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasVelocity(D,above_medium), 
+   previousSegmentRelation(D,E), hasVelocity(E,above_medium), previousSegmentRelation(E,F), hasAcceleration(F,much_faster).
+
+% [Rule 73] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasVelocity(A,medium), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasVelocity(D,very_slow), previousSegmentRelation(D,E), hasVelocity(E,slow).
+
+% [Rule 74] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,fast), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasAcceleration(D,much_slower), previousSegmentRelation(D,E), hasVelocity(E,very_fast).
+
+% [Rule 75] [Pos cover = 11 Neg cover = 0]
+hasTransportMode(A,bike) :-
+   previousSegmentRelation(A,B), hasAcceleration(B,unchanged), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,below_medium), hasAcceleration(F,unchanged), 
+   hasStopPoint(E,none).
+
+% [Rule 79] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasAcceleration(A,much_faster), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasVelocity(E,slow), hasAcceleration(E,unchanged), previousSegmentRelation(E,F), 
+   hasVelocity(F,very_slow), hasStopPoint(F,none).
+
+% [Rule 85] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), hasVelocity(B,below_medium), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasAcceleration(D,much_faster), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasAcceleration(F,much_faster).
+
+% [Rule 88] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), hasAcceleration(B,much_faster), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   hasVelocity(D,slow), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,very_fast).
+
+% [Rule 89] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,medium), hasAcceleration(C,slightly_faster), 
+   previousSegmentRelation(C,D), hasVelocity(D,medium).
+
+% [Rule 92] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasAcceleration(D,unchanged), 
+   previousSegmentRelation(D,E), hasVelocity(E,very_slow), previousSegmentRelation(E,F), hasVelocity(F,very_slow), 
+   hasChangepoint(C).
+
+% [Rule 93] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), hasAcceleration(B,much_slower), previousSegmentRelation(B,C), hasAcceleration(C,much_faster), 
+   previousSegmentRelation(C,D), hasAcceleration(D,much_slower).
+
+% [Rule 94] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasAcceleration(A,much_slower), previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,fast), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasAcceleration(E,unchanged).
+
+% [Rule 97] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasAcceleration(F,slightly_slower), hasStopPoint(D,up_to_five).
+
+% [Rule 98] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,car) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   hasVelocity(E,medium), previousSegmentRelation(E,F), hasVelocity(F,very_fast), hasAcceleration(F,much_faster), 
+   hasStopPoint(A,none).
+
+% [Rule 102] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,very_fast), hasAcceleration(A,unchanged), previousSegmentRelation(A,B), previousSegmentRelation(B,C), 
+   previousSegmentRelation(C,D), hasAcceleration(D,unchanged).
+
+% [Rule 105] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,slow), previousSegmentRelation(C,D), 
+   hasVelocity(D,medium), previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasVelocity(F,below_medium).
+
+% [Rule 110] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasVelocity(A,below_medium), previousSegmentRelation(A,B), hasAcceleration(B,much_slower), previousSegmentRelation(B,C), 
+   hasAcceleration(C,unchanged), previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasStopPoint(E,none).
+
+% [Rule 117] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasAcceleration(A,much_faster), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasVelocity(E,below_medium), previousSegmentRelation(E,F), hasVelocity(F,slow).
+
+% [Rule 118] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasVelocity(C,very_fast), previousSegmentRelation(C,D), 
+   hasVelocity(D,very_fast), previousSegmentRelation(D,E), hasAcceleration(E,much_slower).
+
+% [Rule 124] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasAcceleration(D,slightly_slower), 
+   hasChangepoint(C), hasStopPoint(A,none).
+
+% [Rule 125] [Pos cover = 5 Neg cover = 0]
+hasTransportMode(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasAcceleration(F,much_faster), hasChangepoint(A).
+
+% [Rule 133] [Pos cover = 3 Neg cover = 0]
+hasTransportMode(A,car) :-
+   hasAcceleration(A,much_slower), previousSegmentRelation(A,B), hasVelocity(B,above_medium), previousSegmentRelation(B,C), 
+   previousSegmentRelation(C,D), previousSegmentRelation(D,E), hasVelocity(E,very_slow).
+
+% [Rule 135] [Pos cover = 4 Neg cover = 0]
+hasTransportMode(A,bus) :-
+   hasAcceleration(A,much_slower), previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), hasAcceleration(E,much_faster), previousSegmentRelation(E,F), hasAcceleration(F,much_slower).
+
+/*
+[Training set performance]
+            Actual
+         +            -   
+     +  312           0           312  
+Pred 
+     -  106         1182        1288 
+
+        418         1182        1600 
+
+Accuracy = 0.93375
+[Training set summary] [[312,0,106,1182]]
+[time taken] [291.407880982]
+[total clauses constructed] [626142]
+*/
+
+
 
 % | TargetClause
 hasTransportMode(seg067_1257_0,walk).

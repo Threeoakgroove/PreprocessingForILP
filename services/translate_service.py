@@ -306,7 +306,6 @@ class TranslateService:
         hasStopPoint = config.empty
 
     def catSpeedValueFor(self, speed):
-        # TODO: calculate medium speed of all TMs
         if(0 <= speed < 2):
             return config.speeds[0]
         elif(2 <= speed < 4):

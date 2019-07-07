@@ -1,4 +1,69 @@
 % TestData File
+% [Rule 1] [Pos cover = 98 Rand cover = 8]
+hasTPM(A,car) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasStopPoint(D,none), hasStopPoint(B,none).
+
+% [Rule 2] [Pos cover = 101 Rand cover = 3]
+hasTPM(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasStopPoint(D,none).
+
+% [Rule 3] [Pos cover = 20 Rand cover = 0]
+hasTPM(A,bike) :-
+   previousSegmentRelation(A,B), hasVelocity(B,medium), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F).
+
+% [Rule 4] [Pos cover = 19 Rand cover = 0]
+hasTPM(A,bike) :-
+   previousSegmentRelation(A,B), hasVelocity(B,below_medium), hasAcceleration(B,unchanged).
+
+% [Rule 5] [Pos cover = 29 Rand cover = 0]
+hasTPM(A,bike) :-
+   previousSegmentRelation(A,B), hasVelocity(B,slow), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F), hasStopPoint(E,none).
+
+% [Rule 6] [Pos cover = 36 Rand cover = 2]
+hasTPM(A,bike) :-
+   previousSegmentRelation(A,B), hasVelocity(B,below_medium), previousSegmentRelation(B,C), previousSegmentRelation(C,D), 
+   previousSegmentRelation(D,E), previousSegmentRelation(E,F).
+
+% [Rule 7] [Pos cover = 101 Rand cover = 6]
+hasTPM(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasStopPoint(D,none).
+
+% [Rule 8] [Pos cover = 101 Rand cover = 8]
+hasTPM(A,bike) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F).
+
+% [Rule 9] [Pos cover = 111 Rand cover = 4]
+hasTPM(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F).
+
+% [Rule 10] [Pos cover = 106 Rand cover = 7]
+hasTPM(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F).
+
+/*
+[Training set performance]
+           Actual
+        +          -  
+     + 416         0         416 
+Pred 
+     -  2          0          2  
+
+       418         0         418 
+
+Accuracy = 0.9952153110047847
+[Training set summary] [[416,0,2,0]]
+[time taken] [2.382714664]
+[total clauses constructed] [4323]
+true.
+*/
 
 % | TargetClause
 hasTransportMode(seg067_1257_0,walk).

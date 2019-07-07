@@ -6,7 +6,7 @@ from os.path import join
 # Main
 # ----
 # run complete program without ploting
-setRunAll = True
+setRunAll = False
 
 # Aleph-Service
 # -------------
@@ -16,7 +16,8 @@ setRunAll = True
 setWithNegativeExamples = False
 # the amount of selected segments for the induction
 # should be a value divideable by 20
-numberOfSegments = 20
+numberOfSegments = 400
+testSetSize = 160  # (400 / 70) * 30 ~ 171
 # minimum amount of positive examples covered by a new rule
 setMinPosCoverage = 5
 # maximum number of negative examples covered by new rules
@@ -37,7 +38,7 @@ setSkipSegmenting = True
 # IMPORTANT: Segmenting has to be finished once, before running translating.
 setSkipTranslating = True
 # IMPORTANT: Translating has to be finished once, before making logic program.
-setSkipLogicProgram = True
+setSkipLogicProgram = False
 # IMPORTANT: Only produces useful output, when segmenting is run before.
 setSkipMakingPlots = True
 

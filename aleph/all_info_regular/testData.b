@@ -1,5 +1,91 @@
 % TestData File
 
+%INTERSECTION
+% aggregate_all(count,(X=seg067_1921_0,distinct(
+%    (hasTransportMode(X,Z), hasTPM(X,Y)),Z=Y)),Count).
+
+% % Intersection Test
+% X=seg067_1921_0,distinct(hasTransportMode(X,Z), hasTPM(X,Y)).
+
+% % POSSIBLE UNION?
+% aggregate_all(count2,(X=seg067_1921_0,distinct(
+%    (hasTransportMode(X,Y); hasTPM(X,Y)))),Count2).
+
+% % Present Union
+% X=seg067_1921_0,distinct(hasTransportMode(X,Y); hasTPM(X,Y)).
+
+% | Induced Rules
+% [Rule 1] [Pos cover = 86 Neg cover = 0]
+hasTPM(A,car) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   previousSegmentRelation(E,F), hasKnownTransportMode(F,car), hasKnownTransportMode(B,car).
+
+% [Rule 2] [Pos cover = 98 Neg cover = 0]
+hasTPM(A,walk) :-
+   previousSegmentRelation(A,B), hasKnownTransportMode(B,walk).
+
+% [Rule 3] [Pos cover = 96 Neg cover = 0]
+hasTPM(A,bike) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   hasKnownTransportMode(E,bike), hasKnownTransportMode(B,bike).
+
+% [Rule 4] [Pos cover = 93 Neg cover = 0]
+hasTPM(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), hasKnownTransportMode(D,bus), 
+   hasKnownTransportMode(B,bus).
+
+% [Rule 5] [Pos cover = 13 Neg cover = 0]
+hasTPM(A,bus) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasKnownTransportMode(C,walk), hasKnownTransportMode(B,bus).
+
+% [Rule 6] [Pos cover = 34 Neg cover = 0]
+hasTPM(A,car) :-
+   previousSegmentRelation(A,B), hasAcceleration(B,unchanged), hasKnownTransportMode(B,car).
+
+% [Rule 7] [Pos cover = 3 Neg cover = 0]
+hasTPM(A,bus) :-
+   hasAcceleration(A,unchanged), hasChangepoint(A).
+
+% [Rule 8] [Pos cover = 4 Neg cover = 0]
+hasTPM(A,walk) :-
+   hasVelocity(A,very_fast), previousSegmentRelation(A,B), hasVelocity(B,slow), previousSegmentRelation(B,C), 
+   hasAcceleration(C,much_faster).
+
+% [Rule 9] [Pos cover = 9 Neg cover = 0]
+hasTPM(A,walk) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), hasKnownTransportMode(C,bus), hasChangepoint(A).
+
+% [Rule 11] [Pos cover = 14 Neg cover = 0]
+hasTPM(A,bike) :-
+   previousSegmentRelation(A,B), hasAcceleration(B,slightly_faster), hasKnownTransportMode(B,bike).
+
+% [Rule 21] [Pos cover = 17 Neg cover = 0]
+hasTPM(A,car) :-
+   hasVelocity(A,below_medium), previousSegmentRelation(A,B), hasKnownTransportMode(B,car).
+
+% [Rule 22] [Pos cover = 10 Neg cover = 0]
+hasTPM(A,car) :-
+   previousSegmentRelation(A,B), previousSegmentRelation(B,C), previousSegmentRelation(C,D), previousSegmentRelation(D,E), 
+   hasVelocity(E,very_slow), hasKnownTransportMode(B,car).
+
+/**
+[Training set performance]
+            Actual
+         +            -   
+     +  407           0           407  
+Pred 
+     -  11         1182        1193 
+
+        418         1182        1600 
+
+Accuracy = 0.993125
+[Training set summary] [[407,0,11,1182]]
+[time taken] [7.505700497]
+[total clauses constructed] [11052]
+
+**/
+
+
 % | TargetClause
 hasTransportMode(seg067_1257_0,walk).
 hasTransportMode(seg067_749_0,walk).
@@ -16,7 +102,6 @@ hasTransportMode(seg115_18307_0,car).
 hasTransportMode(seg105_225_0,walk).
 hasTransportMode(seg101_384_0,car).
 hasTransportMode(seg091_68_0,bus).
-
 hasTransportMode(seg101_439_0,car).
 hasTransportMode(seg084_13325_0,walk).
 hasTransportMode(seg096_1300_0,bike).
@@ -27,7 +112,6 @@ hasTransportMode(seg144_1356_0,walk).
 hasTransportMode(seg067_1292_0,walk).
 hasTransportMode(seg065_4870_0,bike).
 hasTransportMode(seg062_32738_0,bus).
-
 hasTransportMode(seg175_156_0,bus).
 hasTransportMode(seg144_85_0,walk).
 hasTransportMode(seg106_138_0,car).
@@ -39,7 +123,6 @@ hasTransportMode(seg058_608_0,walk).
 hasTransportMode(seg065_1485_0,bike).
 hasTransportMode(seg138_196_0,walk).
 hasTransportMode(seg075_75_0,walk).
-
 hasTransportMode(seg087_15_0,walk).
 hasTransportMode(seg087_37_0,walk).
 hasTransportMode(seg067_604_0,walk).
@@ -49,7 +132,6 @@ hasTransportMode(seg175_106_0,bus).
 hasTransportMode(seg080_45_0,walk).
 hasTransportMode(seg076_511_0,car).
 hasTransportMode(seg167_19387_0,bus).
-
 hasTransportMode(seg068_6953_0,bike).
 hasTransportMode(seg170_20_0,walk).
 hasTransportMode(seg101_573_0,bus).
@@ -59,7 +141,6 @@ hasTransportMode(seg020_4323_0,bike).
 hasTransportMode(seg076_26_0,car).
 hasTransportMode(seg106_113_0,car).
 hasTransportMode(seg081_1685_0,walk).
-
 hasTransportMode(seg167_24399_0,bike).
 hasTransportMode(seg078_9120_0,walk).
 hasTransportMode(seg125_1502_0,bike).
@@ -69,7 +150,6 @@ hasTransportMode(seg125_5270_0,bus).
 hasTransportMode(seg111_52_0,bike).
 hasTransportMode(seg075_149_0,walk).
 hasTransportMode(seg080_188_0,bike).
-
 hasTransportMode(seg174_14_0,car).
 hasTransportMode(seg081_179_0,bike).
 hasTransportMode(seg098_106_0,walk).
@@ -79,7 +159,6 @@ hasTransportMode(seg107_95_0,walk).
 hasTransportMode(seg052_2594_0,bus).
 hasTransportMode(seg126_4497_0,walk).
 hasTransportMode(seg111_1832_0,bike).
-
 hasTransportMode(seg056_400_0,bike).
 hasTransportMode(seg010_5285_0,bus).
 hasTransportMode(seg107_44_0,walk).
@@ -89,7 +168,6 @@ hasTransportMode(seg170_27_0,walk).
 hasTransportMode(seg020_978_0,walk).
 hasTransportMode(seg107_120_0,bike).
 hasTransportMode(seg078_9168_0,walk).
-
 hasTransportMode(seg065_4495_0,bike).
 hasTransportMode(seg175_64_0,walk).
 hasTransportMode(seg128_52504_0,bus).
@@ -99,7 +177,6 @@ hasTransportMode(seg058_18_0,car).
 hasTransportMode(seg052_9229_0,bus).
 hasTransportMode(seg096_16_0,walk).
 hasTransportMode(seg161_249_0,bus).
-
 hasTransportMode(seg106_1278_0,car).
 hasTransportMode(seg062_27570_0,bike).
 hasTransportMode(seg062_27570_0,car).
@@ -109,7 +186,6 @@ hasTransportMode(seg064_4238_0,bike).
 hasTransportMode(seg175_135_0,bus).
 hasTransportMode(seg174_58_0,car).
 hasTransportMode(seg081_1326_0,bus).
-
 hasTransportMode(seg065_4508_0,bike).
 hasTransportMode(seg096_1425_0,bike).
 hasTransportMode(seg069_246_0,bike).
@@ -119,7 +195,6 @@ hasTransportMode(seg052_6772_0,bus).
 hasTransportMode(seg129_182_0,bus).
 hasTransportMode(seg097_472_0,bike).
 hasTransportMode(seg175_181_0,bus).
-
 hasTransportMode(seg076_189_0,car).
 hasTransportMode(seg154_401_0,bus).
 hasTransportMode(seg129_131_0,car).
@@ -129,7 +204,6 @@ hasTransportMode(seg128_886_0,bike).
 hasTransportMode(seg065_1002_0,bike).
 hasTransportMode(seg106_60_0,car).
 hasTransportMode(seg108_309_0,bike).
-
 hasTransportMode(seg064_22_0,bus).
 hasTransportMode(seg096_1062_0,bike).
 hasTransportMode(seg062_15228_0,bus).
@@ -139,7 +213,6 @@ hasTransportMode(seg064_850_0,bike).
 hasTransportMode(seg129_345_0,bus).
 hasTransportMode(seg128_81265_0,car).
 hasTransportMode(seg174_149_0,car).
-
 hasTransportMode(seg092_354_0,bus).
 hasTransportMode(seg076_667_0,car).
 hasTransportMode(seg056_442_0,bike).
@@ -149,7 +222,6 @@ hasTransportMode(seg106_1252_0,car).
 hasTransportMode(seg108_133_0,car).
 hasTransportMode(seg021_481_0,car).
 hasTransportMode(seg128_103605_0,car).
-
 hasTransportMode(seg053_148_0,car).
 hasTransportMode(seg089_86_0,car).
 hasTransportMode(seg105_646_0,bus).
@@ -159,7 +231,6 @@ hasTransportMode(seg085_5851_0,walk).
 hasTransportMode(seg081_2112_0,walk).
 hasTransportMode(seg138_426_0,bike).
 hasTransportMode(seg138_426_0,walk).
-
 hasTransportMode(seg092_371_0,walk).
 hasTransportMode(seg153_6245_0,bus).
 hasTransportMode(seg086_166_0,walk).
@@ -169,7 +240,6 @@ hasTransportMode(seg097_525_0,bike).
 hasTransportMode(seg102_477_0,bus).
 hasTransportMode(seg068_6349_0,car).
 hasTransportMode(seg163_1128_0,bus).
-
 hasTransportMode(seg081_2094_0,bus).
 hasTransportMode(seg081_2094_0,walk).
 hasTransportMode(seg125_6537_0,bike).
@@ -179,7 +249,6 @@ hasTransportMode(seg126_5789_0,bike).
 hasTransportMode(seg125_5537_0,bus).
 hasTransportMode(seg125_5347_0,car).
 hasTransportMode(seg089_569_0,car).
-
 hasTransportMode(seg058_216_0,car).
 hasTransportMode(seg167_6494_0,car).
 hasTransportMode(seg167_6494_0,walk).

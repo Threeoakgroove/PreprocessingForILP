@@ -50,7 +50,7 @@ class AlephService:
 
         logging.info("Selecting TestData")
         self.resetGlobalCounters()
-        testData = self.generateSegmentDf(20)
+        testData = self.generateSegmentDf(config.testSetSize)
         self.printTestDataFile(testData)
 
     def generateSegmentDf(self, numberOfSegments):
