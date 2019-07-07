@@ -1,19 +1,4 @@
 % TestData File
-
-%INTERSECTION
-% aggregate_all(count,(X=seg067_1921_0,distinct(
-%    (hasTransportMode(X,Z), hasTPM(X,Y)),Z=Y)),Count).
-
-% % Intersection Test
-% X=seg067_1921_0,distinct(hasTransportMode(X,Z), hasTPM(X,Y)).
-
-% % POSSIBLE UNION?
-% aggregate_all(count2,(X=seg067_1921_0,distinct(
-%    (hasTransportMode(X,Y); hasTPM(X,Y)))),Count2).
-
-% % Present Union
-% X=seg067_1921_0,distinct(hasTransportMode(X,Y); hasTPM(X,Y)).
-
 % | Induced Rules
 % [Rule 1] [Pos cover = 86 Neg cover = 0]
 hasTPM(A,car) :-
