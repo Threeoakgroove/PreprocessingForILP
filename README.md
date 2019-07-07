@@ -12,7 +12,7 @@ The file config.py contains all important variables, that can be set to run the 
 
 - setRunAll: can be used to run the complete process of preprocessing. Be aware that it takes a large amount of time to calculate everything and that the process deletes the old results from previous runs automatically.
 - run single parts of the program: with the skip_XY settings, only certain parts of the program are started. In the provided version where the preprocessing is run already only the creation of the Aleph files is executed. The previous steps are only needed when new function are introduced.
-- Other settings: Furthermore length of segments, the number of segments for training and testing and the amount of evaluated nodes can be defined in the settings.
+- Other settings: Furthermore length of segments, the number of segments for training dataset and testing dataset can be defined in the settings.
 
 ## Necessary Preconditions
 

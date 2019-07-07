@@ -10,20 +10,11 @@ setRunAll = False
 
 # Aleph-Service
 # -------------
-# set 'True' to induce rules for the transportation mode
-#   declared in setTargetedTransportMode
-# set 'False' to induce rules for all four modes of transportation
-setWithNegativeExamples = False
 # the amount of selected segments for the induction
 # should be a value divideable by 20
 numberOfSegments = 400
+# number of examples for the test-dataset
 testSetSize = 160  # (400 / 70) * 30 ~ 171
-# minimum amount of positive examples covered by a new rule
-setMinPosCoverage = 5
-# maximum number of negative examples covered by new rules
-setMaxNoise = 1
-# number of nodes evaluated for one rule
-setMaxNodes = 20000
 # set length of segments
 setSegmentLength = 100
 
